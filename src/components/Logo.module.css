@@ -8,7 +8,7 @@
   .letterE {
     font-size: 120px;
     font-family: monospace;
-    color: aqua;
+    color: var(--color-aqua);
     transform: translateX(-5px);
     position: relative;
     font-weight: 600;
@@ -16,7 +16,7 @@
 
   .letterE::after {
     content: "E";
-    color: rgb(247, 73, 218);
+    color: var(--color-pink);
     top: 4px;
     position: absolute;
     left: 5px;
@@ -26,7 +26,7 @@
 
   .name {
     font-family: monospace;
-    font-size: 18px;
+    font-size: 22px;
     letter-spacing: 0.5px;
     font-weight: 500;
     color: white;

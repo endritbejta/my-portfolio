@@ -1,7 +1,7 @@
 .Socials {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   font-size: 20px;
   color: white;
 }

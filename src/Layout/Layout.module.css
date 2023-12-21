@@ -1,6 +1,45 @@
 .Layout {
   display: flex;
+  position: relative;
   height: 100vh;
   width: 100vw;
   overflow-x: hidden;
+  overflow-y: hidden;
+  z-index: 1;
+  .main {
+    padding: 40px;
+    flex: 5;
+  }
+}
+
+.blob {
+  position: absolute;
+  border-radius: 100%;
+  height: 200px;
+  aspect-ratio: 1;
+  background: linear-gradient(to right, var(--color-aqua), var(--color-pink));
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  filter: blur(100px);
+  z-index: -1;
+  animation: rotate 20s infinite;
+}
+
+@keyframes rotate {
+  from {
+    rotate: 0deg;
+  }
+  20%,
+  60% {
+    scale: 1 1.5;
+  }
+  40%,
+  80% {
+    scale: 1.5 1;
+  }
+
+  to {
+    rotate: 360deg;
+  }
 }

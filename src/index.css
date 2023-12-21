@@ -12,6 +12,9 @@
 
   --color-black: #181818;
   --color-gray-500: #242424;
+  --color-pink: #fa2158;
+  --color-aqua: aqua;
+  --color-white: rgba(255, 255, 255, 0.87);
 
   background-color: var(--color-gray-500);
 }
