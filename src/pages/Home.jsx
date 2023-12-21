@@ -1,11 +1,47 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import classes from "./Home.module.css";
 import { letters } from "../assets/data";
 import NavigateButton from "../components/NavigateButton";
+import ProfileCard from "../components/ProfileCard";
 
 const Home = () => {
   const [onMouseOverFired, setOnMouseOverFired] = useState(false);
+  const profileCardRef = useRef();
+
+  function comeIntoView() {
+    console.log("firingEvent", profileCardRef);
+    profileCardRef.current.animate(
+      {
+        opacity: "1",
+        top: "-100px",
+        transform: "rotate(-45deg)",
+      },
+      {
+        duration: 1000,
+        fill: "forwards",
+        easing: "ease",
+      }
+    );
+  }
+
+  function hideFromView() {
+    profileCardRef.current.animate(
+      {
+        opacity: "0",
+        top: "-150px",
+        pointerEvents: "unset",
+        transform: "rotate(-60deg)",
+      },
+      {
+        duration: 1000,
+        fill: "forwards",
+        easing: "ease",
+      }
+    );
+  }
+
   const onMouseOver = (event) => {
+    comeIntoView();
     if (!onMouseOverFired) {
       let iterations = 0;
       const interval = setInterval(() => {
@@ -29,10 +65,12 @@ const Home = () => {
   return (
     <section className={classes.Home}>
       <h1 className={classes.title}>
+        <ProfileCard profileCardRef={profileCardRef} />
         <span>Hey, I'm</span>
         <span
           className={classes.nameSpan}
           onMouseOver={onMouseOver}
+          onMouseLeave={hideFromView}
           data-value="Endrit Bejta"
         >
           E***** B****

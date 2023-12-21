@@ -28,7 +28,7 @@
 
   .title::before,
   .title::after {
-    content: "<p>";
+    content: "<h1>";
     position: absolute;
     width: 20px;
     height: 20px;
@@ -42,10 +42,37 @@
   }
 
   .title::after {
-    content: "</p>";
+    content: "</h1>";
     top: unset;
     left: unset;
     right: 0;
     bottom: 0;
+  }
+
+  .profession {
+    font-size: 22px;
+    letter-spacing: 1px;
+    position: relative;
+  }
+  .profession::before,
+  .profession::after {
+    height: 20px;
+    width: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    display: block;
+    font-size: 16px;
+    position: absolute;
+    font-style: italic;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .profession::before {
+    content: "<p>";
+    left: -30px;
+  }
+  .profession::after {
+    content: "</p>";
+    left: 100%;
   }
 }
