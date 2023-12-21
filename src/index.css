@@ -1,0 +1,25 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-family: monospace, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.87);
+
+  --color-black: #181818;
+  --color-gray-500: #242424;
+
+  background-color: var(--color-gray-500);
+}
+
+a,
+a:visited,
+a:active,
+a.active {
+  text-decoration: none;
+  color: inherit;
+}
