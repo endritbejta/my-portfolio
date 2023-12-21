@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import classes from "./Home.module.css";
 import { letters } from "../assets/data";
+import NavigateButton from "../components/NavigateButton";
 
 const Home = () => {
   const [onMouseOverFired, setOnMouseOverFired] = useState(false);
@@ -39,6 +40,7 @@ const Home = () => {
         ,<span> web developer</span>
       </h1>
       <p className={classes.profession}>Frontend developer / ReactJS</p>
+      <NavigateButton to="contact" context="Contact me!" />
     </section>
   );
 };
