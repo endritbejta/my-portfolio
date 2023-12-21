@@ -27,28 +27,28 @@ const Navigation = () => {
         <li>
           <NavLink to="">
             {homeLink}
-            <span className={classes.line}></span>
+            <div className={classes.line}></div>
             {/* <span className={classes.lineAqua}></span> */}
           </NavLink>
         </li>
         <li>
           <NavLink to="about">
             {aboutLink}
-            <span className={classes.line}></span>
+            <div className={classes.line}></div>
             {/* <span className={classes.lineAqua}></span> */}
           </NavLink>
         </li>
         <li>
           <NavLink to="projects">
             {projectsLink}
-            <span className={classes.line}></span>
+            <div className={classes.line}></div>
             {/* <span className={classes.lineAqua}></span> */}
           </NavLink>
         </li>
         <li>
           <NavLink to="contact">
             {contactLink}
-            <span className={classes.line}></span>
+            <div className={classes.line}></div>
             {/* <span className={classes.lineAqua}></span> */}
           </NavLink>
         </li>

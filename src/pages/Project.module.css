@@ -1,0 +1,15 @@
+.Project {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  h3 {
+    font-size: 40px;
+  }
+}
+
+.singleProject {
+  width: 400px;
+  aspect-ratio: 16/10;
+  border-radius: 4px;
+  border: 1px solid white;
+}

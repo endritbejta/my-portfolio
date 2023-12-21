@@ -14,7 +14,7 @@ const Home = () => {
       {
         opacity: "1",
         top: "-100px",
-        transform: "rotate(-45deg)",
+        transform: "scale(1) rotate(-30deg)",
       },
       {
         duration: 1000,
@@ -25,19 +25,21 @@ const Home = () => {
   }
 
   function hideFromView() {
-    profileCardRef.current.animate(
-      {
-        opacity: "0",
-        top: "-150px",
-        pointerEvents: "unset",
-        transform: "rotate(-60deg)",
-      },
-      {
-        duration: 1000,
-        fill: "forwards",
-        easing: "ease",
-      }
-    );
+    setTimeout(() => {
+      profileCardRef.current.animate(
+        {
+          opacity: "0",
+          top: "-150px",
+          pointerEvents: "unset",
+          transform: "scale(0.5) rotate(-60deg)",
+        },
+        {
+          duration: 1000,
+          fill: "forwards",
+          easing: "ease",
+        }
+      );
+    }, 700);
   }
 
   const onMouseOver = (event) => {
@@ -62,6 +64,7 @@ const Home = () => {
     }
     setOnMouseOverFired(true);
   };
+
   return (
     <section className={classes.Home}>
       <h1 className={classes.title}>
@@ -73,7 +76,7 @@ const Home = () => {
           onMouseLeave={hideFromView}
           data-value="Endrit Bejta"
         >
-          E***** B****
+          TIRDNE ATJEB
         </span>
         ,<span> web developer</span>
       </h1>

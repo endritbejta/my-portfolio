@@ -26,6 +26,7 @@ const Layout = () => {
 
   return (
     <div className={classes.Layout}>
+      <span className={classes.pulse}></span>
       <div className={classes.blob} ref={blobRef}></div>
       <div className={classes.blur}></div>
       <Header />
