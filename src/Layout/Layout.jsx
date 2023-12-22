@@ -4,6 +4,7 @@ import classes from "./Layout.module.css";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Home from "../pages/Home";
 import { FaPause } from "react-icons/fa";
+import VideoRecorder from "../components/VideoRecorder";
 
 const Layout = () => {
   const [isRecording, setIsRecording] = useState(true);
@@ -26,21 +27,12 @@ const Layout = () => {
     );
   };
 
-  function pauseRecording() {
-    console.log("isRecording: ", isRecording);
-    setIsRecording((prev) => !prev);
-  }
-
   return (
     <div className={classes.Layout}>
-      <div onClick={pauseRecording} className={classes.live}>
-        <p>{isRecording ? "REC" : "PAUSED"}</p>
-        {isRecording ? (
-          <span className={classes.pulse}></span>
-        ) : (
-          <FaPause style={{ color: "red", fontSize: "16px" }} />
-        )}
-      </div>
+      <VideoRecorder
+        isRecording={isRecording}
+        setIsRecording={setIsRecording}
+      />
       <div className={classes.blob} ref={blobRef}></div>
       <div className={classes.blur}></div>
       <Header />

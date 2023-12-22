@@ -24,11 +24,17 @@
 .live {
   position: absolute;
   top: 20px;
+  font-family: inherit;
+  font-size: 20px;
+  letter-spacing: 1px;
   right: 24px;
+  color: white;
+
+  width: 130px;
   z-index: 2;
   cursor: pointer;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
 }
@@ -75,26 +81,5 @@
 
   to {
     rotate: 360deg;
-  }
-}
-
-@keyframes pulsate {
-  0% {
-    transform: scale(0);
-    opacity: 1;
-  }
-
-  40% {
-    opacity: 0.2;
-  }
-
-  60% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-
-  100% {
-    scale: 2.5;
-    opacity: 0;
   }
 }
