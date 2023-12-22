@@ -6,7 +6,7 @@ const SingleProject = ({ singleProject }) => {
   return (
     <div className={classes.SingleProject}>
       <NavLink
-        to={singleProject.name.toLowerCase()}
+        to={singleProject.name.trim(" ").toLowerCase()}
         className={classes.photoShower}
       >
         <div className={classes.background}></div>

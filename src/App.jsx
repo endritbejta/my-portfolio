@@ -18,6 +18,10 @@ const router = createBrowserRouter([
         path: "projects",
         element: <Project />,
       },
+      {
+        path: "projects/:projectName",
+        element: <h1>Project sample here</h1>,
+      },
     ],
   },
 ]);
