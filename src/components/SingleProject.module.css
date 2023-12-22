@@ -1,6 +1,7 @@
 .SingleProject {
   display: flex;
   flex-direction: column;
+  gap: 10px;
   width: 100%;
   height: auto;
   text-align: start;
@@ -39,6 +40,11 @@
   top: 0;
   left: 0;
   animation: stripes 1s ease forwards;
+}
+
+.title {
+  font-size: 20px;
+  text-transform: uppercase;
 }
 
 .Project::-webkit-scrollbar {

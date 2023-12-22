@@ -11,7 +11,7 @@ const SingleProject = ({ singleProject }) => {
       >
         <div className={classes.background}></div>
       </NavLink>
-      <NavLink to={`project/${singleProject.name}`}>
+      <NavLink className={classes.title} to={singleProject.name}>
         {singleProject.name}
       </NavLink>
       <p>{singleProject.description}</p>
