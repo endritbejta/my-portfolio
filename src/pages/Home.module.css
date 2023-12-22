@@ -75,4 +75,13 @@
     content: "</p>";
     left: 100%;
   }
+
+  .actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    svg {
+      font-size: 26px;
+    }
+  }
 }

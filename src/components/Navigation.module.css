@@ -49,25 +49,26 @@
     transition: transform 0.5s ease;
     transform: scaleX(0);
     transform-origin: right;
-    /* transition-delay: 0.1s; */
-    z-index: 6;
-  }
-  /* a .lineAqua {
-    background-color: var(--color-aqua);
     transition-delay: 0s;
     z-index: 7;
-  } */
+  }
+  a .lineAqua {
+    background-color: var(--color-aqua);
+    transition-delay: 0.2s;
+    z-index: 6;
+    top: 50%;
+  }
 
-  a[aria-current="page"] .line {
-    /* a[aria-current="page"] .lineAqua { */
+  a[aria-current="page"] .line,
+  a[aria-current="page"] .lineAqua {
     transform: scaleX(1);
     transform-origin: left;
   }
 
-  /* a[aria-current="page"] .lineAqua {
-    transition-delay: 0.1s;
-  } */
-  a[aria-current="page"] .line {
+  a[aria-current="page"] .lineAqua {
     transition-delay: 0s;
+  }
+  a[aria-current="page"] .line {
+    transition-delay: 0.2s;
   }
 }

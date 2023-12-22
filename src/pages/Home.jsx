@@ -3,6 +3,7 @@ import classes from "./Home.module.css";
 import { letters } from "../assets/data";
 import NavigateButton from "../components/NavigateButton";
 import ProfileCard from "../components/ProfileCard";
+import { GiLogicGateOr } from "react-icons/gi";
 
 const Home = () => {
   const [onMouseOverFired, setOnMouseOverFired] = useState(false);
@@ -74,14 +75,18 @@ const Home = () => {
           className={classes.nameSpan}
           onMouseOver={onMouseOver}
           onMouseLeave={hideFromView}
-          data-value="Endrit Bejta"
+          data-value="endrit bejta"
         >
-          TIRDNE ATJEB
+          xxxxxx xxxxx
         </span>
         ,<span> web developer</span>
       </h1>
       <p className={classes.profession}>Frontend developer / ReactJS</p>
-      <NavigateButton to="contact" context="Contact me!" />
+      <div className={classes.actions}>
+        <NavigateButton to="contact" context="Contact me!" />
+        <p>||</p>
+        <NavigateButton to="projects" context="See my projects!" />
+      </div>
     </section>
   );
 };

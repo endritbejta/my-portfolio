@@ -19,10 +19,7 @@
   aspect-ratio: 1/1;
   border-radius: 100%;
   background-color: var(--color-pink);
-  position: absolute;
-  top: 40px;
-  right: 40px;
-  z-index: 2;
+  position: relative;
 }
 
 .pulse::after {
@@ -50,6 +47,17 @@
   filter: blur(100px);
   z-index: -1;
   animation: rotate 20s infinite;
+}
+
+.live {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 @keyframes rotate {
