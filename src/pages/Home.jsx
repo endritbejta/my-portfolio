@@ -77,7 +77,7 @@ const Home = () => {
           onMouseLeave={hideFromView}
           data-value="endrit bejta"
         >
-          xxxxxx xxxxx
+          Exxxxx Bxxxx
         </span>
         ,<span> web developer</span>
       </h1>

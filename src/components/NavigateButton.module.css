@@ -33,6 +33,10 @@
   transform-origin: bottom;
 }
 
+.button:hover {
+  box-shadow: var(--color-pink) 0px 3px 12px;
+}
+
 .button p {
   color: white;
   z-index: 2;

@@ -21,6 +21,18 @@
   position: relative;
 }
 
+.live {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  z-index: 2;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
 .pulse::after {
   content: "";
   display: table;
@@ -31,7 +43,7 @@
   left: 0;
   border-radius: inherit;
   background-color: var(--color-pink);
-  animation: pulsate 3s ease infinite;
+  animation: pulsate 2s ease infinite;
 }
 
 .blob {
@@ -46,17 +58,6 @@
   filter: blur(100px);
   z-index: -1;
   animation: rotate 20s infinite;
-}
-
-.live {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
 }
 
 @keyframes rotate {
@@ -83,17 +84,17 @@
     opacity: 1;
   }
 
-  30% {
+  40% {
     opacity: 0.2;
   }
 
-  50% {
+  60% {
     transform: scale(1.5);
     opacity: 0;
   }
 
   100% {
-    scale: 3;
+    scale: 2.5;
     opacity: 0;
   }
 }

@@ -12,6 +12,7 @@
     transform: translateX(-5px);
     position: relative;
     font-weight: 600;
+    cursor: pointer;
   }
 
   .letterE::after {
@@ -22,6 +23,22 @@
     left: 5px;
     height: 100%;
     width: 100%;
+  }
+  .letterE::before {
+    content: "E";
+    transition: transform 0.2s ease;
+    color: var(--color-pink);
+    top: 4px;
+    position: absolute;
+    left: 5px;
+    height: 100%;
+    filter: blur(2px);
+    width: 100%;
+  }
+
+  .letterE:hover::before {
+    transform-origin: center;
+    transform: scale(1.1);
   }
 
   .name {
