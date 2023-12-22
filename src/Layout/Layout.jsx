@@ -27,7 +27,7 @@ const Layout = () => {
   return (
     <div className={classes.Layout}>
       <div className={classes.live}>
-        <p>LIVE</p>
+        <p>REC</p>
         <span className={classes.pulse}></span>
       </div>
       <div className={classes.blob} ref={blobRef}></div>
