@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  overflow: hidden;
   h3 {
     font-size: 40px;
   }
@@ -12,4 +13,40 @@
   aspect-ratio: 16/10;
   border-radius: 4px;
   border: 1px solid white;
+  overflow: hidden;
+}
+
+.background {
+  background: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 5px,
+    rgba(255, 255, 255, 0.2) 5px,
+    rgba(255, 255, 255, 0.2) 10px,
+    transparent 10px,
+    transparent 12px,
+    rgba(255, 255, 255, 0.2) 12px,
+    rgba(255, 255, 255, 0.2) 16px,
+    transparent 16px,
+    transparent 19px,
+    rgba(255, 255, 255, 0.2) 19px,
+    rgba(255, 255, 255, 0.2) 22px
+  );
+  background-size: 22px 100%;
+  margin: 0;
+  height: 100%;
+  animation: stripes 1s ease forwards;
+}
+
+@keyframes stripes {
+  from {
+    background-position: 0% 0%;
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    background-position: 100% -100%;
+    opacity: 0;
+    scale: 4;
+  }
 }

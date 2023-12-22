@@ -6,7 +6,7 @@ const Project = () => {
     <div className={classes.Project}>
       <h3>My projects</h3>
       <div className={classes.singleProject}>
-        <div></div>
+        <div className={classes.background}></div>
       </div>
     </div>
   );
