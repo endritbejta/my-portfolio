@@ -73,7 +73,7 @@ const Home = () => {
         <span>Hey, I'm</span>
         <span
           className={classes.nameSpan}
-          onMouseOver={onMouseOver}
+          onMouseEnter={onMouseOver}
           onMouseLeave={hideFromView}
           data-value="endrit bejta"
         >
