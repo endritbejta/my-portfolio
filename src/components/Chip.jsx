@@ -11,7 +11,7 @@ const Chip = ({ type, to, context }) => {
           className={`${classes.Chip} ${classes.activeLink}`}
           to={to}
         >
-          LIVE <span className={classes.pulse}></span>
+          LIVE
         </NavLink>
       );
     } else if ((type = "GITHUB")) {
