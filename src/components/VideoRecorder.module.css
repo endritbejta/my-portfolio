@@ -6,7 +6,9 @@
   letter-spacing: 1px;
   right: 24px;
   color: white;
-
+  border: 1px solid white;
+  padding: 5px 10px;
+  border-radius: 5px;
   width: min-content;
   z-index: 2;
   cursor: pointer;
@@ -37,6 +39,17 @@
   border-radius: inherit;
   background-color: var(--color-pink);
   animation: pulsate 2s ease infinite;
+}
+
+.reset {
+  transform: translateX(20px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.isRecording {
+  transform: translateX(0px);
+  opacity: 1;
 }
 
 @keyframes pulsate {

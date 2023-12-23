@@ -9,10 +9,12 @@ const VideoRecorder = ({ isRecording, setIsRecording }) => {
   const [formattedTime, setFormattedTime] = useState("00:00");
 
   const increaseCounter = () => {
+    console.log("running");
     setCounter((prev) => prev + 1);
   };
 
   const startTimer = () => {
+    console.log("counter:", counter);
     setCounterInterval(setInterval(() => increaseCounter(), 1000));
     setIsRecording(true);
   };
@@ -42,21 +44,17 @@ const VideoRecorder = ({ isRecording, setIsRecording }) => {
 
   return (
     <div className={classes.VideoRecorder}>
-      {isRecording ? (
-        <p onClick={stopTimer}>
-          <FaPause />
-        </p>
-      ) : (
-        <p onClick={startTimer}>
-          <FaPlay />
-        </p>
-      )}
-      {counter !== 0 && (
-        <p onClick={resetTimer}>
-          <MdReplay />
-        </p>
-      )}
-      <p>{formattedTime}</p>
+      {/* <p onClick={startTimer}>
+        <FaPlay />
+      </p>
+      <p onClick={stopTimer}>
+        <FaPause />
+      </p>
+      <p onClick={resetTimer}>
+        <MdReplay />
+      </p>
+      <p>{formattedTime}</p> */}
+      <span>REC</span>
       <span className={classes.pulse}></span>
     </div>
   );

@@ -60,15 +60,19 @@
   }
 
   a[aria-current="page"] .line,
-  a[aria-current="page"] .lineAqua {
+  a[aria-current="page"] .lineAqua,
+  a:hover .lineAqua,
+  a:hover .line {
     transform: scaleX(1);
     transform-origin: left;
   }
 
-  a[aria-current="page"] .lineAqua {
+  a[aria-current="page"] .lineAqua,
+  a:hover .lineAqua {
     transition-delay: 0s;
   }
-  a[aria-current="page"] .line {
+  a[aria-current="page"] .line,
+  a:hover .line {
     transition-delay: 0.2s;
   }
 }
