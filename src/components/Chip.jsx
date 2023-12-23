@@ -7,7 +7,7 @@ const Chip = ({ type, to, context }) => {
     if (type === "LIVE") {
       content = (
         <NavLink
-          target="blank"
+          target="_blank"
           className={`${classes.Chip} ${classes.activeLink}`}
           to={to}
         >
@@ -16,7 +16,7 @@ const Chip = ({ type, to, context }) => {
       );
     } else if ((type = "GITHUB")) {
       content = (
-        <NavLink target="blank" className={classes.Chip} to={to}>
+        <NavLink target="_blank" className={classes.Chip} to={to}>
           GITHUB REPOSITORY
         </NavLink>
       );
