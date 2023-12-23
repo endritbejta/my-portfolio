@@ -18,7 +18,8 @@
 .projectsHolder {
   display: grid;
   place-content: center;
-  grid-template-columns: 1fr 1fr;
+  /* grid-template-columns: repeat(auto-fill, minmax(250px, 450px)); */
+  grid-template-columns: repeat(3, minmax(350px, 450px));
   grid-template-rows: auto;
   gap: 20px;
 }

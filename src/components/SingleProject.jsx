@@ -24,11 +24,8 @@ const SingleProject = ({ singleProject }) => {
         {singleProject.languagesUsed.map((language, i) => (
           <Chip key={i} context={language} />
         ))}
-        {singleProject.live ? (
-          <Chip type="LIVE" to={singleProject.liveURL} />
-        ) : (
-          <Chip type="GITHUB" to={singleProject.liveURL} />
-        )}
+        {singleProject.live && <Chip type="LIVE" to={singleProject.liveURL} />}
+        <Chip type="GITHUB" to={singleProject.githubURL} />
       </div>
     </div>
   );

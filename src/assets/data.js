@@ -17,7 +17,8 @@ export const gitHubProjects = [
     languagesUsed: ["ReactJS", "ExpressJS", "CSS"],
     finished: true,
     images: [postify2],
-    liveURL: "https://github.com/endritbejta/postify-frontend",
+    liveURL: null,
+    githubURL: "https://github.com/endritbejta/postify-frontend",
   },
   {
     name: "Beauty shop",
@@ -27,7 +28,8 @@ export const gitHubProjects = [
     finished: false,
     images: [postify3],
     languagesUsed: ["JavaScript", "CSS"],
-    liveURL: "https://github.com/endritbejta/shopify-page-example",
+    githubURL: "https://github.com/endritbejta/shopify-page-example",
+    liveURL: "",
   },
   {
     name: "Alfa Globe",
@@ -37,6 +39,7 @@ export const gitHubProjects = [
     languagesUsed: ["JavaScript", "SCSS"],
     finished: "false",
     images: [postify4],
+    githubURL: "https://github.com/endritbejta/alfa_globe.git",
     liveURL: "https://alfaglobe.netlify.app",
   },
 ];
