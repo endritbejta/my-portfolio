@@ -25,7 +25,9 @@ const SingleProject = ({ singleProject }) => {
           <Chip key={i} context={language} />
         ))}
         {singleProject.live && <Chip type="LIVE" to={singleProject.liveURL} />}
-        <Chip type="GITHUB" to={singleProject.githubURL} />
+        {singleProject.githubURL.length > 0 && (
+          <Chip type="GITHUB" to={singleProject.githubURL} />
+        )}
       </div>
     </div>
   );
