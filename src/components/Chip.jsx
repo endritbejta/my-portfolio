@@ -6,11 +6,15 @@ const Chip = ({ type, to, context }) => {
   if (to) {
     if (type === "LIVE") {
       content = (
-        <NavLink target="blank" className={classes.Chip} to={to}>
-          LIVE LINK
+        <NavLink
+          target="blank"
+          className={`${classes.Chip} ${classes.activeLink}`}
+          to={to}
+        >
+          LIVE <span className={classes.pulse}></span>
         </NavLink>
       );
-    } else {
+    } else if ((type = "GITHUB")) {
       content = (
         <NavLink target="blank" className={classes.Chip} to={to}>
           GITHUB REPOSITORY
@@ -18,12 +22,9 @@ const Chip = ({ type, to, context }) => {
       );
     }
   } else {
-    content = (
-      <button className={classes.Chip} type="button">
-        {context}
-      </button>
-    );
+    content = <button className={classes.Chip}>{context}</button>;
   }
+
   return content;
 };
 
