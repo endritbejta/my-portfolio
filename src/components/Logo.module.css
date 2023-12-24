@@ -14,6 +14,9 @@
     font-weight: 600;
     cursor: pointer;
   }
+  .letterE:hover {
+    animation: heartbeat1 1.5s ease infinite;
+  }
 
   .letterE::after {
     content: "E";
@@ -37,8 +40,9 @@
   }
 
   .letterE:hover::before {
-    transform-origin: center;
-    transform: scale(1.1);
+    animation: heartbeat 1.5s ease infinite;
+    /* transform-origin: center; */
+    /* transform: scale(1.05); */
   }
 
   .name {
@@ -53,5 +57,31 @@
   .profession {
     font-family: monospace;
     font-size: 16px;
+  }
+}
+
+@keyframes heartbeat {
+  from,
+  to {
+    /* filter: blur(0px); */
+    transform: scale(1);
+  }
+
+  50% {
+    /* filter: blur(2px); */
+    transform: scale(1.1);
+  }
+}
+
+@keyframes heartbeat1 {
+  from,
+  to {
+    filter: blur(0px);
+    transform: translateX(-5px) scale(1);
+  }
+
+  50% {
+    filter: blur(1px);
+    transform: translateX(-5px) scale(1.1);
   }
 }

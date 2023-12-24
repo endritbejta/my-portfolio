@@ -2,10 +2,13 @@ import React from "react";
 import classes from "./SingleProject.module.css";
 import { NavLink } from "react-router-dom";
 import Chip from "./Chip";
-const SingleProject = ({ singleProject }) => {
+const SingleProject = ({ orderNumber, singleProject }) => {
   console.log(singleProject);
   return (
-    <div className={classes.SingleProject}>
+    <div
+      style={{ animationDelay: `${orderNumber}s` }}
+      className={classes.SingleProject}
+    >
       <NavLink
         to={singleProject.name.trim(" ").toLowerCase()}
         className={classes.photoShower}
@@ -14,7 +17,10 @@ const SingleProject = ({ singleProject }) => {
           src={singleProject.images[0] ? singleProject.images[0] : ""}
           alt="project-photo"
         />
-        <div className={classes.background}></div>
+        <div
+          style={{ animationDelay: `${orderNumber * 50}ms` }}
+          className={classes.background}
+        ></div>
       </NavLink>
       <NavLink className={classes.title} to={singleProject.name}>
         {singleProject.name}

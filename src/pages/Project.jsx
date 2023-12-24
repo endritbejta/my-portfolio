@@ -9,7 +9,7 @@ const Project = () => {
       <h3>My projects</h3>
       <div className={classes.projectsHolder}>
         {gitHubProjects.map((ghProject, i) => (
-          <SingleProject singleProject={ghProject} />
+          <SingleProject orderNumber={i} singleProject={ghProject} />
         ))}
       </div>
     </section>

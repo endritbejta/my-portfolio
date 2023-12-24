@@ -1,6 +1,7 @@
 import React from "react";
 import classes from "./Chip.module.css";
 import { NavLink } from "react-router-dom";
+import { FaArrowRight } from "react-icons/fa";
 const Chip = ({ type, to, context }) => {
   let content;
   if (to) {
@@ -17,7 +18,7 @@ const Chip = ({ type, to, context }) => {
     } else if ((type = "GITHUB")) {
       content = (
         <NavLink target="_blank" className={classes.Chip} to={to}>
-          GITHUB REPOSITORY
+          GITHUB REPOSITORY <FaArrowRight style={{ fontSize: "12px" }} />
         </NavLink>
       );
     }

@@ -28,16 +28,16 @@
     90deg,
     transparent 0,
     transparent 5px,
-    rgba(255, 255, 255, 0.2) 5px,
-    rgba(255, 255, 255, 0.2) 10px,
+    rgba(255, 255, 255, 0.4) 5px,
+    rgba(255, 255, 255, 0.4) 10px,
     transparent 10px,
     transparent 12px,
-    rgba(255, 255, 255, 0.2) 12px,
-    rgba(255, 255, 255, 0.2) 16px,
+    rgba(255, 255, 255, 0.4) 12px,
+    rgba(255, 255, 255, 0.4) 16px,
     transparent 16px,
     transparent 19px,
-    rgba(255, 255, 255, 0.2) 19px,
-    rgba(255, 255, 255, 0.2) 22px
+    rgba(255, 255, 255, 0.4) 19px,
+    rgba(255, 255, 255, 0.4) 22px
   );
   background-size: 22px 100%;
   margin: 0;

@@ -19,7 +19,8 @@
   display: grid;
   place-content: center;
   /* grid-template-columns: repeat(auto-fill, minmax(250px, 450px)); */
-  grid-template-columns: repeat(3, minmax(350px, 450px));
+  /* grid-template-columns: repeat(3, minmax(350px, 450px)); */
+  grid-template-columns: repeat(auto-fill, minmax(20vmax, 25vmax));
   grid-template-rows: auto;
   gap: 20px;
 }

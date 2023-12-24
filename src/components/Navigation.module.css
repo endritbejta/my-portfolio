@@ -46,7 +46,7 @@
     display: block;
     background-color: var(--color-pink);
     width: 100%;
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease;
     transform: scaleX(0);
     transform-origin: right;
     transition-delay: 0s;
@@ -54,7 +54,7 @@
   }
   a .lineAqua {
     background-color: var(--color-aqua);
-    transition-delay: 0.2s;
+    transition-delay: 0.1s;
     z-index: 6;
     top: 50%;
   }
@@ -73,6 +73,6 @@
   }
   a[aria-current="page"] .line,
   a:hover .line {
-    transition-delay: 0.2s;
+    transition-delay: 0.1s;
   }
 }

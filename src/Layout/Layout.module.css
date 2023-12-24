@@ -8,7 +8,18 @@
   z-index: 1;
   .main {
     flex: 5;
+    position: relative;
   }
+
+  /* .main::before {
+    display: table;
+    width: 200px;
+    height: 50px;
+    content: "<body>";
+    top: 0;
+    left: 0;
+    position: absolute;
+  } */
 }
 
 .pulse {
