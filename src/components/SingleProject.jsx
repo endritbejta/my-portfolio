@@ -1,11 +1,36 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import classes from "./SingleProject.module.css";
 import { NavLink } from "react-router-dom";
 import Chip from "./Chip";
 const SingleProject = ({ orderNumber, singleProject }) => {
-  console.log(singleProject);
+  const singleProjectRef = useRef();
+  console.log("single project ref", singleProjectRef.current);
+  useEffect(() => {
+    singleProjectRef.current?.animate(
+      [
+        {
+          transform: "translateX(40px)",
+          opacity: "0",
+        },
+        {
+          opacity: "0.7",
+          transform: "translateX(-10px)",
+        },
+        {
+          opacity: "1",
+          transform: "translateX(0)",
+        },
+      ],
+      {
+        duration: (orderNumber + 1) * 500,
+        easing: "ease",
+        fill: "forwards",
+      }
+    );
+  }, []);
   return (
     <div
+      ref={singleProjectRef}
       style={{ animationDelay: `${orderNumber}s` }}
       className={classes.SingleProject}
     >
