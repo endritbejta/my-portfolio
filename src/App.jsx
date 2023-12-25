@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Project from "./pages/Project";
+import ProjectInfo from "./components/ProjectInfo";
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
       },
       {
         path: "projects/:projectName",
-        element: <h1>Project sample here</h1>,
+        element: <ProjectInfo />,
       },
     ],
   },
