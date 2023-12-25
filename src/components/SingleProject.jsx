@@ -9,22 +9,23 @@ const SingleProject = ({ orderNumber, singleProject }) => {
     singleProjectRef.current?.animate(
       [
         {
-          transform: "translateX(40px)",
+          transform: "translateX(25%)",
           opacity: "0",
         },
-        {
-          opacity: "0.7",
-          transform: "translateX(-10px)",
-        },
+        // {
+        //   opacity: "0.7",
+        //   transform: "translateX(-10px)",
+        // },
         {
           opacity: "1",
           transform: "translateX(0)",
         },
       ],
       {
-        duration: (orderNumber + 1) * 500,
+        duration: 500,
         easing: "ease",
         fill: "forwards",
+        delay: orderNumber * 100,
       }
     );
   }, []);

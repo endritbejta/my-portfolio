@@ -22,11 +22,11 @@ const About = () => {
       <h3 className={classes.skills}>
         <span>Skills</span>
       </h3>
-      <p>ReactJS</p>
-      <p>JavaScript</p>
-      <p>CSS, SCCS</p>
-      <p>Tailwind</p>
-      <p>Redux</p>
+      <p className={classes.skill}>ReactJS</p>
+      <p className={classes.skill}>JavaScript</p>
+      <p className={classes.skill}>CSS, SCCS</p>
+      <p className={classes.skill}>Tailwind</p>
+      <p className={classes.skill}>Redux</p>
     </section>
   );
 };
