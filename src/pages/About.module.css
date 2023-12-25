@@ -56,18 +56,18 @@
   .uni {
     margin-top: 20px;
   }
-}
 
-.skill::before {
-  background-color: white;
-  width: 100%;
-}
+  .skill::before {
+    background-color: white;
+    width: 100%;
+  }
 
-.skill::after {
-  transition: width 0.3s ease;
-  width: 0;
-  animation: grow 1.5s ease forwards;
-  background-color: var(--color-pink);
+  .skill::after {
+    transition: width 0.3s ease;
+    width: 0;
+    animation: grow 1.5s ease forwards;
+    background-color: var(--color-pink);
+  }
 }
 
 @keyframes grow {
@@ -106,5 +106,13 @@
     padding-block: unset;
     height: unset;
     padding: 20px;
+  }
+}
+
+@media (max-width: 540px) {
+  .About {
+    .skill {
+      width: 150px;
+    }
   }
 }

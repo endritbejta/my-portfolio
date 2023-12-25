@@ -107,16 +107,16 @@
 }
 
 @media (max-width: 557px) {
-  .actions {
-    flex-direction: column;
-    width: 80px;
-    margin: 0 auto;
-    align-items: center;
-  }
 }
 
 @media (max-width: 480px) {
   .Home {
+    .actions {
+      flex-direction: column;
+      width: 80px;
+      margin: 0 auto;
+      align-items: center;
+    }
     .title {
       font-size: 40px;
     }
