@@ -36,7 +36,7 @@ const Layout = () => {
       <div className={classes.blob} ref={blobRef}></div>
       <div className={classes.blur}></div>
       <Header />
-      <hr />
+      {/* <hr /> */}
       <main className={classes.main}>
         <Outlet />
       </main>

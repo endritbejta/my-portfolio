@@ -1,7 +1,46 @@
 .Header {
-  height: 80%;
+  height: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+  border-right: 1px solid white;
+  padding-bottom: 80px;
+  overflow-x: hidden;
+}
+
+.hideHeader {
+  width: 0;
+  flex: unset;
+}
+
+.action {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: table;
+  place-content: center;
+  width: 20px;
+  aspect-ratio: 1/1;
+  transform: translateX(100%);
+  font-size: 24px;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.action:hover {
+  cursor: pointer;
+  transform: translateX(100%) scale(1.5);
+  transform-origin: center;
+}
+
+.leftClicked {
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.rightClicked {
+  transform: translateX(0);
+  opacity: 0;
 }
