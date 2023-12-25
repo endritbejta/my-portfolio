@@ -16,17 +16,30 @@ const About = () => {
         innovation and growth, I am eager to take on new challenges and make a
         valuable contribution to any programming team.
       </p>
-      <p className={classes.uni}>
-        <strong>Univerisity:</strong> University of Pristina
-      </p>
       <h3 className={classes.skills}>
         <span>Skills</span>
       </h3>
-      <p className={classes.skill}>ReactJS</p>
-      <p className={classes.skill}>JavaScript</p>
-      <p className={classes.skill}>CSS, SCCS</p>
-      <p className={classes.skill}>Tailwind</p>
-      <p className={classes.skill}>Redux</p>
+      <p style={{ "--skills-rating": "120%" }} className={classes.skill}>
+        ReactJS
+      </p>
+      <p style={{ "--skills-rating": "100%" }} className={classes.skill}>
+        JavaScript
+      </p>
+      <p style={{ "--skills-rating": "50%" }} className={classes.skill}>
+        TypeScript
+      </p>
+      <p style={{ "--skills-rating": "100%" }} className={classes.skill}>
+        CSS, SCCS
+      </p>
+      <p style={{ "--skills-rating": "80%" }} className={classes.skill}>
+        Tailwind
+      </p>
+      <p style={{ "--skills-rating": "100%" }} className={classes.skill}>
+        Redux
+      </p>
+      <p className={classes.uni}>
+        <strong>Univerisity:</strong> University of Pristina
+      </p>
     </section>
   );
 };

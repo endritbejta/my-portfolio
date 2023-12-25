@@ -34,25 +34,68 @@
   p {
     font-size: 24px;
   }
+
+  .skill {
+    width: 200px;
+    position: relative;
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+
+  .skill::before,
+  .skill::after {
+    display: table;
+    content: "";
+    top: 50%;
+    left: 120%;
+    transform: translateY(-50%);
+    height: 5px;
+    position: absolute;
+  }
+
+  .uni {
+    margin-top: 20px;
+  }
 }
 
-.letterHolder {
-  height: 40px;
-  /* width: 200px; */
-  display: flex;
-  gap: 4px;
-  overflow: hidden;
+.skill::before {
+  background-color: white;
+  width: 100%;
 }
 
-.letter {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 36px;
-  gap: 4px;
-  transform: translateY(var(--transformValue));
-  color: white;
-  padding: 2px;
-  transition: all 4s ease;
-  transition-delay: 4s;
+.skill::after {
+  transition: width 0.3s ease;
+  width: 0;
+  animation: grow 1.5s ease forwards;
+  background-color: var(--color-pink);
 }
+
+@keyframes grow {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--skills-rating);
+  }
+}
+
+/* .letterHolder {
+    height: 40px;
+     width: 200px
+    display: flex;
+    gap: 4px;
+    overflow: hidden;
+  }
+  
+  .letter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 36px;
+    gap: 4px;
+    transform: translateY(var(--transformValue));
+    color: white;
+    padding: 2px;
+    transition: all 4s ease;
+    transition-delay: 4s;
+  } */
