@@ -25,3 +25,13 @@
   grid-template-rows: auto;
   gap: 20px;
 }
+
+@media (max-width: 710px) {
+  .Project {
+    text-align: start;
+  }
+
+  .projectsHolder {
+    grid-template-columns: 1fr;
+  }
+}
