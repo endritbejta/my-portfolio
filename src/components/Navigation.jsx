@@ -45,13 +45,13 @@ const Navigation = () => {
             <div className={classes.lineAqua}></div>
           </NavLink>
         </li>
-        <li>
+        {/* <li>
           <NavLink to="contact">
             {contactLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>
           </NavLink>
-        </li>
+        </li> */}
       </ul>
     </nav>
   );

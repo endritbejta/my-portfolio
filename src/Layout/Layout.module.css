@@ -3,8 +3,6 @@
   position: relative;
   height: 100vh;
   width: 100vw;
-  overflow-x: hidden;
-  overflow-y: hidden;
   z-index: 1;
   .main {
     flex: 5;
@@ -92,5 +90,32 @@
 
   to {
     rotate: 360deg;
+  }
+}
+
+@media (max-width: 1290px) {
+  .Layout {
+    .main {
+      flex: 3.5;
+    }
+  }
+}
+
+@media (max-width: 980px) {
+  .Layout {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    .main {
+      flex: unset;
+      min-height: calc(100vh - 60px);
+      display: flex;
+      align-items: center;
+      z-index: 2;
+      overflow-x: hidden;
+    }
+  }
+  .blob {
+    display: none;
   }
 }

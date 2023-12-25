@@ -70,3 +70,17 @@
     transform: translateX(-5px) scale(1.05);
   }
 }
+
+@media (max-width: 980px) {
+  .Logo {
+    padding: 10px;
+    height: 100%;
+    .letterE {
+      font-size: 40px;
+    }
+    .name,
+    .profession {
+      display: none;
+    }
+  }
+}

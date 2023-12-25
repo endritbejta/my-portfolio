@@ -99,3 +99,12 @@
     transition: all 4s ease;
     transition-delay: 4s;
   } */
+@media (max-width: 720px) {
+  .About {
+    padding-top: unset;
+    padding: unset;
+    padding-block: unset;
+    height: unset;
+    padding: 20px;
+  }
+}

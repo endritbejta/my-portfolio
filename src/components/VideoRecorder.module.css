@@ -73,3 +73,9 @@
     opacity: 0;
   }
 }
+
+@media (max-width: 980px) {
+  .VideoRecorder {
+    display: none;
+  }
+}

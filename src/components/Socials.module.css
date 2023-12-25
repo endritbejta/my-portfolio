@@ -5,3 +5,9 @@
   font-size: 20px;
   color: white;
 }
+
+@media (max-width: 980px) {
+  .Socials {
+    display: none;
+  }
+}

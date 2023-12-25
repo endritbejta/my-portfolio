@@ -39,7 +39,7 @@
 
   a .line,
   a .lineAqua {
-    height: 3px;
+    height: 4px;
     top: 50%;
     left: -4px;
     position: absolute;
@@ -74,5 +74,19 @@
   a[aria-current="page"] .line,
   a:hover .line {
     transition-delay: 0.1s;
+  }
+}
+@media (max-width: 980px) {
+  .Navigation {
+    height: auto;
+    width: auto;
+    ul {
+      flex-direction: row;
+      gap: 10px;
+    }
+
+    a {
+      font-size: 26px;
+    }
   }
 }

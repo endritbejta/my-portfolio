@@ -21,6 +21,18 @@
   background-color: var(--color-gray-500);
 }
 
+body {
+  overflow: hidden;
+}
+
+@media (max-width: 920px) {
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100vh;
+  }
+}
+
 /* For WebKit browsers (Chrome, Safari) */
 ::-webkit-scrollbar {
   width: 4px;
