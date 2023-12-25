@@ -23,6 +23,12 @@ import shopify3 from "./images/shopify/shopify3.png";
 import shopify4 from "./images/shopify/shopify4.png";
 import shopify5 from "./images/shopify/shopify5.png";
 import shopify6 from "./images/shopify/shopify6.png";
+import notes from "./images/notesapp/notes_screenshot.png";
+import notes2 from "./images/notesapp/notes_Screenshot_2.png";
+import notes3 from "./images/notesapp/notes_Screenshot_3.png";
+import notes4 from "./images/notesapp/notes_Screenshot_4.png";
+import notes5 from "./images/notesapp/notes_Screenshot_5.png";
+import notes7 from "./images/notesapp/notes_Screenshot_7.png";
 
 export const gitHubProjects = [
   {
@@ -61,8 +67,8 @@ export const gitHubProjects = [
     live: true,
     languagesUsed: ["ReactJS", "SCSS"],
     finished: true,
-    images: [],
-    githubURL: "https://github.com/endritbejta/notes.git",
+    images: [notes, notes2, notes3, notes4, notes5, notes7],
+    githubURL: "https://github.com/endritbejta/react-interview-task.git",
     liveURL: "https://save-notes-site.netlify.app",
   },
   {
