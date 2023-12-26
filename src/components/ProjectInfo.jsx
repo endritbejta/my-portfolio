@@ -16,9 +16,10 @@ const ProjectInfo = () => {
   if (projectData) {
     console.log("success");
     content = (
-      <div>
+      <div className={classes.ProjectInfo}>
         <h1>{projectData.name}</h1>
         <p>{projectData.description}</p>
+        <p>{projectData.largerDescription}</p>
       </div>
     );
   } else {

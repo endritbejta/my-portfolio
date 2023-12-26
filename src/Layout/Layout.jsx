@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Header from "./Header";
 import classes from "./Layout.module.css";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import Home from "../pages/Home";
-import { FaPause } from "react-icons/fa";
+import { Outlet } from "react-router-dom";
 import VideoRecorder from "../components/VideoRecorder";
 
 const Layout = () => {

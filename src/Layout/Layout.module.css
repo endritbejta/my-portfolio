@@ -64,8 +64,9 @@
 .blob {
   position: absolute;
   border-radius: 100%;
-  width: 350px;
-  aspect-ratio: 1/1.2;
+  width: 200px;
+  aspect-ratio: 1;
+  opacity: 0.4;
   background: linear-gradient(to right, var(--color-aqua), var(--color-pink));
   top: 50%;
   left: 50%;

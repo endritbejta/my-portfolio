@@ -59,7 +59,5 @@
 @media (max-width: 440px) {
   .activeLink {
     font-size: 14px;
-    right: 30px;
-    top: 30px;
   }
 }

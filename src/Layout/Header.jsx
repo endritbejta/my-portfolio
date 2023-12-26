@@ -9,10 +9,12 @@ const Header = () => {
   const [showNavigation, setShowNavigation] = useState(false);
 
   useEffect(() => {
-    if (showNavigation) {
-      document.body.style.overflowY = "hidden";
-    } else {
-      document.body.style.overflowY = "auto";
+    if (window.innerWidth < 610) {
+      if (showNavigation) {
+        document.body.style.overflowY = "hidden";
+      } else {
+        document.body.style.overflowY = "auto";
+      }
     }
   }, [showNavigation]);
 

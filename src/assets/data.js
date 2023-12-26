@@ -34,6 +34,8 @@ export const gitHubProjects = [
   {
     name: "Postify",
     description: "Social media app",
+    largerDescription:
+      "This is the latest project of me or our group (reactors), part of StarLabs internship. This project is a social media app in which you can sign in, register and post about your daily inspiration. Dont worry we can manage pictures, editing them, deleting them and many other things. Check it out...",
     live: false,
     languagesUsed: ["ReactJS", "Redux Toolkit", "ExpressJS", "CSS"],
     finished: true,
@@ -44,7 +46,10 @@ export const gitHubProjects = [
   {
     name: "Beauty shop",
     description: "Online shop center",
+    largerDescription:
+      "An online shop center consisting of 3 pages, that were part of an assignment. It was created using pure JavaScript and SCSS. This is a rich in animations site, in which you can add item to the cart, remove them, view them in more detail for your extra information.",
     live: false,
+
     finished: false,
     images: [shopify, shopify2, shopify3, shopify4, shopify5, shopify6],
     languagesUsed: ["JavaScript", "CSS"],
@@ -54,6 +59,8 @@ export const gitHubProjects = [
   {
     name: "Alfa Globe",
     description: "Gas station landing page",
+    largerDescription:
+      "An ongoing project of mine in which I try to present a gas company and its product. It is created using ReactJs. It a beautiful and user-friendly site in which you can see products, location and all of the extra info about the company",
     live: true,
     languagesUsed: ["JavaScript", "SCSS"],
     finished: false,
@@ -64,6 +71,8 @@ export const gitHubProjects = [
   {
     name: "Notes app",
     description: "Your notes are safe with me",
+    largerDescription:
+      "This app was a part of a challegne i found online. It was created with ReactJS, Redux and react-router for routing. Here you can save your notes, classify them in folder, edit them and delete them.",
     live: true,
     languagesUsed: ["ReactJS", "Redux Toolkit", "SCSS"],
     finished: true,
@@ -74,6 +83,8 @@ export const gitHubProjects = [
   {
     name: "Movie rating app",
     description: "Get yout movie ratings here",
+    largerDescription:
+      "A movie rating app, in which you can se some overviews of the latest trending movies and their rating. You can also search your favorite movie and see its rating. It was done using pure javascript and fetch APIs",
     live: true,
     languagesUsed: ["JavaScript", "CSS"],
     finished: true,
@@ -84,6 +95,8 @@ export const gitHubProjects = [
   {
     name: "Multi step form",
     description: "You got some steps ? I got some forms!",
+    largerDescription:
+      "An online challegne which I succesfully reacreated using ReactJS. This form has for target larger coorporations, so it means it would be used on desktop only, hence the compability on desptop only",
     live: true,
     languagesUsed: ["ReactJS", "CSS"],
     finished: true,
