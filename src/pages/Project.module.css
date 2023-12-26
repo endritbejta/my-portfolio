@@ -23,7 +23,7 @@
   /* grid-template-columns: repeat(auto-fill, minmax(20vmax, 25vmax)); */
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
-  gap: 20px;
+  gap: 30px;
 }
 
 @media (max-width: 710px) {
