@@ -59,7 +59,7 @@ const Home = () => {
           .join("");
         if (iterations >= event.target.dataset.value.length)
           clearInterval(interval);
-        iterations += 1 / 4;
+        iterations += 1 / 3;
       }, 30);
     }
     setOnMouseOverFired(true);
