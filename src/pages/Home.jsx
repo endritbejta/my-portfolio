@@ -3,7 +3,6 @@ import classes from "./Home.module.css";
 import { letters } from "../assets/data";
 import NavigateButton from "../components/NavigateButton";
 import ProfileCard from "../components/ProfileCard";
-import { GiLogicGateOr } from "react-icons/gi";
 
 const Home = () => {
   const [onMouseOverFired, setOnMouseOverFired] = useState(false);
@@ -76,6 +75,7 @@ const Home = () => {
           onMouseEnter={onMouseOver}
           onMouseLeave={hideFromView}
           data-value="endrit bejta"
+          onClick={onMouseOver}
         >
           xxxxxx xxxxx
         </span>

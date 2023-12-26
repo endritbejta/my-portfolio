@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classes from "./Navigation.module.css";
 import { NavLink } from "react-router-dom";
 const Navigation = ({ showNavigation, toggleNavigation }) => {
@@ -8,18 +8,33 @@ const Navigation = ({ showNavigation, toggleNavigation }) => {
   const contact = "contact";
 
   let homeLink = home.split("").map((letter, i) => {
-    return <span key={i}>{letter}</span>;
+    return (
+      <span id="homeLetter" key={i}>
+        {letter}
+      </span>
+    );
   });
   let aboutLink = about.split("").map((letter, i) => {
-    return <span key={i}>{letter}</span>;
+    return (
+      <span id="aboutLetter" key={i}>
+        {letter}
+      </span>
+    );
   });
   let projectsLink = projects.split("").map((letter, i) => {
-    return <span key={i}>{letter}</span>;
+    return (
+      <span id="projectsLetter" key={i}>
+        {letter}
+      </span>
+    );
   });
   let contactLink = contact.split("").map((letter, i) => {
-    return <span key={i}>{letter}</span>;
+    return (
+      <span id="contactLetter" key={i}>
+        {letter}
+      </span>
+    );
   });
-  console.log(homeLink);
 
   return (
     <nav
