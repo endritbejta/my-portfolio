@@ -77,3 +77,17 @@
     scale: 4;
   }
 }
+
+@media (max-width: 980px) {
+  .SingleProject {
+    width: 85%;
+    aspect-ratio: unset;
+  }
+}
+
+@media (max-width: 440px) {
+  .photoShower {
+    aspect-ratio: unset;
+    width: 85%;
+  }
+}

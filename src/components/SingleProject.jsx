@@ -43,10 +43,10 @@ const SingleProject = ({ orderNumber, singleProject }) => {
           src={singleProject.images[0] ? singleProject.images[0] : ""}
           alt="project-photo"
         />
-        <div
+        <span
           style={{ animationDelay: `${orderNumber * 50}ms` }}
           className={classes.background}
-        ></div>
+        ></span>
       </NavLink>
       <NavLink className={classes.title} to={singleProject.name}>
         {singleProject.name}

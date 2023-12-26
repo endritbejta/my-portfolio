@@ -118,4 +118,8 @@
   .blob {
     display: none;
   }
+
+  .background {
+    display: none;
+  }
 }
