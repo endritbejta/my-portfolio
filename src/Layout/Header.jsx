@@ -17,7 +17,10 @@ const Header = () => {
   }, [showNavigation]);
 
   function toggleNavigation() {
-    setShowNavigation((prev) => !prev);
+    if (window.innerWidth < 611) {
+      console.log("running");
+      setShowNavigation((prev) => !prev);
+    }
   }
 
   return (
