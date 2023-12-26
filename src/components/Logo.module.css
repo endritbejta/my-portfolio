@@ -84,3 +84,9 @@
     }
   }
 }
+
+@media (max-width: 610px) {
+  .Logo {
+    z-index: 1002;
+  }
+}

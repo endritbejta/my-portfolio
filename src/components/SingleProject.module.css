@@ -81,7 +81,7 @@
 @media (max-width: 980px) {
   .SingleProject {
     width: 100%;
-    padding: 20px;
+    padding: 0;
     aspect-ratio: unset;
   }
 }

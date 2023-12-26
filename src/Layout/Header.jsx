@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "../components/Logo";
 import Navigation from "../components/Navigation";
 import Socials from "../components/Socials";
 import classes from "./Header.module.css";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { TbMenuDeep } from "react-icons/tb";
 
 const Header = () => {
-  const [headerHidden, setHeaderHidden] = useState(false);
+  const [showNavigation, setShowNavigation] = useState(false);
 
-  function toggleHeader() {
-    setHeaderHidden((prev) => !prev);
+  useEffect(() => {
+    if (showNavigation) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "auto";
+    }
+  }, [showNavigation]);
+
+  function toggleNavigation() {
+    setShowNavigation((prev) => !prev);
   }
 
   return (
@@ -31,7 +39,13 @@ const Header = () => {
         <FiChevronRight />
       </span> */}
       <Logo />
-      <Navigation />
+      <span onClick={toggleNavigation} className={classes.toggleNav}>
+        <TbMenuDeep />
+      </span>
+      <Navigation
+        showNavigation={showNavigation}
+        toggleNavigation={toggleNavigation}
+      />
       <Socials />
     </header>
   );

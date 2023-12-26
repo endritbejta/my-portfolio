@@ -1,7 +1,7 @@
 import React from "react";
 import classes from "./Navigation.module.css";
 import { NavLink } from "react-router-dom";
-const Navigation = () => {
+const Navigation = ({ showNavigation, toggleNavigation }) => {
   const home = "home";
   const about = "about";
   const projects = "projects";
@@ -22,31 +22,35 @@ const Navigation = () => {
   console.log(homeLink);
 
   return (
-    <nav className={classes.Navigation}>
+    <nav
+      className={`${classes.Navigation}  ${
+        showNavigation ? classes.showNavigation : ""
+      }`}
+    >
       <ul>
         <li>
-          <NavLink to="">
+          <NavLink onClick={toggleNavigation} to="">
             {homeLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>
           </NavLink>
         </li>
         <li>
-          <NavLink to="projects">
+          <NavLink onClick={toggleNavigation} to="projects">
             {projectsLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>
           </NavLink>
         </li>
         <li>
-          <NavLink to="about">
+          <NavLink onClick={toggleNavigation} to="about">
             {aboutLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>
           </NavLink>
         </li>
         {/* <li>
-          <NavLink to="contact">
+          <NavLink onClick={toggleNavigation} to="contact">
             {contactLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>
