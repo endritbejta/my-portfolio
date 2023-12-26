@@ -130,3 +130,41 @@
     }
   }
 }
+
+@media (max-width: 400px) {
+  .Home {
+    align-items: center;
+    padding: 0;
+    width: 90%;
+    .title {
+      font-size: 30px;
+      margin: unset;
+    }
+
+    .profession {
+      font-size: 16px;
+      margin: unset;
+    }
+
+    .title::before {
+      top: -20px;
+    }
+
+    .title::after {
+      bottom: -15px;
+    }
+
+    .profession::before,
+    .profession::after {
+      width: 10px;
+      height: 10px;
+      font-size: 14px;
+      transform: translateY(-75%);
+      top: 50%;
+    }
+
+    .actions {
+      margin: auto;
+    }
+  }
+}
