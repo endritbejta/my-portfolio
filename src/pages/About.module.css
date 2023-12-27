@@ -22,8 +22,7 @@
     margin-bottom: 20px;
   }
 
-  .bio,
-  .uni {
+  .bio {
     width: 76%;
     margin-bottom: 30px;
     strong {
@@ -42,6 +41,11 @@
     font-size: 26px;
   }
 
+  .skill:last-of-type {
+    margin-bottom: 40px;
+    border: 1px solid red;
+  }
+
   .skill::before,
   .skill::after {
     display: table;
@@ -51,10 +55,6 @@
     transform: translateY(-50%);
     height: 5px;
     position: absolute;
-  }
-
-  .uni {
-    margin-top: 20px;
   }
 
   .skill::before {
@@ -67,6 +67,19 @@
     width: 0;
     animation: grow 1.5s ease forwards;
     background-color: var(--color-pink);
+  }
+
+  .uni,
+  .degree {
+    width: 76%;
+    margin-bottom: 10px;
+    strong {
+      color: var(--color-pink);
+    }
+  }
+
+  .uni {
+    margin-top: 30px;
   }
 }
 

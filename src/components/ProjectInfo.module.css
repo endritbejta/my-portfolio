@@ -1,4 +1,60 @@
 .ProjectInfo {
-  height: 100%;
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  padding: 20px 80px;
+  gap: 25px;
+  .projectGallery {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .gallery {
+    width: 80%;
+    aspect-ratio: 16/10;
+    max-width: 740px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .smallPhotos {
+    width: 100%;
+    display: flex;
+    max-width: 500px;
+    padding: 10px 40px;
+    overflow-x: scroll;
+    gap: 20px;
+    justify-content: center;
+
+    .smallPhoto {
+      max-width: 150px;
+      max-height: 140px;
+      object-fit: contain;
+      opacity: 0.7;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .projectDescription {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    h1 {
+      font-size: 36px;
+    }
+
+    p {
+      font-size: 22px;
+    }
+  }
 }

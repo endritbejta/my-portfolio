@@ -40,6 +40,9 @@ const About = () => {
       <p className={classes.uni}>
         <strong>Univerisity:</strong> University of Pristina
       </p>
+      <p className={classes.degree}>
+        <strong>Degree:</strong> Bachelor of Electrical Engineering
+      </p>
     </section>
   );
 };

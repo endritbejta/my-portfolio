@@ -64,13 +64,13 @@ const Navigation = ({ showNavigation, toggleNavigation }) => {
             <div className={classes.lineAqua}></div>
           </NavLink>
         </li>
-        {/* <li>
+        <li>
           <NavLink onClick={toggleNavigation} to="contact">
             {contactLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>
           </NavLink>
-        </li> */}
+        </li>
       </ul>
     </nav>
   );
