@@ -14,7 +14,7 @@ const ProjectInfo = () => {
 
   const projectData = projectsData.find(
     (projectData) =>
-      projectData.name.trim("").toLocaleLowerCase() ===
+      projectData.route.trim("").toLocaleLowerCase() ===
       params.projectName.toLocaleLowerCase()
   );
 

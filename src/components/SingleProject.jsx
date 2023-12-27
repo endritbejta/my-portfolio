@@ -29,16 +29,15 @@ const SingleProject = ({ orderNumber, singleProject }) => {
       }
     );
   }, []);
+  console.log("name", singleProject.name.trim(" "));
+  const routeToProject = singleProject.name.trim().toLowerCase();
   return (
     <div
       ref={singleProjectRef}
       style={{ animationDelay: `${orderNumber}s` }}
       className={classes.SingleProject}
     >
-      <NavLink
-        to={singleProject.name.trim(" ").toLowerCase()}
-        className={classes.photoShower}
-      >
+      <NavLink to={singleProject.route} className={classes.photoShower}>
         <img
           src={singleProject.images[0] ? singleProject.images[0] : ""}
           alt="project-photo"
