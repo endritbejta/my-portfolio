@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import classes from "./Navigation.module.css";
 import { NavLink } from "react-router-dom";
+import { FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
 const Navigation = ({ showNavigation, toggleNavigation }) => {
   const home = "home";
   const about = "about";
@@ -71,6 +72,17 @@ const Navigation = ({ showNavigation, toggleNavigation }) => {
             <div className={classes.lineAqua}></div>
           </NavLink>
         </li> */}
+      </ul>
+      <ul className={classes.navigationSocials}>
+        <NavLink to={"https://github.com/endritbejta"}>
+          <FaGithub />
+        </NavLink>
+        <NavLink to={"https://linkedin.com/in/endritbejta"}>
+          <FaLinkedin />
+        </NavLink>
+        <NavLink to={"https://facebook.com/endritbejta"}>
+          <FaFacebook />
+        </NavLink>
       </ul>
     </nav>
   );

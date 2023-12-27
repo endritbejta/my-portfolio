@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 10px;
   width: 100%;
+  align-items: flex-start;
   height: auto;
   text-align: start;
   position: relative;
@@ -53,6 +54,12 @@
 .title {
   font-size: 20px;
   text-transform: uppercase;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.title:hover {
+  color: var(--color-pink-dark);
 }
 
 .description {

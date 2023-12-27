@@ -7,7 +7,6 @@ import VideoRecorder from "../components/VideoRecorder";
 const Layout = () => {
   const [isRecording, setIsRecording] = useState(true);
   const blobRef = useRef();
-  console.log(blobRef);
 
   const [clientX, setClientX] = useState(window.innerWidth);
 

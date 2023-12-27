@@ -20,7 +20,6 @@ const Header = () => {
 
   function toggleNavigation() {
     if (window.innerWidth < 611) {
-      console.log("running");
       setShowNavigation((prev) => !prev);
     }
   }
@@ -44,7 +43,12 @@ const Header = () => {
         <FiChevronRight />
       </span> */}
       <Logo />
-      <span onClick={toggleNavigation} className={classes.toggleNav}>
+      <span
+        onClick={toggleNavigation}
+        className={`${classes.toggleNav} ${
+          showNavigation ? classes.toggleNavActive : ""
+        }`}
+      >
         <TbMenuDeep />
       </span>
       <Navigation

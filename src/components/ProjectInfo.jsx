@@ -20,13 +20,9 @@ const ProjectInfo = () => {
     const handleArrowPress = (e) => {
       if (e.key === "ArrowRight") {
         if (activePhoto < projectData.images.length - 1) {
-          console.log("activePhoto:", activePhoto);
           setActivePhoto((prev) => {
-            console.log("previous:", prev);
-            console.log("next:", prev + 1);
             return prev + 1;
           });
-          console.log(activePhoto);
         } else {
           setActivePhoto(0);
         }

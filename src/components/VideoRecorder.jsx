@@ -9,12 +9,10 @@ const VideoRecorder = ({ isRecording, setIsRecording }) => {
   const [formattedTime, setFormattedTime] = useState("00:00");
 
   const increaseCounter = () => {
-    console.log("running");
     setCounter((prev) => prev + 1);
   };
 
   const startTimer = () => {
-    console.log("counter:", counter);
     setCounterInterval(setInterval(() => increaseCounter(), 1000));
     setIsRecording(true);
   };
@@ -34,7 +32,6 @@ const VideoRecorder = ({ isRecording, setIsRecording }) => {
     const seconds = timeInSeconds % 60;
     const formattedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
     const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-    console.log(formattedMinutes, formattedSeconds);
     return `${formattedMinutes}:${formattedSeconds}`;
   };
 

@@ -107,7 +107,7 @@
   .Home {
     .title {
       .nameSpan::before {
-        content: "click";
+        content: "touch";
       }
     }
   }

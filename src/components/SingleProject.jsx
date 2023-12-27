@@ -4,7 +4,6 @@ import { NavLink } from "react-router-dom";
 import Chip from "./Chip";
 const SingleProject = ({ orderNumber, singleProject }) => {
   const singleProjectRef = useRef();
-  console.log("single project ref", singleProjectRef.current);
   useEffect(() => {
     singleProjectRef.current?.animate(
       [
@@ -29,7 +28,6 @@ const SingleProject = ({ orderNumber, singleProject }) => {
       }
     );
   }, []);
-  console.log("name", singleProject.name.trim(" "));
   const routeToProject = singleProject.name.trim().toLowerCase();
   return (
     <div

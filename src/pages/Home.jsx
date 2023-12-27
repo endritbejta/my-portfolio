@@ -9,10 +9,10 @@ const Home = () => {
   const profileCardRef = useRef();
 
   function comeIntoView() {
-    console.log("firingEvent", profileCardRef);
     profileCardRef.current.animate(
       {
         opacity: "1",
+        pointerEvents: "unset",
         top: "-100px",
         transform: "scale(1) rotate(-30deg)",
       },
@@ -25,21 +25,23 @@ const Home = () => {
   }
 
   function hideFromView() {
-    setTimeout(() => {
-      profileCardRef.current.animate(
-        {
-          opacity: "0",
-          top: "-150px",
-          pointerEvents: "unset",
-          transform: "scale(0.5) rotate(-60deg)",
-        },
-        {
-          duration: 1000,
-          fill: "forwards",
-          easing: "ease",
-        }
-      );
-    }, 700);
+    profileCardRef.current.animate(
+      {
+        opacity: "0",
+        top: "-150px",
+        pointerEvents: "none",
+        transform: "scale(0.5) rotate(-60deg)",
+      },
+      {
+        duration: 1000,
+        fill: "forwards",
+        easing: "ease",
+      }
+    );
+  }
+
+  function onMouseLeave() {
+    setTimeout(hideFromView, 700);
   }
 
   const onMouseOver = (event) => {
@@ -73,7 +75,7 @@ const Home = () => {
         <span
           className={classes.nameSpan}
           onMouseEnter={onMouseOver}
-          onMouseLeave={hideFromView}
+          onMouseLeave={onMouseLeave}
           data-value="endrit bejta"
           onClick={onMouseOver}
         >

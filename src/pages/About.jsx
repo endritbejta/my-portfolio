@@ -5,7 +5,6 @@ import { FaEnvelope } from "react-icons/fa";
 import { useLocation, useParams } from "react-router";
 const About = () => {
   const location = useLocation();
-  console.log(location);
   const cameFromButtonClick = location.search === "?contact";
   return (
     <section className={classes.About}>
@@ -49,6 +48,33 @@ const About = () => {
         Redux
       </p>
 
+      <h3 style={{ marginBlock: "10px" }} className={classes.courses}>
+        Courses
+      </h3>
+      <a
+        href="https://www.udemy.com/course/react-the-complete-guide-incl-redux/"
+        target="_blank"
+        className={classes.course}
+      >
+        <strong>ReactJS: </strong>React - The Complete Guide 2023 (incl. React
+        Router & Redux)
+      </a>
+      <a
+        href="https://www.udemy.com/course/the-complete-javascript-course/"
+        target="_blank"
+        className={classes.course}
+      >
+        <strong>JavaScript: </strong>The Complete JavaScript Course 2024: From
+        Zero to Expert!
+      </a>
+      <a
+        href="https://www.udemy.com/course/the-complete-javascript-course/"
+        target="_blank"
+        className={classes.course}
+      >
+        <strong>CSS: </strong>CSS - The Complete Guide 2023 (incl. Flexbox, Grid
+        & Sass)
+      </a>
       <p className={classes.bio}>
         <strong>Bio</strong>: A motivated new front end developer. Adept at
         problem-solving and with a meticulous attention to detail. Committed to
