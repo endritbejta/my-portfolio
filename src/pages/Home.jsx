@@ -83,7 +83,7 @@ const Home = () => {
       </h1>
       <p className={classes.profession}>Frontend developer / ReactJS</p>
       <div className={classes.actions}>
-        <NavigateButton to="contact" context="Contact me!" />
+        <NavigateButton to="about?contact" context="Contact me!" />
         <p>||</p>
         <NavigateButton to="projects" context="See my projects!" />
       </div>

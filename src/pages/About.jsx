@@ -1,7 +1,12 @@
 import React, { useRef } from "react";
 import classes from "./About.module.css";
 import { letters } from "../assets/data";
+import { FaEnvelope } from "react-icons/fa";
+import { useLocation, useParams } from "react-router";
 const About = () => {
+  const location = useLocation();
+  console.log(location);
+  const cameFromButtonClick = location.search === "?contact";
   return (
     <section className={classes.About}>
       <h3 className={classes.name}>
@@ -10,12 +15,18 @@ const About = () => {
       <h3 className={classes.surname}>
         <span>Surname:</span> Bejta
       </h3>
-      <p className={classes.bio}>
-        <strong>Bio</strong>: A motivated new front end developer. Adept at
-        problem-solving and with a meticulous attention to detail. Committed to
-        innovation and growth, I am eager to take on new challenges and make a
-        valuable contribution to any programming team.
-      </p>
+
+      <a href="mailto:endrit.bejta@hotmail.com">
+        <p className={classes.email}>
+          <strong>
+            Email <FaEnvelope style={{ marginLeft: "10px" }} />:
+          </strong>{" "}
+          <span className={`${cameFromButtonClick ? classes.fromButton : ""}`}>
+            endrit.bejta@hotmail.com
+          </span>
+        </p>
+      </a>
+
       <h3 className={classes.skills}>
         <span>Skills</span>
       </h3>
@@ -36,6 +47,13 @@ const About = () => {
       </p>
       <p style={{ "--skills-rating": "100%" }} className={classes.skill}>
         Redux
+      </p>
+
+      <p className={classes.bio}>
+        <strong>Bio</strong>: A motivated new front end developer. Adept at
+        problem-solving and with a meticulous attention to detail. Committed to
+        innovation and growth, I am eager to take on new challenges and make a
+        valuable contribution to any programming team.
       </p>
       <p className={classes.uni}>
         <strong>Univerisity:</strong> University of Pristina

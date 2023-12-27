@@ -19,12 +19,32 @@
   }
 
   .surname {
-    margin-bottom: 20px;
+    margin-bottom: 0px;
+  }
+
+  .email {
+    display: flex;
+    align-items: center;
+    strong {
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      margin-right: 5px;
+      color: var(--color-pink);
+    }
+  }
+
+  .fromButton {
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    animation: highlight 1s ease 3;
   }
 
   .bio {
     width: 76%;
-    margin-bottom: 30px;
+    margin-bottom: 0px;
+    margin-top: 30px;
     strong {
       color: var(--color-pink);
     }
@@ -89,6 +109,16 @@
   }
   to {
     width: var(--skills-rating);
+  }
+}
+
+@keyframes highlight {
+  from,
+  to {
+    background-color: transparent;
+  }
+  50% {
+    background-color: var(--color-pink);
   }
 }
 

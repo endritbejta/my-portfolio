@@ -28,13 +28,13 @@ const Navigation = ({ showNavigation, toggleNavigation }) => {
       </span>
     );
   });
-  let contactLink = contact.split("").map((letter, i) => {
-    return (
-      <span id="contactLetter" key={i}>
-        {letter}
-      </span>
-    );
-  });
+  // let contactLink = contact.split("").map((letter, i) => {
+  //   return (
+  //     <span id="contactLetter" key={i}>
+  //       {letter}
+  //     </span>
+  //   );
+  // });
 
   return (
     <nav
@@ -64,13 +64,13 @@ const Navigation = ({ showNavigation, toggleNavigation }) => {
             <div className={classes.lineAqua}></div>
           </NavLink>
         </li>
-        <li>
+        {/* <li>
           <NavLink onClick={toggleNavigation} to="contact">
             {contactLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>
           </NavLink>
-        </li>
+        </li> */}
       </ul>
     </nav>
   );
