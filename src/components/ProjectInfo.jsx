@@ -5,12 +5,10 @@ import { gitHubProjects as projectsData } from "../assets/data";
 const ProjectInfo = () => {
   const params = useParams();
   const [activePhoto, setActivePhoto] = useState(0);
-  console.log(activePhoto);
-  console.log(projectsData);
   let content;
-  useEffect(() => {
-    setActivePhoto(0);
-  }, []);
+  // useEffect(() => {
+  //   setActivePhoto(0);
+  // }, []);
 
   const projectData = projectsData.find(
     (projectData) =>
@@ -18,8 +16,36 @@ const ProjectInfo = () => {
       params.projectName.toLocaleLowerCase()
   );
 
+  useEffect(() => {
+    const handleArrowPress = (e) => {
+      if (e.key === "ArrowRight") {
+        if (activePhoto < projectData.images.length - 1) {
+          console.log("activePhoto:", activePhoto);
+          setActivePhoto((prev) => {
+            console.log("previous:", prev);
+            console.log("next:", prev + 1);
+            return prev + 1;
+          });
+          console.log(activePhoto);
+        } else {
+          setActivePhoto(0);
+        }
+      } else if (e.key === "ArrowLeft") {
+        if (activePhoto === 0) {
+          setActivePhoto(projectData.images.length - 1);
+        } else {
+          setActivePhoto((prev) => prev - 1);
+        }
+      } else {
+        return;
+      }
+    };
+    document.addEventListener("keydown", handleArrowPress);
+
+    return () => document.removeEventListener("keydown", handleArrowPress);
+  }, [activePhoto]);
+
   if (projectData) {
-    console.log("success");
     content = (
       <section className={classes.ProjectInfo}>
         <div className={classes.projectGallery}>
@@ -28,7 +54,6 @@ const ProjectInfo = () => {
           </div>
           <div className={classes.smallPhotos}>
             {projectData.images.map((image, i) => {
-              console.log("asdlasjdaslkdjsa", i === activePhoto);
               return (
                 <img
                   key={i}
@@ -54,7 +79,6 @@ const ProjectInfo = () => {
     content = <h1>404 error page here...</h1>;
   }
 
-  console.log("projectData", projectData);
   return content;
 };
 
