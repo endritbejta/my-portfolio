@@ -29,7 +29,7 @@ const About = () => {
         TypeScript
       </p>
       <p style={{ "--skills-rating": "100%" }} className={classes.skill}>
-        CSS, SCCS
+        CSS, SASS
       </p>
       <p style={{ "--skills-rating": "80%" }} className={classes.skill}>
         Tailwind

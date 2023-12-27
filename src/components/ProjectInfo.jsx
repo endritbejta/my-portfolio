@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./ProjectInfo.module.css";
 import { useParams } from "react-router";
 import { gitHubProjects as projectsData } from "../assets/data";
-import SingleProject from "./SingleProject";
 const ProjectInfo = () => {
   const params = useParams();
+  const [activePhoto, setActivePhoto] = useState(0);
+  console.log(activePhoto);
   console.log(projectsData);
   let content;
+  useEffect(() => {
+    setActivePhoto(0);
+  }, []);
 
   const projectData = projectsData.find(
     (projectData) =>
@@ -20,16 +24,23 @@ const ProjectInfo = () => {
       <section className={classes.ProjectInfo}>
         <div className={classes.projectGallery}>
           <div className={classes.gallery}>
-            <img src={projectData.images[0]} alt="photo of project" />
+            <img src={projectData.images[activePhoto]} alt="photo of project" />
           </div>
           <div className={classes.smallPhotos}>
-            {projectData.images.map((image, i) => (
-              <img
-                className={classes.smallPhoto}
-                src={image}
-                alt={`${i + 1} photo of project`}
-              />
-            ))}
+            {projectData.images.map((image, i) => {
+              console.log("asdlasjdaslkdjsa", i === activePhoto);
+              return (
+                <img
+                  key={i}
+                  className={`${classes.smallPhoto} ${
+                    i === activePhoto ? classes.opacity : ""
+                  }`}
+                  src={image}
+                  onClick={() => setActivePhoto(i)}
+                  alt={`${i + 1} photo of project`}
+                />
+              );
+            })}
           </div>
         </div>
         <div className={classes.projectDescription}>
