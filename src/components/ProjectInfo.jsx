@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import classes from "./ProjectInfo.module.css";
 import { useParams } from "react-router";
 import { gitHubProjects as projectsData } from "../assets/data";
+import Error from "../pages/Error";
 const ProjectInfo = () => {
   const params = useParams();
   const [activePhoto, setActivePhoto] = useState(0);
@@ -72,7 +73,7 @@ const ProjectInfo = () => {
       </section>
     );
   } else {
-    content = <h1>404 error page here...</h1>;
+    content = <Error />;
   }
 
   return content;
