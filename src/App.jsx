@@ -13,6 +13,7 @@ const router = createBrowserRouter([
   {
     path: "",
     element: <Layout />,
+    errorElement: <Error />,
     children: [
       { path: "", element: <Home /> },
       { path: "about", element: <About /> },
@@ -27,7 +28,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-  { path: "*", element: <Error /> }, // Handle unmatched routes
 ]);
 
 function App() {
