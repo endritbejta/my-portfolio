@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./SingleProject.module.css";
 import { NavLink } from "react-router-dom";
 import Chip from "./Chip";
+import { FaSpinner } from "react-icons/fa";
 const SingleProject = ({ orderNumber, singleProject }) => {
   const singleProjectRef = useRef();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   useEffect(() => {
     singleProjectRef.current?.animate(
       [
@@ -37,13 +39,21 @@ const SingleProject = ({ orderNumber, singleProject }) => {
     >
       <NavLink to={singleProject.route} className={classes.photoShower}>
         <img
-          src={singleProject.images[0] ? singleProject.images[0] : ""}
+          src={singleProject.images[0]}
+          onLoad={() => setIsImageLoaded(true)}
           alt="project-photo"
         />
-        <span
+        {/* <span
           style={{ animationDelay: `${orderNumber * 50}ms` }}
           className={classes.background}
-        ></span>
+        ></span> */}
+        <div
+          className={`${classes.spinner} ${
+            isImageLoaded ? classes.fadeAway : ""
+          }`}
+        >
+          <FaSpinner />
+        </div>
       </NavLink>
       <NavLink className={classes.title} to={singleProject.route}>
         {singleProject.name}{" "}

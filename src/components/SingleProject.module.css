@@ -51,6 +51,27 @@
   animation: stripes 1s ease forwards;
 }
 
+.spinner {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-content: center;
+  font-size: 10vmin;
+  background-color: var(--color-gray-500);
+  color: var(--color-pink);
+  z-index: 200;
+  svg {
+    animation: spin 2s linear infinite;
+  }
+}
+
+.fadeAway {
+  animation: fadeAway 0.3s ease forwards;
+}
+
 .title {
   font-size: 20px;
   text-transform: capitalize;
@@ -93,5 +114,26 @@
     width: 100%;
     padding: 0;
     aspect-ratio: unset;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeAway {
+  from {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0;
+  }
+  to {
+    display: none;
   }
 }
