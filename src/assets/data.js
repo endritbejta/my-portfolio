@@ -1,11 +1,12 @@
 export const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export const lowercaseAlphabet = "abcdefghijklmnopqrstuvwxyz";
-import postify1 from "./images/postify/postify_screenshot1.png";
 import postify2 from "./images/postify/postify2.png";
 import postify3 from "./images/postify/postify3.png";
 import postify4 from "./images/postify/postify4.png";
 import postify5 from "./images/postify/postify5.png";
 import postify6 from "./images/postify/postify6.png";
+import postify8 from "./images/postify/postify8.png";
+import postify9 from "./images/postify/postify9.png";
 import alfaglobe from "./images/alfaglobe/alfaglobe.png";
 import alfaglobe2 from "./images/alfaglobe/alfaglobe2.png";
 import alfaglobe3 from "./images/alfaglobe/alfaglobe3.png";
@@ -44,7 +45,15 @@ export const gitHubProjects = [
     live: false,
     languagesUsed: ["ReactJS", "Redux Toolkit", "ExpressJS", "CSS"],
     finished: true,
-    images: [postify2, postify3, postify4, postify5, postify6],
+    images: [
+      postify9,
+      postify2,
+      postify3,
+      postify4,
+      postify8,
+      postify5,
+      postify6,
+    ],
     liveURL: null,
     githubURL: "https://github.com/endritbejta/postify-frontend",
   },
@@ -56,7 +65,7 @@ export const gitHubProjects = [
     largerDescription:
       "An ongoing project of mine in which I try to present a gas company and its product. It is created using ReactJs. It a beautiful and user-friendly site in which you can see products, location and all of the extra info about the company",
     live: true,
-    languagesUsed: ["JavaScript", "SCSS"],
+    languagesUsed: ["ReactJS", "SCSS"],
     finished: false,
     images: [alfaglobe, alfaglobe2, alfaglobe3, alfaglobe4],
     githubURL: "https://github.com/endritbejta/alfa_globe.git",
