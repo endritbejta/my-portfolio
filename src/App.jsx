@@ -7,6 +7,7 @@ import Contact from "./pages/Contact";
 import Project from "./pages/Project";
 import ProjectInfo from "./components/ProjectInfo";
 import Error from "./pages/Error";
+import { nameRevealedProvider as NameRevealedProvider } from "./hoc/useContext";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <NameRevealedProvider>
+      <RouterProvider router={router} />;
+    </NameRevealedProvider>
+  );
 }
 
 export default App;

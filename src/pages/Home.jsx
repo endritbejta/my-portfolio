@@ -3,13 +3,15 @@ import classes from "./Home.module.css";
 import { letters } from "../assets/data";
 import NavigateButton from "../components/NavigateButton";
 import ProfileCard from "../components/ProfileCard";
+import { useNameRevealedContext } from "../hoc/useContext";
 
 const Home = () => {
   const [onMouseOverFired, setOnMouseOverFired] = useState(false);
   const profileCardRef = useRef();
-
+  const { isNameRevealed, setIsNameRevealed } = useNameRevealedContext();
+  console.log(isNameRevealed);
   function comeIntoView() {
-    profileCardRef.current.animate(
+    profileCardRef.current?.animate(
       {
         opacity: "1",
         pointerEvents: "unset",
@@ -25,7 +27,7 @@ const Home = () => {
   }
 
   function hideFromView() {
-    profileCardRef.current.animate(
+    profileCardRef.current?.animate(
       {
         opacity: "0",
         top: "-150px",
@@ -46,7 +48,7 @@ const Home = () => {
 
   const onMouseOver = (event) => {
     comeIntoView();
-    if (!onMouseOverFired) {
+    if (!onMouseOverFired && !isNameRevealed) {
       let iterations = 0;
       const interval = setInterval(() => {
         event.target.innerText = event.target.innerText
@@ -63,6 +65,7 @@ const Home = () => {
           clearInterval(interval);
         iterations += 1 / 3;
       }, 30);
+      setIsNameRevealed(true);
     }
     setOnMouseOverFired(true);
   };
@@ -79,7 +82,7 @@ const Home = () => {
           data-value="endrit bejta"
           onClick={onMouseOver}
         >
-          xxxxxx xxxxx
+          {isNameRevealed ? "endrit bejta" : "xxxxxx xxxxx"}
         </span>
         ,<span> web developer</span>
       </h1>

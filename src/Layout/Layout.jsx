@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Header from "./Header";
 import classes from "./Layout.module.css";
 import { Outlet } from "react-router-dom";
@@ -7,7 +13,6 @@ import VideoRecorder from "../components/VideoRecorder";
 const Layout = () => {
   const [isRecording, setIsRecording] = useState(true);
   const blobRef = useRef();
-
   const [clientX, setClientX] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -42,11 +47,11 @@ const Layout = () => {
       <div className={classes.blur}></div>
       <Header />
       {/* <hr /> */}
+
       <main className={classes.main}>
         <Outlet />
       </main>
     </div>
   );
 };
-
 export default Layout;
