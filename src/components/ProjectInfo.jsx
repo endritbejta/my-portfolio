@@ -3,6 +3,7 @@ import classes from "./ProjectInfo.module.css";
 import { useParams } from "react-router";
 import { gitHubProjects as projectsData } from "../assets/data";
 import Error from "../pages/Error";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 const ProjectInfo = () => {
   const params = useParams();
   const [activePhoto, setActivePhoto] = useState(0);
@@ -17,22 +18,30 @@ const ProjectInfo = () => {
       params.projectName.toLocaleLowerCase()
   );
 
+  function increaseActivePhoto() {
+    if (activePhoto < projectData.images.length - 1) {
+      setActivePhoto((prev) => {
+        return prev + 1;
+      });
+    } else {
+      setActivePhoto(0);
+    }
+  }
+
+  function decreaseActivePhoto() {
+    if (activePhoto === 0) {
+      setActivePhoto(projectData.images.length - 1);
+    } else {
+      setActivePhoto((prev) => prev - 1);
+    }
+  }
+
   useEffect(() => {
     const handleArrowPress = (e) => {
       if (e.key === "ArrowRight") {
-        if (activePhoto < projectData.images.length - 1) {
-          setActivePhoto((prev) => {
-            return prev + 1;
-          });
-        } else {
-          setActivePhoto(0);
-        }
+        increaseActivePhoto();
       } else if (e.key === "ArrowLeft") {
-        if (activePhoto === 0) {
-          setActivePhoto(projectData.images.length - 1);
-        } else {
-          setActivePhoto((prev) => prev - 1);
-        }
+        decreaseActivePhoto();
       } else {
         return;
       }
@@ -47,6 +56,18 @@ const ProjectInfo = () => {
       <section className={classes.ProjectInfo}>
         <div className={classes.projectGallery}>
           <div className={classes.gallery}>
+            <button
+              className={`${classes.arrow} ${classes.arrowLeft}`}
+              onClick={decreaseActivePhoto}
+            >
+              <FaArrowLeft />
+            </button>
+            <button
+              onClick={increaseActivePhoto}
+              className={`${classes.arrow} ${classes.arrowRight}`}
+            >
+              <FaArrowRight />
+            </button>
             <img src={projectData.images[activePhoto]} alt="photo of project" />
           </div>
           <div className={classes.smallPhotos}>
