@@ -1,11 +1,16 @@
-import React, { useRef } from "react";
+import React, { useEffect } from "react";
 import classes from "./About.module.css";
-import { letters } from "../assets/data";
 import { FaEnvelope } from "react-icons/fa";
-import { useLocation, useParams } from "react-router";
+import { useLocation } from "react-router";
 const About = () => {
   const location = useLocation();
   const cameFromButtonClick = location.search === "?contact";
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
   return (
     <section className={classes.About}>
       <h3 className={classes.name}>

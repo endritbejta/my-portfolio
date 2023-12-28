@@ -6,7 +6,6 @@ const Navigation = ({ showNavigation, toggleNavigation }) => {
   const home = "home";
   const about = "about";
   const projects = "projects";
-  const contact = "contact";
 
   let homeLink = home.split("").map((letter, i) => {
     return (
@@ -45,21 +44,33 @@ const Navigation = ({ showNavigation, toggleNavigation }) => {
     >
       <ul>
         <li>
-          <NavLink onClick={toggleNavigation} to="">
+          <NavLink
+            style={{ "--link-delay": "100ms" }}
+            onClick={toggleNavigation}
+            to=""
+          >
             {homeLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>
           </NavLink>
         </li>
         <li>
-          <NavLink onClick={toggleNavigation} to="projects">
+          <NavLink
+            style={{ "--link-delay": "200ms" }}
+            onClick={toggleNavigation}
+            to="projects"
+          >
             {projectsLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>
           </NavLink>
         </li>
         <li>
-          <NavLink onClick={toggleNavigation} to="about">
+          <NavLink
+            style={{ "--link-delay": "300ms" }}
+            onClick={toggleNavigation}
+            to="about"
+          >
             {aboutLink}
             <div className={classes.line}></div>
             <div className={classes.lineAqua}></div>

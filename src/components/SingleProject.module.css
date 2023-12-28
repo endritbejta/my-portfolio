@@ -53,12 +53,15 @@
 
 .title {
   font-size: 20px;
-  text-transform: uppercase;
-  text-decoration: underline;
+  text-transform: capitalize;
   transition: color 0.3s ease;
 }
 
-.title:hover {
+.title span {
+  transition: color 0.3s ease;
+}
+
+.title span:hover {
   color: var(--color-pink-dark);
 }
 

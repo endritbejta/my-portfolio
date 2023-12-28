@@ -45,8 +45,9 @@ const SingleProject = ({ orderNumber, singleProject }) => {
           className={classes.background}
         ></span>
       </NavLink>
-      <NavLink className={classes.title} to={singleProject.name}>
-        {singleProject.name}
+      <NavLink className={classes.title} to={singleProject.route}>
+        {singleProject.name}{" "}
+        <span style={{ textTransform: "lowercase" }}> ...see more</span>
       </NavLink>
       <p className={classes.description}>{singleProject.description}</p>
       <div className={classes.chipHolder}>
