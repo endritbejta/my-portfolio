@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import classes from "./About.module.css";
-import { FaEnvelope } from "react-icons/fa";
+import { FaEnvelope, FaFile } from "react-icons/fa";
 import { useLocation } from "react-router";
+import cv from "../assets/pdf/endrit_bejtaCV.pdf";
 const About = () => {
   const location = useLocation();
   const cameFromButtonClick = location.search === "?contact";
@@ -28,6 +29,15 @@ const About = () => {
           <span className={`${cameFromButtonClick ? classes.fromButton : ""}`}>
             endrit.bejta@hotmail.com
           </span>
+        </p>
+      </a>
+
+      <a href={cv} download={"Endrit Bejta CV"} className={classes.cvDownload}>
+        <p className={classes.cvDownload}>
+          <strong>
+            CV <FaFile />:
+          </strong>{" "}
+          <span>Click to download my CV</span>
         </p>
       </a>
 

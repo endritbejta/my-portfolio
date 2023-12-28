@@ -29,6 +29,10 @@ import notes3 from "./images/notesapp/notes_Screenshot_3.png";
 import notes4 from "./images/notesapp/notes_Screenshot_4.png";
 import notes5 from "./images/notesapp/notes_Screenshot_5.png";
 import notes7 from "./images/notesapp/notes_Screenshot_7.png";
+import piggame from "./images/piggame/piggame.png";
+import piggame1 from "./images/piggame/piggame2.png";
+import mapty from "./images/mapty/mapty.png";
+import mapty2 from "./images/mapty/mapty2.png";
 
 export const gitHubProjects = [
   {
@@ -44,25 +48,10 @@ export const gitHubProjects = [
     liveURL: null,
     githubURL: "https://github.com/endritbejta/postify-frontend",
   },
-  {
-    name: "Beauty shop",
-    route: "beautyshop",
 
-    description: "Online shop center",
-    largerDescription:
-      "An online shop center consisting of 3 pages, that were part of an assignment. It was created using pure JavaScript and SCSS. This is a rich in animations site, in which you can add item to the cart, remove them, view them in more detail for your extra information.",
-    live: false,
-
-    finished: false,
-    images: [shopify, shopify2, shopify3, shopify4, shopify5, shopify6],
-    languagesUsed: ["JavaScript", "CSS"],
-    githubURL: "https://github.com/endritbejta/shopify-page-example",
-    liveURL: "",
-  },
   {
     name: "Alfa Globe",
     route: "alfaglobe",
-
     description: "Gas station landing page",
     largerDescription:
       "An ongoing project of mine in which I try to present a gas company and its product. It is created using ReactJs. It a beautiful and user-friendly site in which you can see products, location and all of the extra info about the company",
@@ -74,9 +63,34 @@ export const gitHubProjects = [
     liveURL: "https://alfaglobe.netlify.app",
   },
   {
+    name: "Pig game",
+    route: "piggame",
+    description: "Lets play a game!",
+    largerDescription:
+      "This is a game that is playing by rolling the dice and storing points to win the game...",
+    live: true,
+    languagesUsed: ["JavaScript", "CSS"],
+    finished: true,
+    images: [piggame, piggame1],
+    githubURL: "https://github.com/endritbejta/pig-game",
+    liveURL: "https://endrits-pig-game.netlify.app",
+  },
+  {
+    name: "Mapty",
+    route: "mapty",
+    description: "Dont just run, track it!",
+    largerDescription:
+      "A small application done while finishing the JavaScript course, in which you can track the days your or cycle your way through the city",
+    live: true,
+    languagesUsed: ["JavaScript", "CSS"],
+    finished: true,
+    images: [mapty, mapty2],
+    githubURL: "https://github.com/endritbejta/mapty",
+    liveURL: "https://endrits-map-ty.netlify.app",
+  },
+  {
     name: "Notes app",
     route: "notesapp",
-
     description: "Your notes are safe with me",
     largerDescription:
       "This app was a part of a challegne i found online. It was created with ReactJS, Redux and react-router for routing. Here you can save your notes, classify them in folder, edit them and delete them.",
@@ -90,7 +104,6 @@ export const gitHubProjects = [
   {
     name: "Movie rating app",
     route: "movieratingapp",
-
     description: "Get yout movie ratings here",
     largerDescription:
       "A movie rating app, in which you can se some overviews of the latest trending movies and their rating. You can also search your favorite movie and see its rating. It was done using pure javascript and fetch APIs",
@@ -102,9 +115,21 @@ export const gitHubProjects = [
     liveURL: "https://endrits-movie-rating-overview-app.netlify.app/",
   },
   {
+    name: "Beauty shop",
+    route: "beautyshop",
+    description: "Online shop center",
+    largerDescription:
+      "An online shop center consisting of 3 pages, that were part of an assignment. It was created using pure JavaScript and SCSS. This is a rich in animations site, in which you can add item to the cart, remove them, view them in more detail for your extra information.",
+    live: false,
+    finished: false,
+    images: [shopify, shopify2, shopify3, shopify4, shopify5, shopify6],
+    languagesUsed: ["JavaScript", "CSS"],
+    githubURL: "https://github.com/endritbejta/shopify-page-example",
+    liveURL: "",
+  },
+  {
     name: "Multi step form",
     route: "multistepform",
-
     description: "You got some steps ? I got some forms!",
     largerDescription:
       "An online challegne which I succesfully reacreated using ReactJS. This form has for target larger coorporations, so it means it would be used on desktop only, hence the compability on desktop only",

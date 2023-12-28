@@ -27,8 +27,8 @@
     margin-bottom: 0px;
   }
 
-  .email {
-    margin-bottom: 20px;
+  .email,
+  .cvDownload {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -39,6 +39,10 @@
       margin-right: 5px;
       color: var(--color-pink);
     }
+  }
+
+  .cvDownload {
+    margin-bottom: 20px;
   }
 
   .fromButton {
