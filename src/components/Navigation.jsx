@@ -85,11 +85,14 @@ const Navigation = ({ showNavigation, toggleNavigation }) => {
         </li> */}
       </ul>
       <ul className={classes.navigationSocials}>
-        <NavLink to={"https://github.com/endritbejta"}>
-          <FaGithub />
-        </NavLink>
         <NavLink to={"https://linkedin.com/in/endritbejta"}>
           <FaLinkedin />
+        </NavLink>
+        <NavLink
+          style={{ fontSize: "38px" }}
+          to={"https://github.com/endritbejta"}
+        >
+          <FaGithub />
         </NavLink>
         <NavLink to={"https://facebook.com/endritbejta"}>
           <FaFacebook />

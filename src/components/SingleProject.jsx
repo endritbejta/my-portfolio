@@ -30,7 +30,6 @@ const SingleProject = ({ orderNumber, singleProject }) => {
       }
     );
   }, []);
-  const routeToProject = singleProject.name.trim().toLowerCase();
   return (
     <div
       ref={singleProjectRef}
@@ -40,20 +39,20 @@ const SingleProject = ({ orderNumber, singleProject }) => {
       <NavLink to={singleProject.route} className={classes.photoShower}>
         <img
           src={singleProject.images[0]}
-          onLoad={() => setIsImageLoaded(true)}
+          // onLoad={() => setIsImageLoaded(true)}
           alt="project-photo"
         />
-        {/* <span
+        <span
           style={{ animationDelay: `${orderNumber * 50}ms` }}
           className={classes.background}
-        ></span> */}
-        <div
+        ></span>
+        {/* <div
           className={`${classes.spinner} ${
             isImageLoaded ? classes.fadeAway : ""
           }`}
         >
           <FaSpinner />
-        </div>
+        </div> */}
       </NavLink>
       <NavLink className={classes.title} to={singleProject.route}>
         {singleProject.name}{" "}

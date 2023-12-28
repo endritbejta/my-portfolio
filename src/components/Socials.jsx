@@ -8,7 +8,11 @@ const Socials = () => {
       <a target="blank" href="https://linkedin.com/in/endritbejta">
         <FaLinkedinIn />
       </a>
-      <a target="blank" href="https://github.com/endritbejta">
+      <a
+        style={{ fontSize: "26px" }}
+        target="blank"
+        href="https://github.com/endritbejta"
+      >
         <FaGithub />
       </a>
       <a target="blank" href="https://facebook.com/endritbejta">
