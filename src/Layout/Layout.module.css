@@ -7,7 +7,6 @@
   .main {
     flex: 5;
     position: relative;
-    padding-bottom: 40px;
   }
 
   /* .main::before {
