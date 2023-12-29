@@ -8,7 +8,7 @@
   position: relative;
   border-radius: 4px;
   overflow: hidden;
-  color: white;
+  color: var(--color-white);
   cursor: pointer;
   font-family: monospace;
   font-size: 20px;
@@ -36,10 +36,10 @@
 
 .button:hover {
   box-shadow: var(--color-pink) 0px 3px 12px;
+  color: rgb(233, 233, 233);
 }
 
 .button p {
-  color: white;
   z-index: 2;
 }
 
