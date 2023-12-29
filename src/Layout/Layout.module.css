@@ -37,7 +37,6 @@
   font-size: 20px;
   letter-spacing: 1px;
   right: 24px;
-  color: white;
 
   width: 130px;
   z-index: 2;
@@ -97,7 +96,7 @@
 @media (max-width: 1290px) {
   .Layout {
     .main {
-      flex: 3.5;
+      flex: 2.5;
     }
   }
 }

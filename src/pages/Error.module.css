@@ -16,7 +16,7 @@
     display: flex;
     align-items: center;
     gap: 40px;
-    color: white;
+    color: var(--color-white);
     font-size: 100px;
     span {
       font-size: 160px;

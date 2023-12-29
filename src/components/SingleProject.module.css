@@ -70,6 +70,7 @@
 
 .fadeAway {
   animation: fadeAway 0.3s ease forwards;
+  pointer-events: none;
 }
 
 .title {
@@ -130,10 +131,8 @@
   from {
     opacity: 1;
   }
-  90% {
-    opacity: 0;
-  }
+
   to {
-    display: none;
+    opacity: 0;
   }
 }
