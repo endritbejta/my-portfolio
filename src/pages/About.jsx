@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import classes from "./About.module.css";
 import { FaEnvelope, FaFile } from "react-icons/fa";
 import { useLocation } from "react-router";
-import cv from "../assets/pdf/endrit_bejtaCV.pdf";
+import cv from "../assets/pdf/endritrxresumev3.pdf";
 const About = () => {
   const location = useLocation();
   const cameFromButtonClick = location.search === "?contact";
