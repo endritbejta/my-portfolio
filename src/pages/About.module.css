@@ -24,7 +24,8 @@
     }
   }
 
-  .courses {
+  .courses,
+  .skills {
     color: var(--color-pink);
     font-weight: 600;
   }
