@@ -15,10 +15,10 @@ const About = () => {
   return (
     <section className={classes.About}>
       <h3 className={classes.name}>
-        <span>Name:</span> Endrit
+        <strong>Name:</strong> Endrit
       </h3>
       <h3 className={classes.surname}>
-        <span>Surname:</span> Bejta
+        <strong>Surname:</strong> Bejta
       </h3>
 
       <a href="mailto:endrit.bejta@hotmail.com">

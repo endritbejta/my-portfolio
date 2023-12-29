@@ -9,6 +9,11 @@
   gap: 5px;
   overflow-y: auto;
 
+  strong {
+    font-weight: 600;
+    color: var(--color-pink);
+  }
+
   .name,
   .surname,
   .skills,
@@ -21,6 +26,7 @@
 
   .courses {
     color: var(--color-pink);
+    font-weight: 600;
   }
 
   .surname {
@@ -32,8 +38,8 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    font-size: 30px;
     strong {
-      font-size: 30px;
       display: flex;
       align-items: center;
       margin-right: 5px;
@@ -157,6 +163,17 @@
     padding-block: unset;
     height: unset;
     padding: 20px;
+    .name,
+    .surname,
+    strong,
+    .email,
+    .cvDownload,
+    .skill,
+    .skills,
+    .courses,
+    .course {
+      font-size: 24px;
+    }
   }
 }
 
@@ -177,6 +194,14 @@
   .About {
     .skill {
       width: 150px;
+    }
+    .bio,
+    .courses,
+    .uni,
+    .degree,
+    a,
+    .email {
+      font-size: 22px;
     }
   }
 }

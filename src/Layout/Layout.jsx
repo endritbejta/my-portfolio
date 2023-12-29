@@ -47,7 +47,6 @@ const Layout = () => {
       <div className={classes.blur}></div>
       <Header />
       {/* <hr /> */}
-
       <main className={classes.main}>
         <Outlet />
       </main>

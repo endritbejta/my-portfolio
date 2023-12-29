@@ -10,8 +10,9 @@
   overflow: hidden;
   color: white;
   cursor: pointer;
-  font-family: inherit;
+  font-family: monospace;
   font-size: 20px;
+  font-weight: 500;
 }
 
 .button::after {

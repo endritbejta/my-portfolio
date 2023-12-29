@@ -55,8 +55,7 @@ const SingleProject = ({ orderNumber, singleProject }) => {
         </div> */}
       </NavLink>
       <NavLink className={classes.title} to={singleProject.route}>
-        {singleProject.name}{" "}
-        <span style={{ textTransform: "lowercase" }}> ...see more</span>
+        {singleProject.name}
       </NavLink>
       <p className={classes.description}>{singleProject.description}</p>
       <div className={classes.chipHolder}>

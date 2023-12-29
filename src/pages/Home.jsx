@@ -9,7 +9,6 @@ const Home = () => {
   const [onMouseOverFired, setOnMouseOverFired] = useState(false);
   const profileCardRef = useRef();
   const { isNameRevealed, setIsNameRevealed } = useNameRevealedContext();
-  console.log(isNameRevealed);
   function comeIntoView() {
     profileCardRef.current?.animate(
       {

@@ -1,6 +1,6 @@
 .Navigation {
   width: 100%;
-
+  font-family: monospace;
   ul {
     width: 100%;
     display: flex;
