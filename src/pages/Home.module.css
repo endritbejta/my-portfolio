@@ -35,10 +35,11 @@
       position: absolute;
       display: table;
       content: "hover";
-      background-color: var(--color-aqua);
+      background-color: white;
       opacity: 0.9;
-      color: white;
+      color: var(--color-pink);
       padding: 4px 8px;
+      font-weight: bold;
       font-size: 18px;
       border-radius: 4px;
       top: 20%;
