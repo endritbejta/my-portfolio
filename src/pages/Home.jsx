@@ -71,13 +71,15 @@ const Home = () => {
 
   return (
     <section className={classes.Home}>
-      <h1 className={classes.title}>
+      <h1
+        className={classes.title}
+        onMouseEnter={(e) => onMouseOver(e)}
+        onMouseLeave={(e) => onMouseLeave(e)}
+      >
         <ProfileCard profileCardRef={profileCardRef} />
         <span>Hey, I'm</span>
         <span
           className={classes.nameSpan}
-          onMouseEnter={onMouseOver}
-          onMouseLeave={onMouseLeave}
           data-value="endrit bejta"
           onClick={onMouseOver}
         >
