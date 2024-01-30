@@ -11,7 +11,6 @@ import alfaglobe from "./images/alfaglobe/alfaglobe.png";
 import alfaglobe2 from "./images/alfaglobe/alfaglobe2.png";
 import alfaglobe3 from "./images/alfaglobe/alfaglobe3.png";
 import alfaglobe4 from "./images/alfaglobe/alfaglobe4.png";
-import multistepform from "./images/multistepform/multiform.png";
 import multistepform2 from "./images/multistepform/multiform2.png";
 import multistepform3 from "./images/multistepform/multiform3.png";
 import multistepform4 from "./images/multistepform/multiform4.png";
@@ -30,10 +29,6 @@ import notes3 from "./images/notesapp/notes_Screenshot_3.png";
 import notes4 from "./images/notesapp/notes_Screenshot_4.png";
 import notes5 from "./images/notesapp/notes_Screenshot_5.png";
 import notes7 from "./images/notesapp/notes_Screenshot_7.png";
-import piggame from "./images/piggame/piggame.png";
-import piggame1 from "./images/piggame/piggame2.png";
-import mapty from "./images/mapty/mapty.png";
-import mapty2 from "./images/mapty/mapty2.png";
 
 export const gitHubProjects = [
   {
@@ -72,30 +67,30 @@ export const gitHubProjects = [
     liveURL: "https://alfaglobe.netlify.app",
   },
   {
-    name: "Pig game",
-    route: "piggame",
-    description: "Lets play a game!",
+    name: "Multi step form",
+    route: "multistepform",
+    description: "You got some steps ? I got some forms!",
     largerDescription:
-      "This is a game that is playing by rolling the dice and storing points to win the game...",
+      "An online challegne which I succesfully reacreated using ReactJS. This form has for target larger coorporations, so it means it would be used on desktop only, hence the compability on desktop only",
     live: true,
-    languagesUsed: ["JavaScript", "CSS"],
+    languagesUsed: ["ReactJS", "CSS"],
     finished: true,
-    images: [piggame, piggame1],
-    githubURL: "https://github.com/endritbejta/pig-game",
-    liveURL: "https://endrits-pig-game.netlify.app",
+    images: [multistepform2, multistepform3, multistepform4, multistepform5],
+    githubURL: "https://github.com/endritbejta/multistepform.git",
+    liveURL: "https://endrits-multistepform.netlify.app/",
   },
   {
-    name: "Mapty",
-    route: "mapty",
-    description: "Dont just run, track it!",
+    name: "Beauty shop",
+    route: "beautyshop",
+    description: "Online shop center",
     largerDescription:
-      "A small application done while finishing the JavaScript course, in which you can track the days your or cycle your way through the city",
-    live: true,
+      "An online shop center consisting of 3 pages, that were part of an assignment. It was created using pure JavaScript and SCSS. This is a rich in animations site, in which you can add item to the cart, remove them, view them in more detail for your extra information.",
+    live: false,
+    finished: false,
+    images: [shopify, shopify3, shopify4, shopify5, shopify6],
     languagesUsed: ["JavaScript", "CSS"],
-    finished: true,
-    images: [mapty, mapty2],
-    githubURL: "https://github.com/endritbejta/mapty",
-    liveURL: "https://endrits-map-ty.netlify.app",
+    githubURL: "https://github.com/endritbejta/shopify-page-example",
+    liveURL: "",
   },
   {
     name: "Notes app",
@@ -122,31 +117,5 @@ export const gitHubProjects = [
     images: [movieapp, movieapp2],
     githubURL: "",
     liveURL: "https://endrits-movie-rating-overview-app.netlify.app/",
-  },
-  {
-    name: "Beauty shop",
-    route: "beautyshop",
-    description: "Online shop center",
-    largerDescription:
-      "An online shop center consisting of 3 pages, that were part of an assignment. It was created using pure JavaScript and SCSS. This is a rich in animations site, in which you can add item to the cart, remove them, view them in more detail for your extra information.",
-    live: false,
-    finished: false,
-    images: [shopify, shopify3, shopify4, shopify5, shopify6],
-    languagesUsed: ["JavaScript", "CSS"],
-    githubURL: "https://github.com/endritbejta/shopify-page-example",
-    liveURL: "",
-  },
-  {
-    name: "Multi step form",
-    route: "multistepform",
-    description: "You got some steps ? I got some forms!",
-    largerDescription:
-      "An online challegne which I succesfully reacreated using ReactJS. This form has for target larger coorporations, so it means it would be used on desktop only, hence the compability on desktop only",
-    live: true,
-    languagesUsed: ["ReactJS", "CSS"],
-    finished: true,
-    images: [multistepform2, multistepform3, multistepform4, multistepform5],
-    githubURL: "https://github.com/endritbejta/multistepform.git",
-    liveURL: "https://endrits-multistepform.netlify.app/",
   },
 ];

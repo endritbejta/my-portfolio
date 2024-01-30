@@ -70,7 +70,7 @@
   top: 50%;
   left: 50%;
   translate: -50% -50%;
-  filter: blur(60px);
+  filter: blur(80px);
   z-index: -1;
   animation: rotate 20s infinite;
 }
