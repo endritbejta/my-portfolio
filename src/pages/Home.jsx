@@ -50,11 +50,13 @@ const Home = () => {
     if (!onMouseOverFired && !isNameRevealed) {
       let iterations = 0;
       const interval = setInterval(() => {
+        const dataValue = event.target.getAttribute("data-value");
+        console.log(dataValue);
         event.target.innerText = event.target.innerText
           .split("")
           .map((letter, i) => {
             if (i < iterations + 1) {
-              return event.target.dataset.value[i];
+              return dataValue[i];
             }
 
             return letters[Math.floor(Math.random() * 26)];
@@ -71,17 +73,15 @@ const Home = () => {
 
   return (
     <section className={classes.Home}>
-      <h1
-        className={classes.title}
-        onMouseEnter={(e) => onMouseOver(e)}
-        onMouseLeave={(e) => onMouseLeave(e)}
-      >
+      <h1 className={classes.title}>
         <ProfileCard profileCardRef={profileCardRef} />
         <span>Hey, I'm</span>
         <span
           className={classes.nameSpan}
           data-value="endrit bejta"
-          onClick={onMouseOver}
+          id="encrypted-name"
+          onMouseEnter={(e) => onMouseOver(e)}
+          onMouseLeave={(e) => onMouseLeave(e)}
         >
           {isNameRevealed ? "endrit bejta" : "xxxxxx xxxxx"}
         </span>
