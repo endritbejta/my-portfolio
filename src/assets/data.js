@@ -79,19 +79,19 @@ export const gitHubProjects = [
     githubURL: "https://github.com/endritbejta/multistepform.git",
     liveURL: "https://endrits-multistepform.netlify.app/",
   },
-  {
-    name: "Beauty shop",
-    route: "beautyshop",
-    description: "Online shop center",
-    largerDescription:
-      "An online shop center consisting of 3 pages, that were part of an assignment. It was created using pure JavaScript and SCSS. This is a rich in animations site, in which you can add item to the cart, remove them, view them in more detail for your extra information.",
-    live: false,
-    finished: false,
-    images: [shopify, shopify3, shopify4, shopify5, shopify6],
-    languagesUsed: ["JavaScript", "CSS"],
-    githubURL: "https://github.com/endritbejta/shopify-page-example",
-    liveURL: "",
-  },
+  // {
+  //   name: "Beauty shop",
+  //   route: "beautyshop",
+  //   description: "Online shop center",
+  //   largerDescription:
+  //     "An online shop center consisting of 3 pages, that were part of an assignment. It was created using pure JavaScript and SCSS. This is a rich in animations site, in which you can add item to the cart, remove them, view them in more detail for your extra information.",
+  //   live: false,
+  //   finished: false,
+  //   images: [shopify, shopify3, shopify4, shopify5, shopify6],
+  //   languagesUsed: ["JavaScript", "CSS"],
+  //   githubURL: "https://github.com/endritbejta/shopify-page-example",
+  //   liveURL: "",
+  // },
   {
     name: "Notes app",
     route: "notesapp",
