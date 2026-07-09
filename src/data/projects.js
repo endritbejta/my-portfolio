@@ -230,7 +230,7 @@ export const projects = FEATURED_DEFINITIONS.filter((def) =>
     },
     updated: site.updated,
   };
-});
+}).sort((a, b) => new Date(b.updated) - new Date(a.updated));
 
 /** Netlify site ids already shown as featured projects. */
 export const featuredSiteIds = new Set(projects.map((p) => p.siteId));

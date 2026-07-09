@@ -116,13 +116,16 @@ const prettify = (id) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-export const deployments = netlifySites.map((site) => ({
-  id: site.id,
-  name: META[site.id]?.name ?? prettify(site.id),
-  description: META[site.id]?.description ?? null,
-  stack: META[site.id]?.stack ?? [],
-  screenshot: site.screenshot,
-  live: site.url,
-  github: site.repo,
-  updated: site.updated,
-}));
+export const mapSitesToDeployments = (sites) =>
+  sites.map((site) => ({
+    id: site.id,
+    name: META[site.id]?.name ?? prettify(site.id),
+    description: META[site.id]?.description ?? null,
+    stack: META[site.id]?.stack ?? [],
+    screenshot: site.screenshot,
+    live: site.url,
+    github: site.repo,
+    updated: site.updated,
+  }));
+
+export const deployments = mapSitesToDeployments(netlifySites);

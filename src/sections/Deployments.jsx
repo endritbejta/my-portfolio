@@ -1,27 +1,45 @@
+import { useState, useEffect } from "react";
 import { FiExternalLink, FiGithub, FiGlobe } from "react-icons/fi";
 import Badge from "../components/ui/Badge";
 import Card from "../components/ui/Card";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
-import { deployments } from "../data/deployments";
+import { deployments, mapSitesToDeployments } from "../data/deployments";
 import { featuredSiteIds } from "../data/projects";
 import { formatMonth } from "../utils/date";
 import classes from "./Deployments.module.css";
 
-/** Everything live on Netlify that isn't already a featured project. */
-const moreDeployments = deployments.filter(
-  (deployment) => !featuredSiteIds.has(deployment.id)
-);
+const Deployments = () => {
+  const [data, setData] = useState(deployments);
 
-const Deployments = () => (
-  <Section
-    id="deployments"
-    eyebrow="Live"
-    title="More deployments"
-    description={`${moreDeployments.length} more production deployments, pulled straight from my Netlify account at build time — dead sites are filtered out automatically.`}
-  >
-    <div className={classes.grid}>
-      {moreDeployments.map((deployment, index) => (
+  useEffect(() => {
+    fetch("/api/fetch-sites")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
+      .then((dynamicSites) => {
+        setData(mapSitesToDeployments(dynamicSites));
+      })
+      .catch((err) => {
+        console.warn("Using static deployments fallback:", err);
+      });
+  }, []);
+
+  /** Everything live on Netlify that isn't already a featured project. */
+  const moreDeployments = data.filter(
+    (deployment) => !featuredSiteIds.has(deployment.id)
+  );
+
+  return (
+    <Section
+      id="deployments"
+      eyebrow="Live"
+      title="More deployments"
+      description={`${moreDeployments.length} more production deployments, dynamically pulled from my Netlify account — dead sites are filtered out automatically.`}
+    >
+      <div className={classes.grid}>
+        {moreDeployments.map((deployment, index) => (
         <Reveal key={deployment.id} delay={(index % 4) * 80}>
           <Card as="article" interactive className={classes.card}>
             <a
@@ -79,6 +97,7 @@ const Deployments = () => (
       ))}
     </div>
   </Section>
-);
+  );
+};
 
 export default Deployments;

@@ -1,10 +1,17 @@
 [
   {
+    "id": "shitblej",
+    "url": "https://shitblej.netlify.app",
+    "screenshot": "https://d33wubrfki0l68.cloudfront.net/6a4fa7431ee9200008a598b7/screenshot_2026-07-09-13-51-16-0000.webp",
+    "repo": "https://github.com/endritbejta/shitblej",
+    "updated": "2026-07-09T13:51:20.480Z"
+  },
+  {
     "id": "alfaglobe",
     "url": "https://alfaglobe.netlify.app",
-    "screenshot": "https://d33wubrfki0l68.cloudfront.net/654246dc5943790008ad45d2/screenshot_2023-11-01-12-39-23-0000.png",
+    "screenshot": "https://d33wubrfki0l68.cloudfront.net/6a4f419e1d5d1a00082297c0/screenshot_2026-07-09-06-37-37-0000.webp",
     "repo": "https://github.com/endritbejta/alfa_globe",
-    "updated": "2026-07-09T05:30:44.659Z"
+    "updated": "2026-07-09T06:37:46.210Z"
   },
   {
     "id": "endrits-e-commerce",
@@ -35,13 +42,6 @@
     "updated": "2026-02-18T23:00:41.571Z"
   },
   {
-    "id": "save-notes-site",
-    "url": "https://save-notes-site.netlify.app",
-    "screenshot": "https://d33wubrfki0l68.cloudfront.net/6586b7cacaaaa77137ca8fe6/screenshot_2023-12-23-10-37-09-0000.png",
-    "repo": "https://github.com/endritbejta/notes",
-    "updated": "2026-02-18T22:30:48.089Z"
-  },
-  {
     "id": "endrits-movie-rating-overview-app",
     "url": "https://endrits-movie-rating-overview-app.netlify.app",
     "screenshot": "https://d33wubrfki0l68.cloudfront.net/64ef20d92913e1794b177f3b/screenshot_2023-08-30-10-58-37-0000.png",
@@ -54,13 +54,6 @@
     "screenshot": "https://d33wubrfki0l68.cloudfront.net/64ef1b6d2913e1742317819b/screenshot_2023-08-30-10-37-22-0000.png",
     "repo": "https://github.com/endritbejta/nexter",
     "updated": "2026-02-18T20:00:37.162Z"
-  },
-  {
-    "id": "endrits-bankist-app",
-    "url": "https://endrits-bankist-app.netlify.app",
-    "screenshot": "https://d33wubrfki0l68.cloudfront.net/64ef15a33e35f26fa4f362a1/screenshot_2023-08-30-10-11-10-0000.png",
-    "repo": "https://github.com/endritbejta/bankist-app",
-    "updated": "2026-02-18T19:56:15.891Z"
   },
   {
     "id": "myfirstrecipesite",
@@ -82,13 +75,6 @@
     "screenshot": "https://d33wubrfki0l68.cloudfront.net/64ef18c6809eee6bb4d06fba/screenshot_2023-08-30-10-28-15-0000.png",
     "repo": "https://github.com/endritbejta/trillo",
     "updated": "2026-02-18T18:50:27.504Z"
-  },
-  {
-    "id": "endrits-maps-ty",
-    "url": "https://endrits-maps-ty.netlify.app",
-    "screenshot": null,
-    "repo": "https://github.com/endritbejta/mapty",
-    "updated": "2026-02-18T17:46:40.633Z"
   },
   {
     "id": "endrits-multistepform",
