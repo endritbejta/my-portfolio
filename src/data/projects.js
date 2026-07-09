@@ -1,5 +1,3 @@
-import netlifySites from "./netlify-sites.json";
-
 import alfaglobe2 from "../assets/images/alfaglobe/alfaglobe2.png";
 import alfaglobe3 from "../assets/images/alfaglobe/alfaglobe3.png";
 import alfaglobe4 from "../assets/images/alfaglobe/alfaglobe4.png";
@@ -15,16 +13,12 @@ import notes3 from "../assets/images/notesapp/notes_Screenshot_3.png";
 import notes4 from "../assets/images/notesapp/notes_Screenshot_4.png";
 
 /**
- * Featured projects, built on top of the live Netlify deployments
- * (src/data/netlify-sites.json, refreshed on every build with a
- * liveness check). Each definition references a Netlify site by id;
- * if that site goes offline or is disabled, the project drops out of
- * the portfolio automatically on the next build.
+ * Featured project definitions. Live URLs and Netlify screenshots are hydrated
+ * at runtime from /api/fetch-sites, which returns only starred, published sites.
  *
- * The cover screenshot and live URL come from Netlify; everything
- * editorial (problem, highlights, case study) lives here.
+ * Everything editorial (problem, highlights, case study) lives here.
  */
-const FEATURED_DEFINITIONS = [
+export const projectDefinitions = [
   {
     siteId: "endrits-e-commerce",
     slug: "minimalist-e-commerce",
@@ -211,39 +205,63 @@ const FEATURED_DEFINITIONS = [
   },
 ];
 
-const sitesById = new Map(netlifySites.map((site) => [site.id, site]));
+const toProject = (def, site = null) => ({
+  ...def,
+  cover: site?.screenshot ?? null,
+  links: {
+    live: site?.url ?? null,
+    github: def.github ?? site?.repo ?? null,
+  },
+  updated: site?.updated ?? null,
+});
 
-/**
- * Only projects whose Netlify site is currently live make it in —
- * disabled deployments disappear without a code change.
- */
-export const projects = FEATURED_DEFINITIONS.filter((def) =>
-  sitesById.has(def.siteId)
-).map((def) => {
-  const site = sitesById.get(def.siteId);
-  return {
-    ...def,
-    cover: site.screenshot,
-    links: {
-      live: site.url,
-      github: def.github ?? site.repo,
-    },
-    updated: site.updated,
-  };
-}).sort((a, b) => new Date(b.updated) - new Date(a.updated));
+export const projects = projectDefinitions.map((def) => toProject(def));
+
+/** "shitblej" → "Shitblej" (fallback for sites without a definition) */
+const prettify = (id) =>
+  id
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
+export const hydrateProjects = (sites) => {
+  const sitesById = new Map(sites.map((site) => [site.id, site]));
+  const definedIds = new Set(projectDefinitions.map((d) => d.siteId));
+
+  // 1. Defined projects that have a matching starred site
+  const defined = projectDefinitions
+    .filter((def) => sitesById.has(def.siteId))
+    .map((def) => toProject(def, sitesById.get(def.siteId)));
+
+  // 2. Starred sites that have NO editorial definition — auto-generate one
+  const undeclared = sites
+    .filter((site) => !definedIds.has(site.id))
+    .map((site) =>
+      toProject(
+        {
+          siteId: site.id,
+          slug: site.id,
+          title: prettify(site.id),
+          problem: null,
+          role: null,
+          year: new Date(site.updated).getFullYear().toString(),
+          tags: [],
+          highlights: [],
+          github: site.repo ?? null,
+          images: [],
+          caseStudy: null,
+        },
+        site
+      )
+    );
+
+  return [...defined, ...undeclared].sort(
+    (a, b) => new Date(b.updated) - new Date(a.updated)
+  );
+};
 
 /** Netlify site ids already shown as featured projects. */
-export const featuredSiteIds = new Set(projects.map((p) => p.siteId));
+export const featuredSiteIds = new Set(projectDefinitions.map((p) => p.siteId));
 
 export const getProjectBySlug = (slug) =>
   projects.find((project) => project.slug === slug);
-
-/** Unique tag list for the filter bar, ordered by frequency. */
-export const allTags = [
-  ...projects
-    .flatMap((p) => p.tags)
-    .reduce((map, tag) => map.set(tag, (map.get(tag) || 0) + 1), new Map())
-    .entries(),
-]
-  .sort((a, b) => b[1] - a[1])
-  .map(([tag]) => tag);
