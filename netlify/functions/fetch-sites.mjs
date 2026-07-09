@@ -47,10 +47,16 @@ export default async (req, context) => {
   }
 
   try {
-    const response = await fetch(
-      "https://api.netlify.com/api/v1/sites?per_page=100",
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const [response, userResponse] = await Promise.all([
+      fetch(
+        "https://api.netlify.com/api/v1/sites?per_page=100",
+        { headers: { Authorization: `Bearer ${token}` } }
+      ),
+      fetch(
+        "https://api.netlify.com/api/v1/user",
+        { headers: { Authorization: `Bearer ${token}` } }
+      ),
+    ]);
 
     if (!response.ok) {
       return new Response(
@@ -61,16 +67,30 @@ export default async (req, context) => {
         }
       );
     }
+    if (!userResponse.ok) {
+      return new Response(
+        JSON.stringify({ error: `Netlify user API error: ${userResponse.status}` }),
+        {
+          status: userResponse.status,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
     const sites = await response.json();
+    const user = await userResponse.json();
+    const favoriteSiteIds = new Set(user.favorite_sites ?? []);
 
     const candidates = sites
       .filter(
         (site) =>
-          site.published_deploy && !EXCLUDED_SITES.includes(site.name)
+          site.published_deploy &&
+          favoriteSiteIds.has(site.site_id) &&
+          !EXCLUDED_SITES.includes(site.name)
       )
       .map((site) => ({
         id: site.name,
+        netlifyId: site.site_id,
         url: site.ssl_url || site.url,
         screenshot: site.screenshot_url ?? null,
         repo: site.build_settings?.repo_url ?? null,

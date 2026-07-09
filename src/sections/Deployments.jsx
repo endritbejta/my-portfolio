@@ -1,30 +1,17 @@
-import { useState, useEffect } from "react";
 import { FiExternalLink, FiGithub, FiGlobe } from "react-icons/fi";
 import Badge from "../components/ui/Badge";
 import Card from "../components/ui/Card";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
-import { deployments, mapSitesToDeployments } from "../data/deployments";
+import { mapSitesToDeployments } from "../data/deployments";
 import { featuredSiteIds } from "../data/projects";
+import { useNetlifySites } from "../hooks/useNetlifySites";
 import { formatMonth } from "../utils/date";
 import classes from "./Deployments.module.css";
 
 const Deployments = () => {
-  const [data, setData] = useState(deployments);
-
-  useEffect(() => {
-    fetch("/api/fetch-sites")
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        return res.json();
-      })
-      .then((dynamicSites) => {
-        setData(mapSitesToDeployments(dynamicSites));
-      })
-      .catch((err) => {
-        console.warn("Using static deployments fallback:", err);
-      });
-  }, []);
+  const { sites } = useNetlifySites();
+  const data = mapSitesToDeployments(sites);
 
   /** Everything live on Netlify that isn't already a featured project. */
   const moreDeployments = data.filter(

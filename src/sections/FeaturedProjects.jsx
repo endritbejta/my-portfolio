@@ -3,13 +3,32 @@ import { FiSearch } from "react-icons/fi";
 import ProjectCard from "../components/ProjectCard";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
-import { allTags, projects } from "../data/projects";
+import { hydrateProjects } from "../data/projects";
+import { useNetlifySites } from "../hooks/useNetlifySites";
 import classes from "./FeaturedProjects.module.css";
 
 const FeaturedProjects = () => {
   const [activeTag, setActiveTag] = useState("All");
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
+  const { sites, status } = useNetlifySites();
+
+  const projects = useMemo(() => hydrateProjects(sites), [sites]);
+  const tags = useMemo(
+    () =>
+      [
+        ...projects
+          .flatMap((project) => project.tags)
+          .reduce(
+            (map, tag) => map.set(tag, (map.get(tag) || 0) + 1),
+            new Map()
+          )
+          .entries(),
+      ]
+        .sort((a, b) => b[1] - a[1])
+        .map(([tag]) => tag),
+    [projects]
+  );
 
   const visible = useMemo(() => {
     const q = deferredQuery.trim().toLowerCase();
@@ -22,7 +41,7 @@ const FeaturedProjects = () => {
           .includes(q);
       return matchesTag && matchesQuery;
     });
-  }, [activeTag, deferredQuery]);
+  }, [activeTag, deferredQuery, projects]);
 
   return (
     <Section
@@ -33,7 +52,7 @@ const FeaturedProjects = () => {
     >
       <Reveal className={classes.controls}>
         <div className={classes.filters} role="group" aria-label="Filter projects by technology">
-          {["All", ...allTags].map((tag) => (
+          {["All", ...tags].map((tag) => (
             <button
               key={tag}
               type="button"
@@ -57,9 +76,15 @@ const FeaturedProjects = () => {
         </label>
       </Reveal>
 
-      {visible.length === 0 ? (
+      {status === "loading" ? (
         <p className={classes.empty} role="status">
-          No projects match “{deferredQuery}” — try a different search.
+          Loading starred projects...
+        </p>
+      ) : visible.length === 0 ? (
+        <p className={classes.empty} role="status">
+          {status === "error"
+            ? "Could not load starred projects right now."
+            : `No projects match “${deferredQuery}” — try a different search.`}
         </p>
       ) : (
         <div className={classes.grid}>

@@ -1,14 +1,10 @@
-import netlifySites from "./netlify-sites.json";
-
 /**
- * Live deployments, sourced automatically from the Netlify API.
+ * Live deployments, sourced at runtime from the Netlify API.
  *
- * `netlify-sites.json` is regenerated on every `npm run build` by
- * scripts/fetch-netlify-sites.mjs (deploy a new site → it appears here
- * on the next portfolio deploy). The map below adds the human details
- * the API doesn't know: display name, description, tech stack.
- * Sites without an entry still render, with a prettified name.
- * To hide a site, add it to EXCLUDED_SITES in the fetch script.
+ * The Netlify function returns starred, published, live sites. The map below
+ * adds the human details the API doesn't know: display name, description,
+ * tech stack. Sites without an entry still render, with a prettified name.
+ * To hide a site, add it to EXCLUDED_SITES in netlify/functions/fetch-sites.mjs.
  */
 const META = {
   "endrits-e-commerce": {
@@ -127,5 +123,3 @@ export const mapSitesToDeployments = (sites) =>
     github: site.repo,
     updated: site.updated,
   }));
-
-export const deployments = mapSitesToDeployments(netlifySites);
