@@ -124,6 +124,11 @@
     display: inline-flex;
   }
 
+  /* Hide the command-palette button on mobile — Ctrl/Cmd+K is keyboard-only */
+  .paletteButton {
+    display: none;
+  }
+
   .logoText {
     display: none;
   }

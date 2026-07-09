@@ -7,6 +7,38 @@ import { useScrollProgress } from "../hooks/useScrollProgress";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import classes from "./Navbar.module.css";
 
+
+/** Detects macOS once on mount — avoids SSR / server mismatch. */
+const isMac = () =>
+  typeof navigator !== "undefined" &&
+  /mac/i.test(navigator.platform || navigator.userAgentData?.platform || "");
+
+/**
+ * Command-palette trigger button.
+ * Hidden on touch/mobile (keyboard shortcuts don't apply there).
+ * Shows ⌘K on macOS and Ctrl K on Windows / Linux.
+ */
+const PaletteButton = ({ onOpen }) => {
+  const [mac, setMac] = useState(false);
+  useEffect(() => setMac(isMac()), []);
+
+  const label = mac ? "Open command palette (⌘K)" : "Open command palette (Ctrl+K)";
+  const shortcut = mac ? "⌘" : "Ctrl";
+
+  return (
+    <button
+      type="button"
+      className={`${classes.iconButton} ${classes.paletteButton}`}
+      onClick={onOpen}
+      aria-label={label}
+      title={label}
+    >
+      <FiCommand aria-hidden="true" />
+      <kbd className={classes.kbd}>{shortcut} K</kbd>
+    </button>
+  );
+};
+
 const Navbar = ({ onOpenPalette }) => {
   const { theme, toggleTheme } = useTheme();
   const progress = useScrollProgress();
@@ -59,16 +91,7 @@ const Navbar = ({ onOpenPalette }) => {
         </nav>
 
         <div className={classes.actions}>
-          <button
-            type="button"
-            className={classes.iconButton}
-            onClick={onOpenPalette}
-            aria-label="Open command palette (Ctrl+K)"
-            title="Command palette (Ctrl+K)"
-          >
-            <FiCommand aria-hidden="true" />
-            <kbd className={classes.kbd}>K</kbd>
-          </button>
+          <PaletteButton onOpen={onOpenPalette} />
           <button
             type="button"
             className={classes.iconButton}
