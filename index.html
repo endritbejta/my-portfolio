@@ -1,14 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="/src/assets/images/coolPhotoOfMe.jpg"
-    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Endrit's Portfolio</title>
+
+    <title>Endrit Bejta — Software Engineer</title>
+    <meta
+      name="description"
+      content="Software engineer specializing in commerce platforms and frontend architecture. 4+ years engineering production storefronts with React, TypeScript, Liquid and Hydrogen. Projects, case studies and open source."
+    />
+    <link rel="canonical" href="https://endritsportfolio.netlify.app/" />
+    <meta name="author" content="Endrit Bejta" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0b0c10" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://endritsportfolio.netlify.app/" />
+    <meta property="og:title" content="Endrit Bejta — Software Engineer" />
+    <meta
+      property="og:description"
+      content="Software engineer specializing in commerce platforms and frontend architecture. Projects, engineering case studies and open source."
+    />
+    <meta property="og:image" content="https://endritsportfolio.netlify.app/og.jpg" />
+    <meta property="og:site_name" content="Endrit Bejta — Portfolio" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Endrit Bejta — Software Engineer" />
+    <meta
+      name="twitter:description"
+      content="Software engineer specializing in commerce platforms and frontend architecture."
+    />
+    <meta name="twitter:image" content="https://endritsportfolio.netlify.app/og.jpg" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Endrit Bejta",
+        "jobTitle": "Software Engineer",
+        "url": "https://endritsportfolio.netlify.app/",
+        "email": "mailto:endrit.bejta@hotmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Fushë Kosovë",
+          "addressCountry": "XK"
+        },
+        "alumniOf": "Universiteti i Prishtinës \u0027Hasan Prishtina\u0027",
+        "worksFor": { "@type": "Organization", "name": "GRENION Brands" },
+        "sameAs": [
+          "https://github.com/endritbejta",
+          "https://linkedin.com/in/endritbejta"
+        ],
+        "knowsAbout": ["Software Engineering", "React", "TypeScript", "JavaScript", "Commerce Platforms", "Shopify", "Shopify Hydrogen", "React Native", "Core Web Vitals", "Web Accessibility"]
+      }
+    </script>
+
+    <!-- Set theme before first paint to avoid a flash of the wrong theme -->
+    <script>
+      (function () {
+        var stored = localStorage.getItem("theme");
+        var theme =
+          stored ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark");
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

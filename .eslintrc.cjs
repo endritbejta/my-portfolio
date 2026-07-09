@@ -16,5 +16,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    // Plain-JS project: no PropTypes by design
+    'react/prop-types': 'off',
+    'react/no-unescaped-entities': 'off',
   },
 }

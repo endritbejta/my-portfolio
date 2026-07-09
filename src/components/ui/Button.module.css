@@ -1,0 +1,58 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  line-height: 1;
+  border: 1px solid transparent;
+  transition: background-color var(--speed-fast) ease,
+    border-color var(--speed-fast) ease, color var(--speed-fast) ease,
+    transform var(--speed-fast) ease;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.sm {
+  padding: 0.45rem 0.85rem;
+  font-size: var(--text-xs);
+}
+
+.icon {
+  display: inline-flex;
+  font-size: 1.05em;
+}
+
+.primary {
+  background: var(--accent-strong);
+  color: var(--accent-contrast);
+}
+
+.primary:hover {
+  background: var(--accent);
+}
+
+.secondary {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.secondary:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+.ghost {
+  color: var(--text-muted);
+  padding-inline: 0.75rem;
+}
+
+.ghost:hover {
+  color: var(--text);
+  background: var(--surface);
+}

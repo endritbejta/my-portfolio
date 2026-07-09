@@ -1,0 +1,156 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Glass layer lives on a pseudo-element: backdrop-filter on the navbar
+   itself would become the containing block for the fixed mobile menu. */
+.navbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--nav-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.progress {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 4rem;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+}
+
+.logoMark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent-strong);
+  color: var(--accent-contrast);
+  font-size: var(--text-xs);
+  letter-spacing: 0.02em;
+}
+
+.logoText {
+  font-size: var(--text-sm);
+  letter-spacing: -0.01em;
+}
+
+.nav ul {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav a {
+  display: block;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color var(--speed-fast) ease, background-color var(--speed-fast) ease;
+}
+
+.nav a:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.nav a.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  transition: color var(--speed-fast) ease, background-color var(--speed-fast) ease;
+}
+
+.iconButton:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+  color: var(--text-faint);
+}
+
+.menuButton {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .menuButton {
+    display: inline-flex;
+  }
+
+  .logoText {
+    display: none;
+  }
+
+  .nav {
+    position: fixed;
+    inset: 4rem 0 0;
+    background: var(--bg);
+    padding: 1.5rem;
+    transform: translateX(100%);
+    transition: transform var(--speed-base) var(--ease-out);
+    visibility: hidden;
+  }
+
+  .navOpen {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .nav ul {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .nav a {
+    font-size: var(--text-lg);
+    padding: 0.85rem 1rem;
+  }
+}

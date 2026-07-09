@@ -1,0 +1,24 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.25rem;
+}
+
+.group {
+  padding: 1.25rem;
+  height: 100%;
+}
+
+.group h3 {
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: 0.9rem;
+}
+
+.group ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
