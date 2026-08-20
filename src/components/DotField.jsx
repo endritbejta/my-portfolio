@@ -7,7 +7,16 @@ const GAP = 40;
 const SIZE = 4;
 const OVERSCAN = 80; // px past each viewport edge — matches .grid's inset
 
-const REST_OPACITY = 0.36; // matches --opacity's default in DotField.module.css
+// Read from --dot-rest-opacity rather than duplicated here: the CSS sets the
+// dots' resting value from the same token, and two copies of the number would
+// drift the moment one is tuned.
+const FALLBACK_REST_OPACITY = 0.16;
+const readRestOpacity = () => {
+  const value = parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue("--dot-rest-opacity")
+  );
+  return Number.isFinite(value) ? value : FALLBACK_REST_OPACITY;
+};
 
 // Cursor influence. PULL_RADIUS is the single biggest lever on frame cost:
 // at this size the circle covers most of the grid, so most dots do work on
@@ -46,6 +55,7 @@ const DotField = () => {
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 
     let dots = [];
+    let restOpacity = readRestOpacity();
     let mouseX = null;
     let mouseY = null;
     let ticking = false;
@@ -99,7 +109,7 @@ const DotField = () => {
 
         if (distSq < GLOW_RADIUS_SQ) {
           const t = 1 - dist / GLOW_RADIUS;
-          const opacity = REST_OPACITY + (MAX_OPACITY - REST_OPACITY) * t;
+          const opacity = restOpacity + (MAX_OPACITY - restOpacity) * t;
           dot.el.style.setProperty("--opacity", opacity.toFixed(2));
           dot.lit = true;
         } else if (dot.lit) {
@@ -133,6 +143,7 @@ const DotField = () => {
     const build = () => {
       grid.textContent = "";
       dots = [];
+      restOpacity = readRestOpacity();
 
       const areaW = window.innerWidth + OVERSCAN * 2;
       const areaH = window.innerHeight + OVERSCAN * 2;

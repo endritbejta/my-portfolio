@@ -5,7 +5,7 @@ import classes from "./Footer.module.css";
 
 const Footer = () => (
   <footer className={classes.footer}>
-    <div className={`container scrim ${classes.inner}`}>
+    <div className={`container ${classes.inner}`}>
       <div className={classes.col}>
         <p className={classes.name}>{profile.name}</p>
         <p className={classes.tagline}>

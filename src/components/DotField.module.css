@@ -29,9 +29,9 @@
 }
 
 .dot {
-  /* Resting value. The field's JS raises this per-dot near the cursor and
-     removes the override again on the way out. */
-  --opacity: 0.36;
+  /* Resting value, from the shared token. The field's JS raises this per-dot
+     near the cursor and removes the override again on the way out. */
+  --opacity: var(--dot-rest-opacity);
 
   flex: 0 0 auto;
   width: var(--dot-size);

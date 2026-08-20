@@ -9,7 +9,7 @@ const Section = ({ id, eyebrow, title, description, children }) => (
   <section id={id} className={classes.section} aria-labelledby={`${id}-title`}>
     <div className="container">
       <Reveal>
-        <header className={`scrim ${classes.header}`}>
+        <header className={classes.header}>
           {eyebrow && <p className={classes.eyebrow}>{eyebrow}</p>}
           <h2 id={`${id}-title`} className={classes.title}>
             {title}

@@ -44,7 +44,7 @@ const CaseStudy = () => {
           <FiArrowLeft aria-hidden="true" /> All projects
         </Link>
 
-        <header className={`scrim ${classes.header}`}>
+        <header className={classes.header}>
           <p className={classes.eyebrow}>
             Case study · {project.year} · {project.role}
           </p>
@@ -86,7 +86,7 @@ const CaseStudy = () => {
         </Reveal>
       )}
 
-      <div className={`scrim ${classes.content}`}>
+      <div className={classes.content}>
         <Block title="Overview">
           <p>{study.overview}</p>
         </Block>

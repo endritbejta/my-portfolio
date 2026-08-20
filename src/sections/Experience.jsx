@@ -10,7 +10,7 @@ const Experience = () => (
     title="Experience"
     description="Where I've worked and what I shipped — from engineering project management to production Shopify storefronts."
   >
-    <ol className={`scrim ${classes.timeline}`} role="list">
+    <ol className={classes.timeline} role="list">
       {timeline.map((entry, index) => (
         <Reveal as="li" key={entry.period} delay={index * 90} className={classes.entry}>
           <div className={classes.marker} aria-hidden="true" />

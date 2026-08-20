@@ -8,7 +8,7 @@ import classes from "./Hero.module.css";
 const Hero = () => (
   <section id="hero" className={classes.hero} aria-label="Introduction">
     <div className={classes.glow} aria-hidden="true" />
-    <div className={`container scrim ${classes.inner}`}>
+    <div className={`container ${classes.inner}`}>
       <Reveal>
         <div className={classes.meta}>
           <Badge tone="success">{profile.availability}</Badge>
