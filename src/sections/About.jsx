@@ -11,7 +11,7 @@ const About = () => (
     title="From power grids to production software"
   >
     <div className={classes.grid}>
-      <Reveal className={classes.text}>
+      <Reveal className={`scrim ${classes.text}`}>
         {profile.about.map((paragraph) => (
           <p key={paragraph.slice(0, 24)}>{paragraph}</p>
         ))}

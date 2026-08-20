@@ -64,7 +64,7 @@
   /* Dot field. The field's JS writes each dot's own --opacity; the scale
      lets one interaction curve read right against either background. */
   --dot-rgb: 255, 255, 255;
-  --dot-alpha-scale: 1;
+  --dot-alpha-scale: 0.8;
 
   /* Frosted panels. The white outer glow is what lifts a panel off the
      dark background — an ordinary dark drop shadow disappears into it. */
@@ -75,6 +75,9 @@
   /* Only overlays that cover real content blur their backdrop; see
      CommandPalette. Panels rely on translucency alone. */
   --overlay-blur: 18px;
+
+  /* Backdrop for copy that sits on the dot field instead of in a panel */
+  --scrim: rgba(10, 10, 12, 0.9);
   --glass-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset,
     0 1px 0 rgba(255, 255, 255, 0.12) inset,
     0 12px 36px -14px rgba(0, 0, 0, 0.5),
@@ -102,7 +105,7 @@
   /* Ink at the dark theme's alpha is far heavier on white than white is on
      near-black, so the whole opacity curve gets scaled down here. */
   --dot-rgb: 20, 21, 26;
-  --dot-alpha-scale: 0.68;
+  --dot-alpha-scale: 0.55;
 
   /* Frosted white, not tinted ink: a dark wash at glass alphas over a light
      background just reads as dirty gray, so panels stay white and the
@@ -111,6 +114,8 @@
   --glass-bg-hover: rgba(255, 255, 255, 0.46);
   --glass-border: rgba(20, 21, 26, 0.1);
   --overlay-blur: 18px;
+
+  --scrim: rgba(246, 247, 249, 0.92);
   --glass-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6) inset,
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 4px 12px -8px rgba(20, 21, 26, 0.18),
@@ -278,6 +283,40 @@ h4 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ---------------------------------- */
+/* Readability scrim                  */
+/* ---------------------------------- */
+
+/* Copy that sits directly on the dot field rather than inside a glass panel
+   needs its own calm backdrop. Deliberately a soft radial falloff and not a
+   filled box: the edges have to die out in empty space, or it reads as an
+   invisible card boundary. The negative inset bleeds the gradient past the
+   text so the fade never lands mid-paragraph. */
+.scrim {
+  position: relative;
+  isolation: isolate;
+}
+
+/* A feathered rectangle rather than a radial gradient: an ellipse sized to
+   the box shrinks away from the corners, so on a tall prose column it only
+   ever covered the middle and left dots running through the outer
+   paragraphs. Masking each axis independently and intersecting the two
+   fades every edge out evenly whatever the block's aspect ratio. */
+.scrim::before {
+  content: "";
+  position: absolute;
+  inset: -2rem -2.5rem;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--scrim);
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent),
+    linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+  mask-composite: intersect;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent),
+    linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+  -webkit-mask-composite: source-in;
 }
 
 /* ---------------------------------- */
