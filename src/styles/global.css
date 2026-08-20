@@ -43,7 +43,7 @@
   /* Backdrop blur. Identical in both themes, so it lives here: --glass-blur
      is for panels, --overlay-blur for things covering actual content. */
   --glass-blur: 5px;
-  --overlay-blur: 18px;
+  --overlay-blur: 28px;
 
   /* Accent is shared across themes */
   --accent: #f43f5e;
@@ -85,6 +85,10 @@
     0 1px 0 rgba(255, 255, 255, 0.12) inset,
     0 12px 36px -14px rgba(0, 0, 0, 0.5),
     0 0 24px -8px rgba(255, 255, 255, 0.07);
+
+  /* Fill for modals. Far denser than --glass-bg: a panel can afford to be
+     see-through, a dialog full of text cannot. */
+  --overlay-bg: rgba(20, 21, 28, 0.9);
 }
 
 :root[data-theme="light"] {
@@ -120,6 +124,8 @@
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 4px 12px -8px rgba(20, 21, 26, 0.18),
     0 0 8px -4px rgba(20, 21, 26, 0.05);
+
+  --overlay-bg: rgba(252, 252, 253, 0.92);
 }
 
 /* ---------------------------------- */
