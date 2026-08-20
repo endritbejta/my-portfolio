@@ -1,19 +1,32 @@
+/* The shared modular panel. The dots read through the fill by translucency
+   alone — no backdrop-filter here on purpose. At the field's 4px dot size a
+   few px of blur is visually almost a no-op, while 40-odd blurred layers on
+   a page this tall makes the compositor re-blur each one every scroll frame.
+   The border plus the shadow's glow is what actually sells "module": it
+   lifts the panel off the background instead of merely outlining it.
+   Real blur is reserved for overlays that sit over content (see
+   CommandPalette), where it does visible work. */
 .card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--glass-shadow);
+  transition: background-color var(--speed-base) ease,
+    border-color var(--speed-base) ease, box-shadow var(--speed-base) ease;
 }
 
 .interactive {
   transition: transform var(--speed-base) var(--ease-out),
+    background-color var(--speed-base) ease,
     border-color var(--speed-base) ease, box-shadow var(--speed-base) ease;
 }
 
 .interactive:hover {
   transform: translateY(-4px);
+  background: var(--glass-bg-hover);
   border-color: var(--border-strong);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--glass-shadow), var(--shadow-card);
 }
 
 @media (prefers-reduced-motion: reduce) {

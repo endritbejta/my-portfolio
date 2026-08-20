@@ -1,0 +1,43 @@
+/* Fixed and behind everything: the field never scrolls, which is also why
+   the JS can cache dot positions once per resize instead of per scroll.
+   z-index: -1 keeps it above the body's background but under all content,
+   so no section needs a stacking context of its own. */
+.field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(165deg, var(--page-top) 0%, var(--page-bottom) 65%);
+  transition: background var(--speed-base) ease-out;
+}
+
+/* Overscan past the viewport edges so dots near the border never leave a
+   visible gap; .field clips it back to the frame. */
+.grid {
+  position: absolute;
+  inset: -80px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dot-gap);
+}
+
+.row {
+  display: flex;
+  gap: var(--dot-gap);
+  flex: 0 0 auto;
+}
+
+.dot {
+  /* Resting value. The field's JS raises this per-dot near the cursor and
+     removes the override again on the way out. */
+  --opacity: 0.36;
+
+  flex: 0 0 auto;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background: rgba(var(--dot-rgb), calc(var(--opacity) * var(--dot-alpha-scale)));
+  transition: transform var(--speed-slow) var(--ease-out),
+    background-color var(--speed-base) ease-out;
+}

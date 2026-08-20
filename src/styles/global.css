@@ -31,6 +31,10 @@
   --speed-base: 250ms;
   --speed-slow: 600ms;
 
+  /* Dot field geometry — shared across themes, only the color changes */
+  --dot-gap: 40px;
+  --dot-size: 4px;
+
   /* Accent is shared across themes */
   --accent: #f43f5e;
   --accent-strong: #e11d48;
@@ -52,6 +56,29 @@
   --nav-glass: rgba(11, 12, 16, 0.72);
   --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.35);
   --success: #4ade80;
+
+  /* Page gradient behind the dot field */
+  --page-top: #14151a;
+  --page-bottom: #0a0a0c;
+
+  /* Dot field. The field's JS writes each dot's own --opacity; the scale
+     lets one interaction curve read right against either background. */
+  --dot-rgb: 255, 255, 255;
+  --dot-alpha-scale: 1;
+
+  /* Frosted panels. The white outer glow is what lifts a panel off the
+     dark background — an ordinary dark drop shadow disappears into it. */
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-bg-hover: rgba(255, 255, 255, 0.11);
+  --glass-border: rgba(255, 255, 255, 0.14);
+
+  /* Only overlays that cover real content blur their backdrop; see
+     CommandPalette. Panels rely on translucency alone. */
+  --overlay-blur: 18px;
+  --glass-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 12px 36px -14px rgba(0, 0, 0, 0.5),
+    0 0 24px -8px rgba(255, 255, 255, 0.07);
 }
 
 :root[data-theme="light"] {
@@ -68,6 +95,26 @@
   --nav-glass: rgba(250, 250, 250, 0.78);
   --shadow-card: 0 8px 30px rgba(17, 17, 20, 0.08);
   --success: #16a34a;
+
+  --page-top: #ffffff;
+  --page-bottom: #e8eaef;
+
+  /* Ink at the dark theme's alpha is far heavier on white than white is on
+     near-black, so the whole opacity curve gets scaled down here. */
+  --dot-rgb: 20, 21, 26;
+  --dot-alpha-scale: 0.68;
+
+  /* Frosted white, not tinted ink: a dark wash at glass alphas over a light
+     background just reads as dirty gray, so panels stay white and the
+     border + a tight drop shadow do the separating instead. */
+  --glass-bg: rgba(255, 255, 255, 0.34);
+  --glass-bg-hover: rgba(255, 255, 255, 0.46);
+  --glass-border: rgba(20, 21, 26, 0.1);
+  --overlay-blur: 18px;
+  --glass-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 4px 12px -8px rgba(20, 21, 26, 0.18),
+    0 0 8px -4px rgba(20, 21, 26, 0.05);
 }
 
 /* ---------------------------------- */
