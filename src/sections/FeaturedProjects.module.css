@@ -42,7 +42,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-faint);
-  background: var(--bg-elevated);
+  background: var(--glass-bg);
   min-width: 15rem;
 }
 
