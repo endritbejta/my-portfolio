@@ -20,6 +20,52 @@ import notes4 from "../assets/images/notesapp/notes_Screenshot_4.png";
  */
 export const projectDefinitions = [
   {
+    siteId: "shitblej",
+    slug: "shitblej",
+    title: "Shitblej",
+    problem:
+      "Kosovo has no real peer-to-peer marketplace — second-hand trade happens in Facebook groups, where there is no search, no categories and no way to judge a seller.",
+    role: "Solo developer",
+    year: "2026",
+    tags: ["React", "React Router", "Vite", "i18next", "REST API"],
+    highlights: [
+      "Listing, browsing and buying flows end-to-end",
+      "Nine categories with per-collection routes",
+      "Buyer/seller inbox and wishlist",
+      "Bilingual UI via i18next",
+    ],
+    github: "https://github.com/endritbejta/shitblej",
+    images: [],
+    caseStudy: {
+      overview:
+        "A peer-to-peer marketplace for second-hand goods in Kosovo — list an item in a few minutes, browse nine categories, save what you like and message the seller. Listings carry a graded condition, a price and a location, and the home page is merchandised rather than a raw feed: trending, recently added, curated collections and an editor's luxury edit.",
+      problem:
+        "Second-hand trade here happens in Facebook groups. There is no structured search, no categories, no condition grading and no way to tell a serious seller from a dead post. The goal was the boring infrastructure a marketplace actually needs — findable listings, a real listing flow, and a place for buyer and seller to talk.",
+      architecture:
+        "React SPA on Vite with React Router, talking to a REST API of its own at /api/v1 hosted on Render, with Bearer-token auth. Routes and heavy components are code-split — the product grid, product card, wishlist button and image component each load on demand, so the category and product routes do not pay for the home page's merchandising sections. Copy runs through i18next with a fallback language and an in-header switcher.",
+      decisions: [
+        "A REST API of its own rather than a backend-as-a-service, so listings, users and messages are modelled explicitly and the contract is mine to change.",
+        "No global state library — React state and context carry the app, which keeps the bundle honest for a catalogue that mostly renders server data.",
+        "Wishlist kept in localStorage as well as on the account, so saving something does not force a signup first.",
+        "A single SmartImage component for every listing photo, because a marketplace is mostly user-uploaded images of unpredictable size.",
+      ],
+      challenges: [
+        "Merchandising an empty marketplace: trending and curated sections have to look intentional before there is real traffic to derive them from.",
+        "Condition and price are the whole trust model when there are no reviews yet, so both had to be unavoidable in the listing flow and legible on every card.",
+        "Keeping a free-tier API responsive enough that browsing does not feel broken on a cold start.",
+      ],
+      lessons: [
+        "A marketplace is two products — the buying flow and the selling flow — and the selling side is where people give up. It deserved the most iteration.",
+        "Internationalisation is far cheaper to wire in from the first screen than to retrofit once copy is scattered through components.",
+      ],
+      future: [
+        "Reviews and seller ratings",
+        "Image upload straight from the phone camera",
+        "Saved searches with notifications",
+      ],
+    },
+  },
+  {
     siteId: "endrits-e-commerce",
     slug: "minimalist-e-commerce",
     title: "Minimalist E-commerce",
@@ -58,9 +104,9 @@ export const projectDefinitions = [
     },
   },
   {
-    siteId: "alfaglobe",
-    slug: "alfa-globe",
-    title: "Alfa Globe",
+    siteId: "alfa-trade",
+    slug: "alfa-trade",
+    title: "Alfa Trade",
     problem:
       "A petroleum company needed a credible corporate web presence — products, divisions, locations and company info in one place.",
     role: "Solo developer (client project)",
