@@ -13,12 +13,16 @@ const ICONS = {
 
 /* Trailing is an exponential ease toward the pointer, run every frame: the
    dot closes a fixed fraction of the remaining gap per unit time, so it moves
-   the instant the pointer does and keeps moving while it travels. A time
-   constant in ms — roughly "how long to close ~63% of the gap". Lower is
-   tighter to the cursor, higher is a longer tail.
-   The swell is not here: it is a CSS transition on `scale`
-   (--cursor-swell), so it gets an exact duration the browser owns. */
-const FOLLOW_TAU = 90;
+   the instant the pointer does and keeps moving while it travels.
+
+   FOLLOW_MS is how long the dot takes to visually arrive once the pointer
+   stops — the closest equivalent to a CSS transition's duration, and matched
+   here to --cursor-swell so the trail and the swell feel like one motion.
+   An exponential ease never technically ends, so it is converted to a time
+   constant: the last visible pixel of a move is closed at ~6.6 tau, measured.
+   Raising it lengthens the tail while moving too, roughly in proportion. */
+const FOLLOW_MS = 800;
+const FOLLOW_TAU = FOLLOW_MS / 6.6;
 
 /* A stalled tab (or a slow frame) must not teleport the dot, but it should
    not crawl back either — clamping the delta keeps one long gap from
