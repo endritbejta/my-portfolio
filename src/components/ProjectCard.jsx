@@ -16,9 +16,18 @@ const ProjectCard = memo(function ProjectCard({ project }) {
 
   // Whichever action the card as a whole should follow. The live site wins
   // when there is one — it's what a visitor most wants from a project card —
-  // and the case study picks it up otherwise. Cards with neither stay inert
-  // rather than pretending to lead somewhere.
-  const stretch = links.live ? "live" : caseStudy ? "case" : null;
+  // then the case study, then the repo. The repo matters as a fallback
+  // because links.live is resolved from the Netlify API at runtime
+  // (see hydrateProjects), so a card that is clickable when that fetch
+  // succeeds would otherwise go dead when it fails. Only a project with none
+  // of the three stays inert.
+  const stretch = links.live
+    ? "live"
+    : caseStudy
+      ? "case"
+      : links.github
+        ? "github"
+        : null;
 
   return (
     <Card as="article" interactive className={`stretch-host ${classes.card}`}>
@@ -79,7 +88,15 @@ const ProjectCard = memo(function ProjectCard({ project }) {
             </Button>
           )}
           {links.github && (
-            <Button href={links.github} size="sm" variant="secondary" icon={<FiGithub />}>
+            <Button
+              href={links.github}
+              size="sm"
+              variant="secondary"
+              icon={<FiGithub />}
+              className={stretch === "github" ? "stretch" : ""}
+              data-cursor-size={stretch === "github" ? "lg" : undefined}
+              aria-label={`GitHub — ${title}`}
+            >
               GitHub
             </Button>
           )}
