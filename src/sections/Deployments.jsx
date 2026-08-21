@@ -70,8 +70,6 @@ const Deployments = () => {
                     href={deployment.live}
                     target="_blank"
                     rel="noreferrer"
-                    className="stretch"
-                    data-cursor-size="lg"
                     aria-label={`Live site — ${deployment.name}`}
                   >
                     <FiExternalLink aria-hidden="true" /> Live site
@@ -87,6 +85,16 @@ const Deployments = () => {
                 </span>
               </div>
             </div>
+
+            <a
+              href={deployment.live}
+              target="_blank"
+              rel="noreferrer"
+              className="stretch-link"
+              data-cursor-size="lg"
+              aria-hidden="true"
+              tabIndex={-1}
+            />
           </Card>
         </Reveal>
       ))}

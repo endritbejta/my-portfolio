@@ -1,2 +1,6 @@
+# Renamed project — keep the old case-study URL working for anything
+# that already linked to or indexed it
+/projects/alfa-globe  /projects/alfa-trade  301
+
 # Netlify SPA fallback — client-side routing handles these paths
 /*  /index.html  200

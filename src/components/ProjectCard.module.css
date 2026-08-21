@@ -1,4 +1,9 @@
+/* A query container, so the card's internals reflow on the card's own width.
+   Card width now depends on the grid's column count, so keying this off the
+   viewport instead would mean duplicating FeaturedProjects' breakpoints here
+   and keeping them in sync by hand. */
 .card {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
 }
@@ -104,7 +109,9 @@
   color: var(--accent-strong);
 }
 
-@media (max-width: 480px) {
+/* Two columns of feature bullets need real width; below this they wrap into
+   unreadable slivers. Catches both the 3-up desktop grid and phones. */
+@container (max-width: 430px) {
   .highlights {
     grid-template-columns: 1fr;
   }

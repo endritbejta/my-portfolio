@@ -329,38 +329,30 @@ html.cursor-none * {
 /* Stretched links                    */
 /* ---------------------------------- */
 
-/* One anchor inside a card grows an overlay covering the whole card, so
-   clicking anywhere on the card follows that link. Wrapping the card in an
-   anchor instead would nest the card's other links inside a link — invalid,
-   and unusable with a screen reader. The overlay carries no text, so the
-   accessible name stays that of the anchor it belongs to.
+/* A card-wide click target: a real, empty anchor absolutely positioned over
+   the card, so clicking anywhere on the card follows it.
 
-   .stretch must stay unpositioned: `inset: 0` resolves against the nearest
-   positioned ancestor, so positioning it would collapse the overlay onto the
-   anchor's own box instead of the card. The card supplies the containing
-   block (position: relative in Card.module.css). */
-.stretch::after {
-  content: "";
+   This started as `::after` on an existing link — the classic stretched-link
+   trick — and that DID NOT WORK: real mouse clicks passed straight through the
+   pseudo-element and landed on whatever was underneath, even though
+   elementFromPoint() happily reported the anchor. Verify this with real
+   clicks, not elementFromPoint.
+
+   The overlay is aria-hidden and untabbable on purpose: it duplicates a link
+   that is already visible in the card, so exposing it would announce the same
+   destination twice and add a tab stop that goes nowhere new. Keyboard and
+   screen-reader users get the real buttons; the overlay is a pointer
+   convenience. The card supplies the containing block (Card.module.css). */
+.stretch-link {
   position: absolute;
   inset: 0;
   z-index: 1;
   border-radius: inherit;
 }
 
-.stretch:focus-visible {
-  outline: none;
-}
-
-/* Ring the whole card — the anchor's own outline would bracket a few words
-   while the entire card is what activates. */
-.stretch:focus-visible::after {
-  outline: 2px solid var(--accent);
-  outline-offset: -3px;
-}
-
-/* Everything else interactive in the same card must sit above the overlay,
-   or it swallows their clicks — they are the reason for this pattern. */
-.stretch-host a:not(.stretch),
+/* Everything else interactive in the card must sit above the overlay, or it
+   swallows their clicks — they are the reason for this pattern. */
+.stretch-host a:not(.stretch-link),
 .stretch-host button {
   position: relative;
   z-index: 2;

@@ -11,7 +11,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://endritsportfolio.netlify.app/projects/alfa-globe</loc>
+    <loc>https://endritsportfolio.netlify.app/projects/alfa-trade</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://endritsportfolio.netlify.app/projects/shitblej</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
