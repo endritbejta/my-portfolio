@@ -46,7 +46,11 @@
   --overlay-blur: 28px;
 
   /* Trailing cursor dot */
-  --cursor-size: 14px;
+  --cursor-size: 16px;
+  --cursor-hover-scale: 8;
+  /* The swell is a CSS transition, so this is an exact duration — unlike the
+     follow, which is a per-frame ease with no fixed length. */
+  --cursor-swell: 800ms;
 
   /* Accent is shared across themes */
   --accent: #f43f5e;
@@ -300,6 +304,19 @@ h4 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ---------------------------------- */
+/* Trailing cursor                    */
+/* ---------------------------------- */
+
+/* Toggled by CursorTrailer while the dot is over something clickable: the
+   swollen dot stands in for the pointer there. !important and the descendant
+   selector are both needed — links and buttons set cursor: pointer
+   themselves, and the rule has to beat every one of them. */
+html.cursor-none,
+html.cursor-none * {
+  cursor: none !important;
 }
 
 /* ---------------------------------- */

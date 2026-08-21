@@ -13,11 +13,12 @@ const ICONS = {
 
 /* Trailing is an exponential ease toward the pointer, run every frame: the
    dot closes a fixed fraction of the remaining gap per unit time, so it moves
-   the instant the pointer does and keeps moving while it travels.
-   These are time constants in ms — roughly "how long to close ~63% of the
-   gap". Lower is tighter to the cursor, higher is a longer tail. */
+   the instant the pointer does and keeps moving while it travels. A time
+   constant in ms — roughly "how long to close ~63% of the gap". Lower is
+   tighter to the cursor, higher is a longer tail.
+   The swell is not here: it is a CSS transition on `scale`
+   (--cursor-swell), so it gets an exact duration the browser owns. */
 const FOLLOW_TAU = 90;
-const SCALE_TAU = 120;
 
 /* A stalled tab (or a slow frame) must not teleport the dot, but it should
    not crawl back either — clamping the delta keeps one long gap from
@@ -26,11 +27,6 @@ const MAX_FRAME_MS = 100;
 
 // Below this the dot has effectively arrived, so the loop can stop.
 const SETTLE_PX = 0.05;
-const SETTLE_SCALE = 0.002;
-
-const SCALE_REST = 1;
-const SCALE_HOVER = 3;
-const SCALE_HOVER_LARGE = 8; // for media tiles, where there's room for it
 
 const INTERACTIVE = 'a[href], button, [role="button"], [data-cursor]';
 
@@ -39,35 +35,29 @@ const INTERACTIVE = 'a[href], button, [role="button"], [data-cursor]';
  * data-cursor wins; otherwise the type is derived from the link itself, so
  * new links anywhere on the site are covered without being tagged by hand.
  */
-const resolveTarget = (node) => {
+const resolveType = (node) => {
   const target = node instanceof Element ? node.closest(INTERACTIVE) : null;
   if (!target) return null;
 
-  const large = target.dataset.cursorSize === "lg";
-
-  if (target.dataset.cursor) {
-    return { type: target.dataset.cursor, large };
-  }
-
-  if (target.tagName !== "A") return { type: "internal", large };
+  if (target.dataset.cursor) return target.dataset.cursor;
+  if (target.tagName !== "A") return "internal";
 
   const href = target.getAttribute("href") || "";
-  if (target.hasAttribute("download")) return { type: "download", large };
-  if (href.startsWith("mailto:")) return { type: "mail", large };
-  if (target.target === "_blank" || /^https?:/i.test(href)) {
-    return { type: "external", large };
-  }
-  if (href.includes("/projects/")) return { type: "read", large };
-  return { type: "internal", large };
+  if (target.hasAttribute("download")) return "download";
+  if (href.startsWith("mailto:")) return "mail";
+  if (target.target === "_blank" || /^https?:/i.test(href)) return "external";
+  if (href.includes("/projects/")) return "read";
+  return "internal";
 };
 
 /**
  * A dot that trails the cursor and swells into an icon over anything
- * clickable. Additive — the native cursor stays visible, so nothing depends
- * on this rendering.
+ * clickable, standing in for the native pointer while it does (see the
+ * .cursor-none rule in global.css).
  *
  * Not rendered at all for coarse pointers (no cursor to trail) or
- * `prefers-reduced-motion`.
+ * `prefers-reduced-motion` — and because the native cursor is only hidden
+ * from inside this effect, those cases keep the normal pointer.
  */
 const CursorTrailer = () => {
   const dotRef = useRef(null);
@@ -105,9 +95,6 @@ const CursorTrailer = () => {
     let y = 0;
     let placed = false; // first move drops the dot in rather than flying it in
 
-    let targetScale = SCALE_REST;
-    let scale = SCALE_REST;
-
     let lastType = null;
     let frame = 0;
     let lastTime = 0;
@@ -122,17 +109,11 @@ const CursorTrailer = () => {
       x += (pointerX - x) * posAlpha;
       y += (pointerY - y) * posAlpha;
 
-      const scaleAlpha = 1 - Math.exp(-dt / SCALE_TAU);
-      scale += (targetScale - scale) * scaleAlpha;
-
-      dot.style.transform = `translate3d(${(x - half).toFixed(2)}px, ${(
-        y - half
-      ).toFixed(2)}px, 0) scale(${scale.toFixed(3)})`;
+      // Only `translate` — the scale lives in CSS so its transition survives.
+      dot.style.translate = `${(x - half).toFixed(2)}px ${(y - half).toFixed(2)}px`;
 
       const arrived =
-        Math.abs(pointerX - x) < SETTLE_PX &&
-        Math.abs(pointerY - y) < SETTLE_PX &&
-        Math.abs(targetScale - scale) < SETTLE_SCALE;
+        Math.abs(pointerX - x) < SETTLE_PX && Math.abs(pointerY - y) < SETTLE_PX;
 
       // Idle out when there's nothing left to move; a mousemove restarts it.
       frame = arrived ? 0 : requestAnimationFrame(tick);
@@ -154,14 +135,13 @@ const CursorTrailer = () => {
         placed = true;
       }
 
-      const found = resolveTarget(event.target);
-      targetScale = found ? (found.large ? SCALE_HOVER_LARGE : SCALE_HOVER) : SCALE_REST;
-
       // Only touch React when the cue actually changes, not on every event.
-      const nextType = found?.type ?? null;
+      const nextType = resolveType(event.target);
       if (nextType !== lastType) {
         lastType = nextType;
         setType(nextType);
+        // Over something clickable the swollen dot stands in for the pointer.
+        document.documentElement.classList.toggle("cursor-none", nextType !== null);
       }
 
       setVisible(true);
@@ -169,7 +149,9 @@ const CursorTrailer = () => {
     };
 
     const onMouseLeave = () => {
-      targetScale = SCALE_REST;
+      lastType = null;
+      setType(null);
+      document.documentElement.classList.remove("cursor-none");
       setVisible(false);
       run();
     };
@@ -181,6 +163,8 @@ const CursorTrailer = () => {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
       if (frame) cancelAnimationFrame(frame);
+      // Never leave the page without a pointer if this unmounts mid-hover.
+      document.documentElement.classList.remove("cursor-none");
     };
   }, [enabled]);
 
@@ -191,11 +175,14 @@ const CursorTrailer = () => {
   return (
     <div
       ref={dotRef}
-      className={`${classes.trailer} ${visible ? classes.visible : ""}`}
+      className={[classes.trailer, visible && classes.visible, type && classes.hovering]
+        .filter(Boolean)
+        .join(" ")}
       aria-hidden="true"
     >
       <span className={`${classes.icon} ${Icon ? classes.iconVisible : ""}`}>
-        {Icon && <Icon />}
+        {/* Heavier than Feather's default 2, to read at the swollen size */}
+        {Icon && <Icon strokeWidth={2.5} />}
       </span>
     </div>
   );

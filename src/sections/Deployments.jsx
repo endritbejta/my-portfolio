@@ -35,7 +35,6 @@ const Deployments = () => {
               rel="noreferrer"
               className={classes.mediaLink}
               aria-label={`Open ${deployment.name} live site`}
-              data-cursor-size="lg"
             >
               {deployment.screenshot ? (
                 <img
