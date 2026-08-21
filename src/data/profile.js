@@ -3,14 +3,13 @@ import portrait from "../assets/images/coolPhotoOfMe.jpg";
 
 /**
  * Single source of truth for personal info — mirrors the CV.
- * Update availability / summary here and it propagates everywhere.
+ * Update it here and it propagates everywhere.
  */
 export const profile = {
   name: "Endrit Bejta",
   role: "Software Engineer",
   specialization: "Commerce platforms · Frontend architecture",
   location: "Fushë Kosovë, Kosovo",
-  availability: "Open to new opportunities",
   yearsOfExperience: "4+",
   email: "endrit.bejta@hotmail.com",
   resume,

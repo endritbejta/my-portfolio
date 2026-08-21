@@ -29,15 +29,29 @@
 }
 
 .dot {
-  /* Resting value, from the shared token. The field's JS raises this per-dot
-     near the cursor and removes the override again on the way out. */
+  /* Both are resting values that the field's JS overrides per-dot near the
+     cursor, then removes again on the way out. --opacity drives how bright
+     the dot is; --glow (0..1 by proximity) drives how far its colour has
+     shifted to the accent. */
   --opacity: var(--dot-rest-opacity);
+  --glow: 0;
+  --dot-alpha: calc(var(--opacity) * var(--dot-alpha-scale));
 
   flex: 0 0 auto;
   width: var(--dot-size);
   height: var(--dot-size);
   border-radius: 50%;
-  background: rgba(var(--dot-rgb), calc(var(--opacity) * var(--dot-alpha-scale)));
+
+  /* Plain fill first: if color-mix() is unsupported the declaration below is
+     dropped as invalid, and without this the dots would have no background
+     at all rather than merely no tint. */
+  background: rgba(var(--dot-rgb), var(--dot-alpha));
+  background: color-mix(
+    in srgb,
+    rgba(var(--accent-rgb), var(--dot-alpha)) calc(var(--glow) * 100%),
+    rgba(var(--dot-rgb), var(--dot-alpha))
+  );
+
   transition: transform var(--speed-slow) var(--ease-out),
     background-color var(--speed-base) ease-out;
 }

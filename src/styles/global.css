@@ -57,6 +57,8 @@
 
   /* Accent is shared across themes */
   --accent: #f43f5e;
+  /* Same colour as a bare triplet, for rgba()/color-mix() use */
+  --accent-rgb: 244, 63, 94;
   --accent-strong: #e11d48;
   --accent-soft: rgba(244, 63, 94, 0.12);
   --accent-contrast: #ffffff;

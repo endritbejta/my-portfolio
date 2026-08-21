@@ -77,6 +77,7 @@ const DotField = () => {
       }
       if (dot.lit) {
         dot.el.style.removeProperty("--opacity");
+        dot.el.style.removeProperty("--glow");
         dot.lit = false;
       }
     };
@@ -117,12 +118,16 @@ const DotField = () => {
         }
 
         if (distSq < GLOW_RADIUS_SQ) {
+          // One proximity value feeds both effects: brightness and how far
+          // the colour has shifted toward the accent.
           const t = 1 - dist / GLOW_RADIUS;
           const opacity = restOpacity + (MAX_OPACITY - restOpacity) * t;
           dot.el.style.setProperty("--opacity", opacity.toFixed(2));
+          dot.el.style.setProperty("--glow", t.toFixed(2));
           dot.lit = true;
         } else if (dot.lit) {
           dot.el.style.removeProperty("--opacity");
+          dot.el.style.removeProperty("--glow");
           dot.lit = false;
         }
       }
