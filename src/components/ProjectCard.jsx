@@ -21,7 +21,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
   const stretch = links.live ? "live" : caseStudy ? "case" : null;
 
   return (
-    <Card as="article" interactive className={classes.card}>
+    <Card as="article" interactive className={`stretch-host ${classes.card}`}>
       <div className={classes.media}>
         {cover ? (
           <img
@@ -68,7 +68,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
               href={links.live}
               size="sm"
               icon={<FiExternalLink />}
-              className={stretch === "live" ? classes.stretched : ""}
+              className={stretch === "live" ? "stretch" : ""}
               data-cursor-size={stretch === "live" ? "lg" : undefined}
               /* Names it uniquely among the page's many "Live demo" links,
                  while still starting with the visible text so the accessible
@@ -86,7 +86,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
           {caseStudy && (
             <Link
               to={`/projects/${slug}`}
-              className={[classes.caseStudyLink, stretch === "case" ? classes.stretched : ""]
+              className={[classes.caseStudyLink, stretch === "case" ? "stretch" : ""]
                 .filter(Boolean)
                 .join(" ")}
               data-cursor-size={stretch === "case" ? "lg" : undefined}

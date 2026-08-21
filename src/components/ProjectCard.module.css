@@ -1,8 +1,4 @@
-/* Containing block for the stretched-link overlay below. The card already
-   gets one from backdrop-filter, but relying on that would break silently
-   the day the blur is tuned to 0. */
 .card {
-  position: relative;
   display: flex;
   flex-direction: column;
 }
@@ -106,40 +102,6 @@
 
 .caseStudyLink:hover {
   color: var(--accent-strong);
-}
-
-/* Stretched link: one action inside the card grows an overlay covering the
-   whole card, so clicking anywhere follows it. The card itself is not wrapped
-   in an anchor because that would nest the other action links inside a link —
-   invalid, and unusable with a screen reader. The overlay has no text, so the
-   accessible name stays that of the action it belongs to.
-   .stretched must NOT be positioned itself: `inset: 0` resolves against the
-   nearest positioned ancestor, so making it relative would shrink the overlay
-   to the link's own box. That is why the rule below excludes it. */
-.stretched::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  border-radius: inherit;
-}
-
-/* The other actions have to sit above the overlay or it would swallow their
-   clicks — they are the whole reason for this pattern. */
-.actions > *:not(.stretched) {
-  position: relative;
-  z-index: 2;
-}
-
-/* Ring the whole card, since the action's own outline would only bracket a
-   few words while the entire card is what activates. */
-.stretched:focus-visible {
-  outline: none;
-}
-
-.stretched:focus-visible::after {
-  outline: 2px solid var(--accent);
-  outline-offset: -3px;
 }
 
 @media (max-width: 480px) {

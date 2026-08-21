@@ -8,6 +8,8 @@
    hardware — at 0 the panels stay translucent and lose very little at a 4px
    dot size. */
 .card {
+  /* Containing block for a .stretch overlay, when a card has one. */
+  position: relative;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);

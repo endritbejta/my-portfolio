@@ -27,10 +27,17 @@ const OpenSource = () => (
     <div className={classes.grid}>
       {repos.map((repo, index) => (
         <Reveal key={repo.name} delay={(index % 3) * 80}>
-          <Card as="article" interactive className={classes.card}>
+          <Card as="article" interactive className={`stretch-host ${classes.card}`}>
             <div className={classes.header}>
               <h3 className={classes.name}>
-                <a href={repo.url} target="_blank" rel="noreferrer">
+                <a
+                  href={repo.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="stretch"
+                  data-cursor-size="lg"
+                  aria-label={`${repo.name} — open on GitHub`}
+                >
                   {repo.name}
                 </a>
               </h3>

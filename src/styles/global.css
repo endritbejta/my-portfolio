@@ -325,6 +325,47 @@ html.cursor-none * {
 }
 
 /* ---------------------------------- */
+/* Stretched links                    */
+/* ---------------------------------- */
+
+/* One anchor inside a card grows an overlay covering the whole card, so
+   clicking anywhere on the card follows that link. Wrapping the card in an
+   anchor instead would nest the card's other links inside a link — invalid,
+   and unusable with a screen reader. The overlay carries no text, so the
+   accessible name stays that of the anchor it belongs to.
+
+   .stretch must stay unpositioned: `inset: 0` resolves against the nearest
+   positioned ancestor, so positioning it would collapse the overlay onto the
+   anchor's own box instead of the card. The card supplies the containing
+   block (position: relative in Card.module.css). */
+.stretch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.stretch:focus-visible {
+  outline: none;
+}
+
+/* Ring the whole card — the anchor's own outline would bracket a few words
+   while the entire card is what activates. */
+.stretch:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
+/* Everything else interactive in the same card must sit above the overlay,
+   or it swallows their clicks — they are the reason for this pattern. */
+.stretch-host a:not(.stretch),
+.stretch-host button {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------------------------------- */
 /* Layout helpers                     */
 /* ---------------------------------- */
 
