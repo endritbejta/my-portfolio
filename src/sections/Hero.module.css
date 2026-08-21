@@ -1,6 +1,7 @@
 .hero {
   position: relative;
-  padding-block: clamp(5rem, 14vh, 9rem) clamp(3rem, 8vh, 5rem);
+  /* Tuned to keep the action row in view without scrolling on a laptop. */
+  padding-block: clamp(2rem, 6vh, 4rem) clamp(2.5rem, 6vh, 4rem);
   overflow: hidden;
 }
 
@@ -63,9 +64,11 @@
 }
 
 .title {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   font-size: var(--text-hero);
-  max-width: 18ch;
+  /* Wider than it looks: at 18ch the line broke four ways and pushed the
+     buttons off screen. */
+  max-width: 26ch;
 }
 
 .titleAccent {
@@ -73,8 +76,8 @@
 }
 
 .summary {
-  margin-top: 1.5rem;
-  max-width: 38rem;
+  margin-top: 1.25rem;
+  max-width: 40rem;
   font-size: var(--text-lg);
   color: var(--text-muted);
 }
@@ -84,7 +87,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1.75rem;
+  margin-top: 1.5rem;
 }
 
 .stackLabel {
@@ -100,5 +103,5 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 2.25rem;
+  margin-top: 1.75rem;
 }

@@ -16,7 +16,8 @@
   --text-xl: 1.375rem;
   --text-2xl: 1.75rem;
   --text-3xl: clamp(2rem, 4vw, 2.75rem);
-  --text-hero: clamp(2.5rem, 6.5vw, 4.25rem);
+  /* Sized so the hero's CTA row stays above the fold on a laptop */
+  --text-hero: clamp(2.1rem, 5vw, 3.4rem);
 
   /* Spacing / layout */
   --container: 72rem;
