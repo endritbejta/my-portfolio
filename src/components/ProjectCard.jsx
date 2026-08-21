@@ -21,12 +21,17 @@ const ProjectCard = memo(function ProjectCard({ project }) {
   // (see hydrateProjects), so a card that is clickable when that fetch
   // succeeds would otherwise go dead when it fails. Only a project with none
   // of the three stays inert.
-  const stretch = links.live
-    ? "live"
+  // Where a click anywhere on the card goes. The live site wins — it's what a
+  // visitor most wants from a project card — then the case study, then the
+  // repo. The repo matters because links.live is resolved from the Netlify API
+  // at runtime, so a card clickable when that fetch succeeds would otherwise
+  // go dead when it fails. A project with none of the three stays inert.
+  const cardLink = links.live
+    ? { href: links.live }
     : caseStudy
-      ? "case"
+      ? { to: `/projects/${slug}` }
       : links.github
-        ? "github"
+        ? { href: links.github }
         : null;
 
   return (
@@ -77,8 +82,6 @@ const ProjectCard = memo(function ProjectCard({ project }) {
               href={links.live}
               size="sm"
               icon={<FiExternalLink />}
-              className={stretch === "live" ? "stretch" : ""}
-              data-cursor-size={stretch === "live" ? "lg" : undefined}
               /* Names it uniquely among the page's many "Live demo" links,
                  while still starting with the visible text so the accessible
                  name contains it (WCAG 2.5.3). */
@@ -93,8 +96,6 @@ const ProjectCard = memo(function ProjectCard({ project }) {
               size="sm"
               variant="secondary"
               icon={<FiGithub />}
-              className={stretch === "github" ? "stretch" : ""}
-              data-cursor-size={stretch === "github" ? "lg" : undefined}
               aria-label={`GitHub — ${title}`}
             >
               GitHub
@@ -103,10 +104,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
           {caseStudy && (
             <Link
               to={`/projects/${slug}`}
-              className={[classes.caseStudyLink, stretch === "case" ? "stretch" : ""]
-                .filter(Boolean)
-                .join(" ")}
-              data-cursor-size={stretch === "case" ? "lg" : undefined}
+              className={classes.caseStudyLink}
               aria-label={`Case study — ${title}`}
             >
               Case study →
@@ -114,6 +112,27 @@ const ProjectCard = memo(function ProjectCard({ project }) {
           )}
         </div>
       </div>
+
+      {cardLink &&
+        (cardLink.to ? (
+          <Link
+            to={cardLink.to}
+            className="stretch-link"
+            data-cursor-size="lg"
+            aria-hidden="true"
+            tabIndex={-1}
+          />
+        ) : (
+          <a
+            href={cardLink.href}
+            target="_blank"
+            rel="noreferrer"
+            className="stretch-link"
+            data-cursor-size="lg"
+            aria-hidden="true"
+            tabIndex={-1}
+          />
+        ))}
     </Card>
   );
 });

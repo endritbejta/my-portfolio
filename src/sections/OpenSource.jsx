@@ -34,8 +34,6 @@ const OpenSource = () => (
                   href={repo.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="stretch"
-                  data-cursor-size="lg"
                   aria-label={`${repo.name} — open on GitHub`}
                 >
                   {repo.name}
@@ -66,6 +64,16 @@ const OpenSource = () => (
               </span>
               <span className={classes.updated}>Updated {formatMonth(repo.updated)}</span>
             </div>
+
+            <a
+              href={repo.url}
+              target="_blank"
+              rel="noreferrer"
+              className="stretch-link"
+              data-cursor-size="lg"
+              aria-hidden="true"
+              tabIndex={-1}
+            />
           </Card>
         </Reveal>
       ))}
