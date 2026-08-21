@@ -3,6 +3,13 @@
  */
 export const timeline = [
   {
+    period: "Aug 2026 — Present",
+    title: "Software Developer — Solution25",
+    items: [
+      "Recently joined — building software as part of the Solution25 engineering team",
+    ],
+  },
+  {
     period: "Jan 2022 — Present",
     title: "Shopify Developer — GRENION Brands",
     meta: "Berlin, Germany (Remote) · Banana Beauty, HelloBody, MyRapunzel, Sophie Rosenburg",
@@ -12,17 +19,6 @@ export const timeline = [
       "Build reusable theme components with Liquid, JavaScript/TypeScript and React across the Dawn, Horizon and Concept themes, plus headless components with Shopify Hydrogen",
       "Integrate Shopify apps, APIs and third-party services; run A/B testing experiments with marketing to lift conversion",
       "Ship through Git/GitHub workflows with CI/CD, working directly with designers, marketers and product owners",
-    ],
-  },
-  {
-    period: "2023 — 2026",
-    title: "Side projects & continuous learning",
-    meta: "Personal work outside the day job",
-    items: [
-      "Built an offline-first React Native music player (New Architecture, TypeScript, Zustand) — patched a native audio library for RN 0.86 compatibility",
-      "Built a minimalist, conversion-focused e-commerce storefront with React and Tailwind CSS",
-      "Built Postify, a social platform, with a team during the StarLabs internship (React, Redux Toolkit, Express, MongoDB)",
-      "Currently learning .NET for backend development",
     ],
   },
   {

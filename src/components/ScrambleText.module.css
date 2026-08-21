@@ -1,0 +1,14 @@
+/* inline-block so the pinned min-width the component sets while scrambling
+   actually applies — min-width is ignored on an inline box. */
+.scramble {
+  display: inline-block;
+  cursor: default;
+}
+
+/* It is hoverable, so it takes focus for keyboard users — but it is a word in
+   a heading, not a control, so the ring shouldn't shout. */
+.scramble:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
