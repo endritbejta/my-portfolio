@@ -19,21 +19,13 @@
     border-color var(--speed-base) ease, box-shadow var(--speed-base) ease;
 }
 
-.interactive {
-  transition: transform var(--speed-base) var(--ease-out),
-    background-color var(--speed-base) ease,
-    border-color var(--speed-base) ease, box-shadow var(--speed-base) ease;
-}
-
+/* Hover lifts the panel in tone only — brighter fill, stronger border and a
+   drop shadow — with no translate. .card already transitions all three, and
+   with the movement gone there is nothing left here to animate separately.
+   (The reduced-motion override that used to sit below went with it: none of
+   these are motion.) */
 .interactive:hover {
-  transform: translateY(-4px);
   background: var(--glass-bg-hover);
   border-color: var(--border-strong);
   box-shadow: var(--glass-shadow), var(--shadow-card);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .interactive:hover {
-    transform: none;
-  }
 }
