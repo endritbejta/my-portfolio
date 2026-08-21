@@ -11,10 +11,22 @@ const ICONS = {
   video: FiPlay,
 };
 
-// The trailing feel comes entirely from this: each frame starts an 800ms
-// animation toward the cursor's current position, so the dot is always
-// chasing a target that has already moved on.
-const LAG_MS = 800;
+/* Trailing is an exponential ease toward the pointer, run every frame: the
+   dot closes a fixed fraction of the remaining gap per unit time, so it moves
+   the instant the pointer does and keeps moving while it travels.
+   These are time constants in ms — roughly "how long to close ~63% of the
+   gap". Lower is tighter to the cursor, higher is a longer tail. */
+const FOLLOW_TAU = 90;
+const SCALE_TAU = 120;
+
+/* A stalled tab (or a slow frame) must not teleport the dot, but it should
+   not crawl back either — clamping the delta keeps one long gap from
+   resolving in a single jump. */
+const MAX_FRAME_MS = 100;
+
+// Below this the dot has effectively arrived, so the loop can stop.
+const SETTLE_PX = 0.05;
+const SETTLE_SCALE = 0.002;
 
 const SCALE_REST = 1;
 const SCALE_HOVER = 3;
@@ -83,66 +95,83 @@ const CursorTrailer = () => {
     const dot = dotRef.current;
     if (!enabled || !dot) return undefined;
 
+    // Transforms don't affect layout, so the dot's own size is read once
+    // rather than every frame.
+    const half = dot.offsetWidth / 2;
+
     let pointerX = 0;
     let pointerY = 0;
-    let hovering = false;
-    let large = false;
-    let ticking = false;
-    let animation = null;
+    let x = 0;
+    let y = 0;
+    let placed = false; // first move drops the dot in rather than flying it in
 
-    const frame = () => {
-      ticking = false;
+    let targetScale = SCALE_REST;
+    let scale = SCALE_REST;
 
-      // Each new animation replaces the last. Committing the in-flight value
-      // to inline style before cancelling is what keeps the motion smooth:
-      // cancel alone would drop the fill and snap the dot back to its base
-      // transform, and leaving the old animations to fill instead would pile
-      // up a new Animation object every frame for as long as the mouse moves.
-      if (animation) {
-        try {
-          animation.commitStyles();
-        } catch {
-          // commitStyles throws if the element became undisplayed; the next
-          // animation still starts from a sane transform, so carry on.
-        }
-        animation.cancel();
-      }
+    let lastType = null;
+    let frame = 0;
+    let lastTime = 0;
 
-      const scale = hovering ? (large ? SCALE_HOVER_LARGE : SCALE_HOVER) : SCALE_REST;
-      const x = pointerX - dot.offsetWidth / 2;
-      const y = pointerY - dot.offsetHeight / 2;
+    const tick = (now) => {
+      const dt = Math.min(now - lastTime, MAX_FRAME_MS);
+      lastTime = now;
 
-      animation = dot.animate(
-        { transform: `translate(${x}px, ${y}px) scale(${scale})` },
-        { duration: LAG_MS, fill: "forwards" }
-      );
+      // Exponential ease, expressed against elapsed time so the trail feels
+      // identical at 60Hz and 144Hz instead of being twice as fast on one.
+      const posAlpha = 1 - Math.exp(-dt / FOLLOW_TAU);
+      x += (pointerX - x) * posAlpha;
+      y += (pointerY - y) * posAlpha;
+
+      const scaleAlpha = 1 - Math.exp(-dt / SCALE_TAU);
+      scale += (targetScale - scale) * scaleAlpha;
+
+      dot.style.transform = `translate3d(${(x - half).toFixed(2)}px, ${(
+        y - half
+      ).toFixed(2)}px, 0) scale(${scale.toFixed(3)})`;
+
+      const arrived =
+        Math.abs(pointerX - x) < SETTLE_PX &&
+        Math.abs(pointerY - y) < SETTLE_PX &&
+        Math.abs(targetScale - scale) < SETTLE_SCALE;
+
+      // Idle out when there's nothing left to move; a mousemove restarts it.
+      frame = arrived ? 0 : requestAnimationFrame(tick);
     };
 
-    const requestFrame = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(frame);
+    const run = () => {
+      if (frame) return;
+      lastTime = performance.now();
+      frame = requestAnimationFrame(tick);
     };
 
     const onMouseMove = (event) => {
       pointerX = event.clientX;
       pointerY = event.clientY;
 
-      const found = resolveTarget(event.target);
-      hovering = found !== null;
-      large = found?.large ?? false;
+      if (!placed) {
+        x = pointerX;
+        y = pointerY;
+        placed = true;
+      }
 
-      // Only touches React when the cue actually changes, not per event.
-      setType((current) => (found?.type ?? null) === current ? current : found?.type ?? null);
+      const found = resolveTarget(event.target);
+      targetScale = found ? (found.large ? SCALE_HOVER_LARGE : SCALE_HOVER) : SCALE_REST;
+
+      // Only touch React when the cue actually changes, not on every event.
+      const nextType = found?.type ?? null;
+      if (nextType !== lastType) {
+        lastType = nextType;
+        setType(nextType);
+      }
+
       setVisible(true);
-      requestFrame();
+      run();
     };
 
     const onMouseLeave = () => {
+      targetScale = SCALE_REST;
       setVisible(false);
-      hovering = false;
-      large = false;
-      requestFrame();
+      run();
     };
 
     window.addEventListener("mousemove", onMouseMove);
@@ -151,7 +180,7 @@ const CursorTrailer = () => {
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
-      if (animation) animation.cancel();
+      if (frame) cancelAnimationFrame(frame);
     };
   }, [enabled]);
 
