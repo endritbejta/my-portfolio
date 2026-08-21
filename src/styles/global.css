@@ -47,7 +47,10 @@
 
   /* Trailing cursor dot */
   --cursor-size: 16px;
+  /* Cards get the big dot; links and buttons a smaller one, since a 64px
+     blob over an inline text link swallows the thing it's pointing at. */
   --cursor-hover-scale: 4;
+  --cursor-hover-scale-sm: 2.5;
   /* The swell is a CSS transition, so this is an exact duration — unlike the
      follow, which is a per-frame ease with no fixed length. */
   --cursor-swell: 800ms;

@@ -11,6 +11,7 @@ const Card = ({ as: Tag = "div", interactive = false, className = "", children, 
       .filter(Boolean)
       .join(" ")}
     data-cursor={interactive ? "internal" : undefined}
+    data-cursor-size={interactive ? "lg" : undefined}
     {...rest}
   >
     {children}

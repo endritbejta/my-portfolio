@@ -35,23 +35,28 @@ const SETTLE_PX = 0.05;
 const INTERACTIVE = 'a[href], button, [role="button"], [data-cursor]';
 
 /**
- * Works out what the cursor is over and which cue to show. An explicit
- * data-cursor wins; otherwise the type is derived from the link itself, so
- * new links anywhere on the site are covered without being tagged by hand.
+ * Works out what the cursor is over: which cue to show, and how far to swell.
+ * An explicit data-cursor wins; otherwise the type is derived from the link
+ * itself, so new links anywhere on the site are covered without being tagged
+ * by hand. `closest` matches the innermost target, so a button sitting inside
+ * a card resolves to the button — and gets the button's smaller dot.
  */
-const resolveType = (node) => {
+const resolveTarget = (node) => {
   const target = node instanceof Element ? node.closest(INTERACTIVE) : null;
   if (!target) return null;
 
-  if (target.dataset.cursor) return target.dataset.cursor;
-  if (target.tagName !== "A") return "internal";
+  const size = target.dataset.cursorSize === "lg" ? "lg" : "sm";
+  const typed = (type) => ({ type, size });
+
+  if (target.dataset.cursor) return typed(target.dataset.cursor);
+  if (target.tagName !== "A") return typed("internal");
 
   const href = target.getAttribute("href") || "";
-  if (target.hasAttribute("download")) return "download";
-  if (href.startsWith("mailto:")) return "mail";
-  if (target.target === "_blank" || /^https?:/i.test(href)) return "external";
-  if (href.includes("/projects/")) return "read";
-  return "internal";
+  if (target.hasAttribute("download")) return typed("download");
+  if (href.startsWith("mailto:")) return typed("mail");
+  if (target.target === "_blank" || /^https?:/i.test(href)) return typed("external");
+  if (href.includes("/projects/")) return typed("read");
+  return typed("internal");
 };
 
 /**
@@ -66,7 +71,7 @@ const resolveType = (node) => {
 const CursorTrailer = () => {
   const dotRef = useRef(null);
   const [enabled, setEnabled] = useState(false);
-  const [type, setType] = useState(null);
+  const [target, setTarget] = useState(null); // { type, size } | null
   const [visible, setVisible] = useState(false);
 
   // Whether to render at all, re-checked if the OS setting or device changes.
@@ -99,7 +104,7 @@ const CursorTrailer = () => {
     let y = 0;
     let placed = false; // first move drops the dot in rather than flying it in
 
-    let lastType = null;
+    let lastKey = null;
     let frame = 0;
     let lastTime = 0;
 
@@ -140,12 +145,13 @@ const CursorTrailer = () => {
       }
 
       // Only touch React when the cue actually changes, not on every event.
-      const nextType = resolveType(event.target);
-      if (nextType !== lastType) {
-        lastType = nextType;
-        setType(nextType);
+      const next = resolveTarget(event.target);
+      const key = next ? `${next.type}:${next.size}` : null;
+      if (key !== lastKey) {
+        lastKey = key;
+        setTarget(next);
         // Over something clickable the swollen dot stands in for the pointer.
-        document.documentElement.classList.toggle("cursor-none", nextType !== null);
+        document.documentElement.classList.toggle("cursor-none", next !== null);
       }
 
       setVisible(true);
@@ -153,8 +159,8 @@ const CursorTrailer = () => {
     };
 
     const onMouseLeave = () => {
-      lastType = null;
-      setType(null);
+      lastKey = null;
+      setTarget(null);
       document.documentElement.classList.remove("cursor-none");
       setVisible(false);
       run();
@@ -174,14 +180,15 @@ const CursorTrailer = () => {
 
   if (!enabled) return null;
 
-  const Icon = type ? ICONS[type] ?? FiArrowUpRight : null;
+  const Icon = target ? ICONS[target.type] ?? FiArrowUpRight : null;
 
   return (
     <div
       ref={dotRef}
-      className={[classes.trailer, visible && classes.visible, type && classes.hovering]
+      className={[classes.trailer, visible && classes.visible, target && classes.hovering]
         .filter(Boolean)
         .join(" ")}
+      data-size={target?.size}
       aria-hidden="true"
     >
       <span className={`${classes.icon} ${Icon ? classes.iconVisible : ""}`}>

@@ -40,7 +40,13 @@
   opacity: 1;
 }
 
+/* Small is the default for links and buttons; only a card opts up to the
+   large scale. */
 .hovering {
+  scale: var(--cursor-hover-scale-sm);
+}
+
+.hovering[data-size="lg"] {
   scale: var(--cursor-hover-scale);
 }
 
