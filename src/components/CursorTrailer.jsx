@@ -32,14 +32,19 @@ const MAX_FRAME_MS = 100;
 // Below this the dot has effectively arrived, so the loop can stop.
 const SETTLE_PX = 0.05;
 
-const INTERACTIVE = 'a[href], button, [role="button"], [data-cursor]';
+/* Anchors only — plus anything opting in explicitly. Deliberately excludes
+   <button>: the cue promises "this takes you somewhere", and the buttons on
+   this site (theme toggle, command palette, copy email, mobile menu) do not.
+   The Button component renders an <a> whenever it has an href and a <button>
+   otherwise, so navigating buttons are already covered by the anchor case. */
+const INTERACTIVE = 'a[href], [data-cursor]';
 
 /**
  * Works out what the cursor is over: which cue to show, and how far to swell.
  * An explicit data-cursor wins; otherwise the type is derived from the link
  * itself, so new links anywhere on the site are covered without being tagged
- * by hand. `closest` matches the innermost target, so a button sitting inside
- * a card resolves to the button — and gets the button's smaller dot.
+ * by hand. `closest` matches the innermost target, so a link inside a tagged
+ * region resolves to the link and takes its own size.
  */
 const resolveTarget = (node) => {
   const target = node instanceof Element ? node.closest(INTERACTIVE) : null;
@@ -60,8 +65,8 @@ const resolveTarget = (node) => {
 };
 
 /**
- * A dot that trails the cursor and swells into an icon over anything
- * clickable, standing in for the native pointer while it does (see the
+ * A dot that trails the cursor and swells into an icon over anything that
+ * navigates, standing in for the native pointer while it does (see the
  * .cursor-none rule in global.css).
  *
  * Not rendered at all for coarse pointers (no cursor to trail) or

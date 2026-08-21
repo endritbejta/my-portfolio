@@ -1,17 +1,18 @@
 import classes from "./Card.module.css";
 
 /**
- * Surface container. `interactive` adds hover lift + border highlight, and
- * tags the card for CursorTrailer: a card is not itself a link, so the
- * trailing cursor can't infer that it's worth swelling over.
+ * Surface container. `interactive` adds the hover fill/border highlight.
+ *
+ * Deliberately not tagged for CursorTrailer: a card is not a link, and most
+ * of these have no single destination — the actions live on the buttons
+ * inside them. Promising a navigation on the card itself was a false
+ * affordance.
  */
 const Card = ({ as: Tag = "div", interactive = false, className = "", children, ...rest }) => (
   <Tag
     className={[classes.card, interactive ? classes.interactive : "", className]
       .filter(Boolean)
       .join(" ")}
-    data-cursor={interactive ? "internal" : undefined}
-    data-cursor-size={interactive ? "lg" : undefined}
     {...rest}
   >
     {children}
