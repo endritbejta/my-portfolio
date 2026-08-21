@@ -1,0 +1,48 @@
+/* Sits above every other layer — the command palette overlay is z-index 150
+   and the skip link 200 — because a cursor should never be occluded. */
+.trailer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+  border-radius: 50%;
+  background: var(--cursor-bg);
+
+  /* Never intercept anything: the trailer follows the pointer, so without
+     this it would sit under the cursor and swallow every hover and click. */
+  pointer-events: none;
+
+  opacity: 0;
+  transition: opacity var(--speed-base) ease;
+
+  display: grid;
+  place-items: center;
+
+  /* One element, animated on every frame — the promotion is worth it here in
+     a way it would not be on the dot field's several hundred nodes. */
+  will-change: transform;
+}
+
+.visible {
+  opacity: 1;
+}
+
+/* Sized in px so it scales with the dot's transform rather than fighting it:
+   at the hover scale this reads as a normal-sized icon. */
+.icon {
+  display: grid;
+  place-items: center;
+  font-size: 6px;
+  line-height: 1;
+  color: var(--cursor-fg);
+
+  opacity: 0;
+  transition: opacity var(--speed-base) ease;
+}
+
+.iconVisible {
+  opacity: 1;
+}

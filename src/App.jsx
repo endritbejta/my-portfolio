@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CommandPalette from "./components/CommandPalette";
 import DotField from "./components/DotField";
+import CursorTrailer from "./components/CursorTrailer";
 import Home from "./pages/Home";
 
 // Case studies and 404 are code-split — most visitors never load them.
@@ -52,6 +53,7 @@ const Shell = () => {
       </a>
       <ScrollToHash />
       <DotField />
+      <CursorTrailer />
       <Navbar onOpenPalette={() => setPaletteOpen(true)} />
       <main id="main">
         <Suspense fallback={null}>

@@ -45,6 +45,9 @@
   --glass-blur: 5px;
   --overlay-blur: 28px;
 
+  /* Trailing cursor dot */
+  --cursor-size: 14px;
+
   /* Accent is shared across themes */
   --accent: #f43f5e;
   --accent-strong: #e11d48;
@@ -89,6 +92,11 @@
   /* Fill for modals. Far denser than --glass-bg: a panel can afford to be
      see-through, a dialog full of text cannot. */
   --overlay-bg: rgba(20, 21, 28, 0.9);
+
+  /* Trailing cursor: -fg is the icon riding inside the dot, so it has to
+     contrast against -bg, not against the page. */
+  --cursor-bg: rgba(255, 255, 255, 0.9);
+  --cursor-fg: #0b0c10;
 }
 
 :root[data-theme="light"] {
@@ -126,6 +134,9 @@
     0 0 8px -4px rgba(20, 21, 26, 0.05);
 
   --overlay-bg: rgba(252, 252, 253, 0.92);
+
+  --cursor-bg: rgba(20, 21, 26, 0.88);
+  --cursor-fg: #ffffff;
 }
 
 /* ---------------------------------- */
