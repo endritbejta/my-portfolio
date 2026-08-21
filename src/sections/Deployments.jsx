@@ -28,13 +28,14 @@ const Deployments = () => {
       <div className={classes.grid}>
         {moreDeployments.map((deployment, index) => (
         <Reveal key={deployment.id} delay={(index % 4) * 80}>
-          <Card as="article" interactive className={classes.card}>
+          <Card as="article" interactive className={`stretch-host ${classes.card}`}>
             <a
               href={deployment.live}
               target="_blank"
               rel="noreferrer"
               className={classes.mediaLink}
               aria-label={`Open ${deployment.name} live site`}
+              data-cursor-size="lg"
             >
               {deployment.screenshot ? (
                 <img
@@ -65,7 +66,14 @@ const Deployments = () => {
               )}
               <div className={classes.footer}>
                 <div className={classes.links}>
-                  <a href={deployment.live} target="_blank" rel="noreferrer">
+                  <a
+                    href={deployment.live}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="stretch"
+                    data-cursor-size="lg"
+                    aria-label={`Live site — ${deployment.name}`}
+                  >
                     <FiExternalLink aria-hidden="true" /> Live site
                   </a>
                   {deployment.github && (

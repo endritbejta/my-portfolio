@@ -14,8 +14,14 @@ const ProjectCard = memo(function ProjectCard({ project }) {
   const { title, problem, role, year, tags, highlights, cover, links, slug, caseStudy } =
     project;
 
+  // Whichever action the card as a whole should follow. The live site wins
+  // when there is one — it's what a visitor most wants from a project card —
+  // and the case study picks it up otherwise. Cards with neither stay inert
+  // rather than pretending to lead somewhere.
+  const stretch = links.live ? "live" : caseStudy ? "case" : null;
+
   return (
-    <Card as="article" interactive className={classes.card}>
+    <Card as="article" interactive className={`stretch-host ${classes.card}`}>
       <div className={classes.media}>
         {cover ? (
           <img
@@ -58,7 +64,17 @@ const ProjectCard = memo(function ProjectCard({ project }) {
 
         <div className={classes.actions}>
           {links.live && (
-            <Button href={links.live} size="sm" icon={<FiExternalLink />}>
+            <Button
+              href={links.live}
+              size="sm"
+              icon={<FiExternalLink />}
+              className={stretch === "live" ? "stretch" : ""}
+              data-cursor-size={stretch === "live" ? "lg" : undefined}
+              /* Names it uniquely among the page's many "Live demo" links,
+                 while still starting with the visible text so the accessible
+                 name contains it (WCAG 2.5.3). */
+              aria-label={`Live demo — ${title}`}
+            >
               Live demo
             </Button>
           )}
@@ -68,7 +84,14 @@ const ProjectCard = memo(function ProjectCard({ project }) {
             </Button>
           )}
           {caseStudy && (
-            <Link to={`/projects/${slug}`} className={classes.caseStudyLink}>
+            <Link
+              to={`/projects/${slug}`}
+              className={[classes.caseStudyLink, stretch === "case" ? "stretch" : ""]
+                .filter(Boolean)
+                .join(" ")}
+              data-cursor-size={stretch === "case" ? "lg" : undefined}
+              aria-label={`Case study — ${title}`}
+            >
               Case study →
             </Link>
           )}

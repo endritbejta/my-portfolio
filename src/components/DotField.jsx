@@ -36,6 +36,10 @@ const REACH_SQ = Math.max(PULL_RADIUS_SQ, GLOW_RADIUS_SQ);
 // write inline styles to) tens of thousands of nodes.
 const MAX_DOTS = 4000;
 
+// Height changes smaller than this are treated as mobile browser chrome
+// appearing/disappearing rather than a real viewport change.
+const MOBILE_CHROME_PX = 150;
+
 /**
  * Decorative background: a grid of dots that drift toward the cursor and
  * brighten as it nears them. Fixed to the viewport and behind all content,
@@ -45,11 +49,13 @@ const MAX_DOTS = 4000;
  * `prefers-reduced-motion`, both of which still get the static grid.
  */
 const DotField = () => {
+  const fieldRef = useRef(null);
   const gridRef = useRef(null);
 
   useEffect(() => {
+    const field = fieldRef.current;
     const grid = gridRef.current;
-    if (!grid) return undefined;
+    if (!field || !grid) return undefined;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
@@ -60,6 +66,9 @@ const DotField = () => {
     let mouseY = null;
     let ticking = false;
     let resizeTimer;
+    let built = false;
+    let builtW = 0;
+    let builtH = 0;
 
     const settle = (dot) => {
       if (dot.moved) {
@@ -68,6 +77,7 @@ const DotField = () => {
       }
       if (dot.lit) {
         dot.el.style.removeProperty("--opacity");
+        dot.el.style.removeProperty("--glow");
         dot.lit = false;
       }
     };
@@ -108,12 +118,16 @@ const DotField = () => {
         }
 
         if (distSq < GLOW_RADIUS_SQ) {
+          // One proximity value feeds both effects: brightness and how far
+          // the colour has shifted toward the accent.
           const t = 1 - dist / GLOW_RADIUS;
           const opacity = restOpacity + (MAX_OPACITY - restOpacity) * t;
           dot.el.style.setProperty("--opacity", opacity.toFixed(2));
+          dot.el.style.setProperty("--glow", t.toFixed(2));
           dot.lit = true;
         } else if (dot.lit) {
           dot.el.style.removeProperty("--opacity");
+          dot.el.style.removeProperty("--glow");
           dot.lit = false;
         }
       }
@@ -141,12 +155,24 @@ const DotField = () => {
     // thousand purely decorative nodes that never re-render from state, so
     // putting them through React's reconciler would cost a lot for nothing.
     const build = () => {
+      // Measured from the field itself rather than window.innerWidth, so the
+      // grid is sized by the same number the observer below watches. A zero
+      // measurement means the layer has no layout yet — building against it
+      // would leave a grid a few dots wide, so bail and wait to be called
+      // again when there is a real size.
+      const { width, height } = field.getBoundingClientRect();
+      if (width < 1 || height < 1) return;
+
+      built = true;
+      builtW = width;
+      builtH = height;
+
       grid.textContent = "";
       dots = [];
       restOpacity = readRestOpacity();
 
-      const areaW = window.innerWidth + OVERSCAN * 2;
-      const areaH = window.innerHeight + OVERSCAN * 2;
+      const areaW = width + OVERSCAN * 2;
+      const areaH = height + OVERSCAN * 2;
       const cols = Math.ceil(areaW / (SIZE + GAP)) + 2;
       const rows = Math.ceil(areaH / (SIZE + GAP)) + 2;
 
@@ -183,7 +209,17 @@ const DotField = () => {
       requestUpdate();
     };
 
-    const onResize = () => {
+    const onFieldResize = () => {
+      const { width, height } = field.getBoundingClientRect();
+
+      // Rebuild on any width change, but only on a large height change:
+      // on mobile the address bar showing and hiding resizes the viewport
+      // vertically on almost every scroll, and rebuilding several hundred
+      // nodes each time would be pure waste.
+      const settled =
+        built && Math.abs(width - builtW) < 1 && Math.abs(height - builtH) < MOBILE_CHROME_PX;
+      if (settled) return;
+
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(build, 150);
     };
@@ -204,13 +240,18 @@ const DotField = () => {
 
     build();
     syncInteractivity();
-    window.addEventListener("resize", onResize);
+
+    // Fires once immediately, which is what recovers the case where the
+    // layer had no size at mount.
+    const observer = new ResizeObserver(onFieldResize);
+    observer.observe(field);
+
     reduceMotion.addEventListener("change", syncInteractivity);
     finePointer.addEventListener("change", syncInteractivity);
 
     return () => {
       clearTimeout(resizeTimer);
-      window.removeEventListener("resize", onResize);
+      observer.disconnect();
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
       reduceMotion.removeEventListener("change", syncInteractivity);
@@ -220,7 +261,7 @@ const DotField = () => {
   }, []);
 
   return (
-    <div className={classes.field} aria-hidden="true">
+    <div className={classes.field} ref={fieldRef} aria-hidden="true">
       <div className={classes.grid} ref={gridRef} />
     </div>
   );
