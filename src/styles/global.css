@@ -47,7 +47,7 @@
 
   /* Trailing cursor dot */
   --cursor-size: 16px;
-  --cursor-hover-scale: 8;
+  --cursor-hover-scale: 4;
   /* The swell is a CSS transition, so this is an exact duration — unlike the
      follow, which is a per-frame ease with no fixed length. */
   --cursor-swell: 800ms;
