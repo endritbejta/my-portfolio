@@ -14,18 +14,10 @@ const ProjectCard = memo(function ProjectCard({ project }) {
   const { title, problem, role, year, tags, highlights, cover, links, slug, caseStudy } =
     project;
 
-  // Whichever action the card as a whole should follow. The live site wins
-  // when there is one — it's what a visitor most wants from a project card —
-  // then the case study, then the repo. The repo matters as a fallback
-  // because links.live is resolved from the Netlify API at runtime
-  // (see hydrateProjects), so a card that is clickable when that fetch
-  // succeeds would otherwise go dead when it fails. Only a project with none
-  // of the three stays inert.
   // Where a click anywhere on the card goes. The live site wins — it's what a
   // visitor most wants from a project card — then the case study, then the
-  // repo. The repo matters because links.live is resolved from the Netlify API
-  // at runtime, so a card clickable when that fetch succeeds would otherwise
-  // go dead when it fails. A project with none of the three stays inert.
+  // repo. The repo is the last resort so a card with no homepage and no case
+  // study still goes somewhere. A project with none of the three stays inert.
   const cardLink = links.live
     ? { href: links.live }
     : caseStudy
@@ -56,7 +48,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
 
       <div className={classes.body}>
         <h3 className={classes.title}>{title}</h3>
-        <p className={classes.problem}>{problem}</p>
+        {problem && <p className={classes.problem}>{problem}</p>}
 
         <ul className={classes.tags} role="list" aria-label="Technologies used">
           {tags.map((tag) => (
@@ -66,15 +58,17 @@ const ProjectCard = memo(function ProjectCard({ project }) {
           ))}
         </ul>
 
-        <ul className={classes.highlights} role="list" aria-label="Key features">
-          {highlights.slice(0, 4).map((highlight) => (
-            <li key={highlight}>
-              <FiCheck aria-hidden="true" /> {highlight}
-            </li>
-          ))}
-        </ul>
+        {highlights.length > 0 && (
+          <ul className={classes.highlights} role="list" aria-label="Key features">
+            {highlights.slice(0, 4).map((highlight) => (
+              <li key={highlight}>
+                <FiCheck aria-hidden="true" /> {highlight}
+              </li>
+            ))}
+          </ul>
+        )}
 
-        <p className={classes.role}>{role}</p>
+        {role && <p className={classes.role}>{role}</p>}
 
         <div className={classes.actions}>
           {links.live && (

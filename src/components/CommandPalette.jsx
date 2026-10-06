@@ -9,10 +9,12 @@ import {
   FiMoon,
   FiNavigation,
   FiSearch,
+  FiZapOff,
 } from "react-icons/fi";
 import { NAV_LINKS } from "../constants";
 import { profile, socials } from "../data/profile";
-import { projects } from "../data/projects";
+import { useMotionPreference } from "../hooks/useMotionPreference";
+import { useProjects } from "../hooks/useProjects";
 import { useTheme } from "../hooks/useTheme";
 import classes from "./CommandPalette.module.css";
 
@@ -23,6 +25,8 @@ import classes from "./CommandPalette.module.css";
 const CommandPalette = ({ open, onClose }) => {
   const navigate = useNavigate();
   const { toggleTheme } = useTheme();
+  const { projects } = useProjects();
+  const { reduced, systemReduced, toggle: toggleMotion } = useMotionPreference();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef(null);
@@ -35,9 +39,7 @@ const CommandPalette = ({ open, onClose }) => {
         group: "Navigate",
         label: `Go to ${label}`,
         icon: <FiNavigation />,
-        run: () => {
-          window.location.assign(`/#${id}`);
-        },
+        run: () => navigate({ pathname: "/", hash: `#${id}` }),
       })),
       ...projects
         .filter((project) => project.caseStudy)
@@ -83,8 +85,21 @@ const CommandPalette = ({ open, onClose }) => {
         icon: <FiMoon />,
         run: toggleTheme,
       },
+      // Only offered when the OS hasn't already asked for reduced motion —
+      // the site never overrides that, so the action would do nothing.
+      ...(systemReduced
+        ? []
+        : [
+            {
+              id: "motion",
+              group: "Actions",
+              label: reduced ? "Turn motion back on" : "Reduce motion (no background dots or animation)",
+              icon: <FiZapOff />,
+              run: toggleMotion,
+            },
+          ]),
     ],
-    [navigate, toggleTheme]
+    [navigate, projects, toggleTheme, reduced, systemReduced, toggleMotion]
   );
 
   const results = useMemo(() => {

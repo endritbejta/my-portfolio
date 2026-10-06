@@ -1,0 +1,102 @@
+[
+  {
+    "name": "shitblej",
+    "description": "Peer-to-peer marketplace for Kosovo — server-enforced offer → counteroffer → checkout → order flow, real-time messaging. Express 5, MongoDB, Socket.IO, React 19.",
+    "homepage": "https://shitblej.netlify.app",
+    "url": "https://github.com/endritbejta/shitblej",
+    "language": "JavaScript",
+    "topics": [
+      "express",
+      "fullstack",
+      "kosovo",
+      "marketplace",
+      "mongodb",
+      "nodejs",
+      "playwright",
+      "react"
+    ],
+    "pushedAt": "2026-09-18T06:10:23Z"
+  },
+  {
+    "name": "alfa-rent",
+    "description": "Car rental management platform — public booking site plus internal admin dashboard. Next.js 16, TypeScript, Prisma, PostgreSQL, Auth.js.",
+    "homepage": "https://alfa-rent.vercel.app",
+    "url": "https://github.com/endritbejta/alfa-rent",
+    "language": "TypeScript",
+    "topics": [
+      "admin-dashboard",
+      "authjs",
+      "car-rental",
+      "nextjs",
+      "postgresql",
+      "prisma",
+      "shadcn-ui",
+      "tailwindcss"
+    ],
+    "pushedAt": "2026-09-07T09:07:20Z"
+  },
+  {
+    "name": "WindowSwitcher",
+    "description": "Windows-style Alt+Tab for macOS: switch between individual windows (not apps) in MRU order, with live thumbnails.",
+    "homepage": null,
+    "url": "https://github.com/endritbejta/WindowSwitcher",
+    "language": "Swift",
+    "topics": [
+      "alt-tab",
+      "macos",
+      "menu-bar-app",
+      "productivity",
+      "screencapturekit",
+      "swift",
+      "swiftui",
+      "window-manager"
+    ],
+    "pushedAt": "2026-09-04T13:34:40Z"
+  },
+  {
+    "name": "minimalist-e-commerce",
+    "description": "Minimalist storefront with business logic kept framework-free and testable outside components. React 19 with the React Compiler, Vite, Tailwind.",
+    "homepage": "https://endrits-e-commerce.netlify.app",
+    "url": "https://github.com/endritbejta/minimalist-e-commerce",
+    "language": "JavaScript",
+    "topics": [
+      "ecommerce",
+      "react",
+      "react-compiler",
+      "storefront",
+      "tailwindcss",
+      "vite",
+      "vitest"
+    ],
+    "pushedAt": "2026-09-14T17:57:33Z"
+  },
+  {
+    "name": "alfa_globe",
+    "description": "Corporate website for Alfa Trade, a petroleum distribution company in Kosovo. React 18, Vite, Tailwind CSS 4.",
+    "homepage": "https://alfa-trade.netlify.app",
+    "url": "https://github.com/endritbejta/alfa_globe",
+    "language": "JavaScript",
+    "topics": [
+      "corporate-website",
+      "kosovo",
+      "react",
+      "tailwindcss",
+      "vite"
+    ],
+    "pushedAt": "2026-09-14T17:56:51Z"
+  },
+  {
+    "name": "my-portfolio",
+    "description": "Personal portfolio site — work history, projects and writing. React, Vite.",
+    "homepage": "https://endritsportfolio.netlify.app",
+    "url": "https://github.com/endritbejta/my-portfolio",
+    "language": "JavaScript",
+    "topics": [
+      "personal-website",
+      "portfolio",
+      "react",
+      "vite"
+    ],
+    "pushedAt": "2026-08-21T07:42:10Z"
+  }
+]

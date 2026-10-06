@@ -37,6 +37,10 @@
   }
 }
 
+:global(:root[data-motion="reduced"]) .glow {
+  animation: none;
+}
+
 .inner {
   position: relative;
 }

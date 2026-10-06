@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { isReducedMotion } from "../hooks/useMotionPreference";
 import classes from "./ScrambleText.module.css";
 
 const UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -41,7 +42,7 @@ const ScrambleText = ({ children, className = "" }) => {
   };
 
   const scramble = () => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (isReducedMotion()) return;
 
     const el = spanRef.current;
     // Pin the resting width before the first scrambled frame, so whatever

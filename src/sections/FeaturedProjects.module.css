@@ -72,12 +72,6 @@
   min-width: 0;
 }
 
-.empty {
-  padding: 3rem 0;
-  text-align: center;
-  color: var(--text-muted);
-}
-
 /* Three across only while the cards stay usable — the container caps at
    72rem, so 3-up is about 368px per card and 2-up about 550px. */
 @media (max-width: 1180px) {

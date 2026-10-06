@@ -21,13 +21,18 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://endritsportfolio.netlify.app/projects/notes-app</loc>
+    <loc>https://endritsportfolio.netlify.app/projects/alfa-rent</loc>
     <changefreq>yearly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://endritsportfolio.netlify.app/projects/multi-step-form</loc>
+    <loc>https://endritsportfolio.netlify.app/projects/window-switcher</loc>
     <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://endritsportfolio.netlify.app/projects/portfolio</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

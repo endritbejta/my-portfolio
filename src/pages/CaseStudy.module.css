@@ -53,17 +53,6 @@
   margin-top: 1.5rem;
 }
 
-.cover {
-  margin-top: 3rem;
-}
-
-.cover img {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-}
-
 .content {
   display: grid;
   gap: 3rem;
@@ -98,15 +87,95 @@
   color: var(--accent);
 }
 
-.gallery {
+
+.facts {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1.25rem 2rem;
+  margin-top: 2.5rem;
+  padding-block: 1.5rem;
+  border-block: 1px solid var(--border);
 }
 
-.gallery img {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-md);
+.fact dt {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+}
+
+.fact dd {
+  margin-top: 0.3rem;
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+.walkthrough {
+  margin-top: 3.5rem;
+}
+
+.walkthrough h2 {
+  font-size: var(--text-xl);
+}
+
+.walkthroughNote {
+  margin: 0.4rem 0 1.75rem;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 5rem;
+}
+
+.pagerLink {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.25rem 1.5rem;
   border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: border-color var(--speed-base), background var(--speed-base);
+}
+
+.pagerLink:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.pagerLink span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.pagerNext {
+  text-align: right;
+}
+
+.pagerNext span {
+  justify-self: end;
+}
+
+/* Stays two-up on phones: the links are short, so they shrink instead of stacking. */
+@media (max-width: 40rem) {
+  .pager {
+    gap: 0.75rem;
+    margin-top: 3.5rem;
+  }
+
+  .pagerLink {
+    padding: 0.9rem 1rem;
+  }
+
+  .pagerLink strong {
+    font-size: var(--text-sm);
+    line-height: 1.3;
+  }
 }

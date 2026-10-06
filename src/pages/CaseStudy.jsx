@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { FiArrowLeft, FiExternalLink, FiGithub } from "react-icons/fi";
+import { FiArrowLeft, FiArrowRight, FiExternalLink, FiGithub } from "react-icons/fi";
+import ScreenshotGallery from "../components/ScreenshotGallery";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import Reveal from "../components/ui/Reveal";
 import { getProjectBySlug } from "../data/projects";
+import { useProjects } from "../hooks/useProjects";
 import classes from "./CaseStudy.module.css";
 
 const Block = ({ title, children }) => (
@@ -22,20 +24,45 @@ const List = ({ items }) => (
   </ul>
 );
 
+const Fact = ({ label, children }) => (
+  <div className={classes.fact}>
+    <dt>{label}</dt>
+    <dd>{children}</dd>
+  </div>
+);
+
+const hostOf = (url) => {
+  try {
+    return new URL(url).host;
+  } catch {
+    return url;
+  }
+};
+
+const repoLabel = (url) => url.replace(/^https?:\/\/(www\.)?/, "");
+
 const CaseStudy = () => {
   const { slug } = useParams();
-  const project = getProjectBySlug(slug);
+  const { projects } = useProjects();
+  const project = getProjectBySlug(projects, slug);
   const study = project?.caseStudy;
 
   useEffect(() => {
-    if (project) document.title = `${project.title} — Case Study | Endrit Bejta`;
-    window.scrollTo({ top: 0, behavior: "instant" });
+    if (!project) return undefined;
+    const previousTitle = document.title;
+    document.title = `${project.title} — Case Study | Endrit Bejta`;
     return () => {
-      document.title = "Endrit Bejta — Frontend Engineer";
+      document.title = previousTitle;
     };
   }, [project]);
 
   if (!project || !study) return <Navigate to="/" replace />;
+
+  // Neighbours among the projects that have a case study, in pin order.
+  const studies = projects.filter((item) => item.caseStudy);
+  const index = studies.findIndex((item) => item.slug === project.slug);
+  const previous = studies[(index - 1 + studies.length) % studies.length];
+  const next = studies[(index + 1) % studies.length];
 
   return (
     <article className={`container ${classes.page}`}>
@@ -45,9 +72,7 @@ const CaseStudy = () => {
         </Link>
 
         <header className={classes.header}>
-          <p className={classes.eyebrow}>
-            Case study · {project.year} · {project.role}
-          </p>
+          <p className={classes.eyebrow}>Case study</p>
           <h1>{project.title}</h1>
           <p className={classes.problem}>{project.problem}</p>
 
@@ -72,16 +97,25 @@ const CaseStudy = () => {
             )}
           </div>
         </header>
+
+        <dl className={classes.facts}>
+          {project.role && <Fact label="Role">{project.role}</Fact>}
+          <Fact label="Year">{project.year}</Fact>
+          {project.links.live && <Fact label="Live">{hostOf(project.links.live)}</Fact>}
+          {project.links.github && <Fact label="Source">{repoLabel(project.links.github)}</Fact>}
+        </dl>
       </Reveal>
 
-      {project.cover && (
-        <Reveal className={classes.cover}>
-          <img
-            src={project.cover}
-            alt={`${project.title} main screenshot`}
-            width="1200"
-            height="675"
-            decoding="async"
+      {project.images.length > 0 && (
+        <Reveal as="section" className={classes.walkthrough} aria-label="Screenshots">
+          <h2>Walkthrough</h2>
+          <p className={classes.walkthroughNote}>
+            Captured from the live site. Select any screenshot to enlarge it.
+          </p>
+          <ScreenshotGallery
+            images={project.images}
+            title={project.title}
+            liveUrl={project.links.live}
           />
         </Reveal>
       )}
@@ -111,24 +145,6 @@ const CaseStudy = () => {
           </Block>
         )}
 
-        {project.images.length > 1 && (
-          <Block title="Screenshots">
-            <div className={classes.gallery}>
-              {project.images.slice(1).map((image, index) => (
-                <img
-                  key={image}
-                  src={image}
-                  alt={`${project.title} screenshot ${index + 2}`}
-                  loading="lazy"
-                  decoding="async"
-                  width="600"
-                  height="338"
-                />
-              ))}
-            </div>
-          </Block>
-        )}
-
         {study.lessons?.length > 0 && (
           <Block title="Lessons learned">
             <List items={study.lessons} />
@@ -141,6 +157,26 @@ const CaseStudy = () => {
           </Block>
         )}
       </div>
+
+      {studies.length > 1 && (
+        <nav className={classes.pager} aria-label="More case studies">
+          <Link to={`/projects/${previous.slug}`} className={classes.pagerLink}>
+            <span>
+              <FiArrowLeft aria-hidden="true" /> Previous
+            </span>
+            <strong>{previous.title}</strong>
+          </Link>
+          <Link
+            to={`/projects/${next.slug}`}
+            className={`${classes.pagerLink} ${classes.pagerNext}`}
+          >
+            <span>
+              Next <FiArrowRight aria-hidden="true" />
+            </span>
+            <strong>{next.title}</strong>
+          </Link>
+        </nav>
+      )}
     </article>
   );
 };

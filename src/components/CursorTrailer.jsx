@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FiArrowUpRight, FiDownload, FiFileText, FiMail, FiPlay } from "react-icons/fi";
+import { useReducedMotion } from "../hooks/useMotionPreference";
 import classes from "./CursorTrailer.module.css";
 
 const ICONS = {
@@ -69,8 +70,8 @@ const resolveTarget = (node) => {
  * navigates, standing in for the native pointer while it does (see the
  * .cursor-none rule in global.css).
  *
- * Not rendered at all for coarse pointers (no cursor to trail) or
- * `prefers-reduced-motion` — and because the native cursor is only hidden
+ * Not rendered at all for coarse pointers (no cursor to trail) or when
+ * reduced motion is on (OS setting or the site's switch) — and because the native cursor is only hidden
  * from inside this effect, those cases keep the normal pointer.
  */
 const CursorTrailer = () => {
@@ -78,22 +79,18 @@ const CursorTrailer = () => {
   const [enabled, setEnabled] = useState(false);
   const [target, setTarget] = useState(null); // { type, size } | null
   const [visible, setVisible] = useState(false);
+  const reduced = useReducedMotion();
 
-  // Whether to render at all, re-checked if the OS setting or device changes.
+  // Whether to render at all, re-checked if the motion setting or device changes.
   useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 
-    const sync = () => setEnabled(finePointer.matches && !reduceMotion.matches);
+    const sync = () => setEnabled(finePointer.matches && !reduced);
 
     sync();
-    reduceMotion.addEventListener("change", sync);
     finePointer.addEventListener("change", sync);
-    return () => {
-      reduceMotion.removeEventListener("change", sync);
-      finePointer.removeEventListener("change", sync);
-    };
-  }, []);
+    return () => finePointer.removeEventListener("change", sync);
+  }, [reduced]);
 
   useEffect(() => {
     const dot = dotRef.current;

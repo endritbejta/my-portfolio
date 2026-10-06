@@ -127,10 +127,13 @@
   --page-top: #ffffff;
   --page-bottom: #e8eaef;
 
-  /* Ink at the dark theme's alpha is far heavier on white than white is on
-     near-black, so the whole opacity curve gets scaled down here. */
-  --dot-rgb: 20, 21, 26;
-  --dot-alpha-scale: 0.7;
+  /* Near-black dots compete with near-black text: they land on the same
+     baselines and x-heights, so a dot reads as part of a letter. A mid slate
+     at a low ceiling keeps the field as texture. The scale also caps the
+     cursor's brightening ramp, which at full ink strength put dark red dots
+     straight through the words being read. */
+  --dot-rgb: 110, 118, 136;
+  --dot-alpha-scale: 0.38;
 
   /* Frosted white, not tinted ink: a dark wash at glass alphas over a light
      background just reads as dirty gray, so panels stay white and the
@@ -310,6 +313,27 @@ h4 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* The same rules for the site's own reduced-motion switch, which sets
+   data-motion on <html> (see useMotionPreference). Kept beside the media
+   query so the two can't drift. */
+:root[data-motion="reduced"] {
+  scroll-behavior: auto;
+}
+
+:root[data-motion="reduced"] .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }
 
 /* ---------------------------------- */
