@@ -9,6 +9,7 @@
 import { execFileSync } from "node:child_process";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
+import { probeEmbeddable } from "../netlify/lib/embeddable.mjs";
 import { fileURLToPath } from "node:url";
 
 const OWNER = "endritbejta";
@@ -26,7 +27,9 @@ const raw = execFileSync("gh", ["api", "graphql", "-f", `query=${query}`], {
 });
 const nodes = JSON.parse(raw).data.user.pinnedItems.nodes;
 
-const pins = nodes.map((repo) => ({
+const PORTFOLIO = "https://endritsportfolio.netlify.app";
+
+const pins = await Promise.all(nodes.map(async (repo) => ({
   name: repo.name,
   description: repo.description,
   homepage: repo.homepageUrl || null,
@@ -34,7 +37,9 @@ const pins = nodes.map((repo) => ({
   language: repo.primaryLanguage?.name ?? null,
   topics: repo.repositoryTopics.nodes.map((n) => n.topic.name),
   pushedAt: repo.pushedAt,
-}));
+  // Whether the live site lets this portfolio frame it (see embeddable.mjs).
+  embeddable: repo.homepageUrl ? (await probeEmbeddable(repo.homepageUrl, PORTFOLIO)).embeddable : false,
+})));
 
 await writeFile(OUT, `${JSON.stringify(pins, null, 2)}\n`);
 console.log(`Wrote ${pins.length} pinned repos → ${path.relative(process.cwd(), OUT)}`);

@@ -11,10 +11,13 @@
  * for the phone view) — see scripts/capture-covers.mjs. They're the card image
  * on the home page and the poster in the live preview.
  *
- * `preview: true` embeds the live site on the case-study page. It only works
- * for sites that allow framing — one that sends X-Frame-Options or a CSP
- * frame-ancestors header would show a blank frame — so leave it off until
- * `npm run check:embed` says the site is embeddable.
+ * `preview: true` asks for the live site to be embedded on the case-study
+ * page. It is only honoured for a site that allows being framed — one that
+ * sends X-Frame-Options or a restrictive CSP frame-ancestors would show a blank
+ * frame — and that is decided from the site's own headers (`embeddable` on
+ * each pin, probed by the Netlify function and by `npm run sync:pins`). So it
+ * is safe to set for every project: a site that blocks framing keeps its cover
+ * image, and switches to the live preview by itself once it stops blocking.
  */
 
 const coverFiles = import.meta.glob("../assets/covers/*.webp", {
@@ -74,6 +77,7 @@ const editorial = {
   },
 
   "alfa-rent": {
+    preview: true,
     slug: "alfa-rent",
     title: "Alfa Rent a Car",
     role: "Solo developer",
@@ -153,6 +157,7 @@ const editorial = {
   },
 
   "minimalist-e-commerce": {
+    preview: true,
     slug: "minimalist-e-commerce",
     title: "Minimalist E-commerce",
     role: "Solo developer",
@@ -300,7 +305,7 @@ export const buildProjects = (pins) =>
       caseStudy: extra.caseStudy ?? null,
       cover: coverFor(slug),
       coverMobile: coverFor(slug, "-mobile"),
-      preview: Boolean(extra.preview && pin.homepage),
+      preview: Boolean(extra.preview && pin.homepage && pin.embeddable === true),
       links: { live: pin.homepage, github: pin.url },
       updated: pin.pushedAt,
     };

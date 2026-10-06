@@ -78,13 +78,13 @@ The downloadable CV (`src/assets/pdf/Endrit-Bejta-CV.pdf`) is generated, not han
 
 ## Live previews
 
-A case study shows a live, interactive embed when its project has `preview: true` in `src/data/projects.js`. That only works for sites that allow being framed: a site that sends `X-Frame-Options: DENY|SAMEORIGIN`, or a CSP `frame-ancestors` that doesn't list this portfolio, renders a blank frame (and the page can't detect it). Check before enabling:
+A case study shows a live, interactive embed of the deployed site when its project has `preview: true` in `src/data/projects.js` **and** the site allows being framed. A site that sends `X-Frame-Options: DENY|SAMEORIGIN`, or a CSP `frame-ancestors` that doesn't list this portfolio, would render a blank frame the page can't detect, so the site checks the headers itself: `netlify/functions/pinned-repos.mjs` probes each pinned project's live URL and returns `embeddable`, and `npm run sync:pins` records the same in the snapshot. A project that blocks framing keeps its cover image in the same frame (linking to the live site) and switches to the live preview by itself, with no code change, once the site stops blocking.
+
+To make a project embeddable, allow this site in *that* project's own headers (`Content-Security-Policy: frame-ancestors 'self' https://endritsportfolio.netlify.app`, and drop any `X-Frame-Options`, which can't name an origin). Be deliberate about sites with logins or admin areas: allow it on the public pages only. To find out why a preview isn't showing:
 
 ```bash
 npm run check:embed
 ```
-
-To make another project embeddable, allow this site in *that* project's headers (`Content-Security-Policy: frame-ancestors 'self' https://endritsportfolio.netlify.app`, and drop any `X-Frame-Options`), re-run the check, then set `preview: true`. Projects without a preview show their cover image in the same frame, linking to the live site.
 
 ## Cover images
 
