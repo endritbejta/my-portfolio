@@ -270,10 +270,10 @@ const editorial = {
     year: "2026",
     tags: ["React", "Vite", "CSS Modules"],
     problem:
-      "A portfolio that stays current by itself: it reads my GitHub pins and live Netlify deployments instead of a hand-edited list.",
+      "A portfolio that stays current by itself: it reads my GitHub pins instead of a hand-edited list.",
     highlights: [
       "Featured projects driven by GitHub pins",
-      "Live Netlify deployments with a liveness check",
+      "Case studies with live-site screenshots",
       "Command palette, scroll-spy, dark / light theme",
       "No animation library, respects reduced motion",
     ],
@@ -287,9 +287,9 @@ const editorial = {
       overview:
         "A single-page React app with dedicated case-study pages, a dark / light theme and a command palette. Nearly everything on it is data, and the project list is not hand-maintained: it follows the repositories pinned on my GitHub profile.",
       problem:
-        "Portfolios go stale because the project list lives in code. I wanted re-pinning a repository on GitHub — or starring a site on Netlify — to be the only step needed to change what a visitor sees.",
+        "Portfolios go stale because the project list lives in code. I wanted re-pinning a repository on GitHub to be the only step needed to change what a visitor sees.",
       architecture:
-        "React 18 and Vite with React Router (lazy-loaded case-study routes) and CSS Modules over a design-token layer, with no CSS framework. Two Netlify functions feed it: one reads the GitHub profile's pinned repositories through the GraphQL API, the other lists starred Netlify sites and probes each URL so dead deployments drop out. A shared hook renders a committed JSON snapshot immediately and swaps in the live response, so the site works offline and in local dev. An editorial layer keyed by repository name adds case studies and captions on top.",
+        "React 18 and Vite with React Router (lazy-loaded case-study routes) and CSS Modules over a design-token layer, with no CSS framework. A Netlify function reads the GitHub profile's pinned repositories through the GraphQL API, and a shared hook renders a committed JSON snapshot immediately and swaps in the live response, so the site works offline and in local dev. An editorial layer keyed by repository name adds case studies and captions on top.",
       decisions: [
         "Snapshot-first data: the UI never shows a loading state for content that is already in the bundle.",
         "Editorial content is separate from live data, so a newly pinned repo appears as a basic card until a case study is written for it.",
@@ -301,7 +301,7 @@ const editorial = {
         "Making the command palette fully keyboard-driven and accessible.",
       ],
       lessons: [
-        "Let the source of truth live where I already maintain it (GitHub, Netlify) rather than copying it into code.",
+        "Let the source of truth live where I already maintain it (GitHub) rather than copying it into code.",
       ],
       future: ["Writing section", "Per-project analytics of which case studies get read"],
     },
@@ -349,21 +349,3 @@ export const buildProjects = (pins) =>
 
 export const getProjectBySlug = (projects, slug) =>
   projects.find((project) => project.slug === slug);
-
-const hostOf = (url) => {
-  try {
-    return new URL(url).host.toLowerCase();
-  } catch {
-    return null;
-  }
-};
-
-const repoKey = (url) => url?.toLowerCase().replace(/\.git$/, "").replace(/\/$/, "") ?? null;
-
-/** True when a Netlify site is already shown as a featured (pinned) project. */
-export const isFeaturedSite = (site, pins) =>
-  pins.some(
-    (pin) =>
-      (pin.homepage && hostOf(pin.homepage) === hostOf(site.url)) ||
-      (pin.url && repoKey(pin.url) === repoKey(site.repo))
-  );

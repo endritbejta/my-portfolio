@@ -1,6 +1,6 @@
 # Endrit Bejta — Portfolio
 
-Personal portfolio of **Endrit Bejta**, a software engineer specializing in commerce platforms and frontend architecture. A single-page React application with dedicated engineering case-study pages, a dark/light theme, a command palette, and a featured-projects section that hydrates from live Netlify deployments at runtime.
+Personal portfolio of **Endrit Bejta**, a software engineer specializing in commerce platforms and frontend architecture. A single-page React application with dedicated engineering case-study pages, a dark/light theme, a command palette, and a featured-projects section that follows the repositories pinned on my GitHub profile.
 
 **Live demo → [endritsportfolio.netlify.app](https://endritsportfolio.netlify.app/)**
 
@@ -9,7 +9,6 @@ Personal portfolio of **Endrit Bejta**, a software engineer specializing in comm
 ## Highlights
 
 - **Featured projects follow my GitHub pins.** The *Featured projects* section shows the repositories pinned on my GitHub profile, in pin order — re-pin a repo and the site changes. A serverless function reads the pins from GitHub's GraphQL API; a committed JSON snapshot is rendered first and used as the fallback, so the site works in local dev and if the API is unreachable.
-- **Live deployments.** *More deployments* lists my starred, published Netlify sites (minus anything already featured), with a liveness probe so disabled or dead deployments drop out automatically.
 - **Engineering case studies.** Each featured project links to a dedicated page: a framed screenshot walkthrough (captured from the live site, with a lightbox), then overview → problem → architecture → technical decisions → challenges → lessons learned → future work.
 - **Command palette** (`⌘K` / `Ctrl+K`) for jumping to any section or case study.
 - **Dark / light theme** set before first paint to avoid a flash, persisted to `localStorage`.
@@ -23,7 +22,7 @@ Personal portfolio of **Endrit Bejta**, a software engineer specializing in comm
 - **React Router** (client-side routing with lazy-loaded routes)
 - **CSS Modules** with a design-token layer (`src/styles/global.css`) — no CSS framework
 - **react-icons**
-- **Netlify serverless functions** for the GitHub pins and the live-deployment data
+- **Netlify serverless function** for the GitHub pins
 - Deployed on **Netlify**
 
 ## Project structure
@@ -33,14 +32,14 @@ src/
   components/      Reusable UI (Navbar, Footer, CommandPalette, ProjectCard, ui/*)
   sections/        Home-page sections (Hero, About, FeaturedProjects, Skills, ...)
   pages/           Route components (Home, CaseStudy, NotFound)
-  data/            profile, skills, experience, repos, pinned-repos.json (snapshot),
+  data/            profile, skills, experience, pinned-repos.json (snapshot),
                    projects.js (editorial layer: case studies, captions)
   assets/screenshots/<slug>/   Live-site screenshots shown on case-study pages
   hooks/           useTheme, useScrollSpy, useScrollProgress, useInView, useCountUp,
-                   useRemoteData, usePinnedRepos, useNetlifySites, useProjects
+                   useRemoteData, usePinnedRepos, useProjects
   constants/       Nav links and section ids
   styles/          Global design tokens
-netlify/functions/ pinned-repos.mjs — GitHub pins; fetch-sites.mjs — starred, live Netlify sites
+netlify/functions/ pinned-repos.mjs — returns the repos pinned on GitHub
 scripts/           capture-screenshots.mjs, shots.config.mjs, sync-pins.mjs
 public/            favicon, robots.txt, sitemap.xml, _redirects (SPA fallback)
 ```
@@ -61,7 +60,7 @@ npm run sync:pins     # refresh src/data/pinned-repos.json from your GitHub pins
 npm run screenshots   # re-capture live-site screenshots (see below)
 ```
 
-In local development the site renders from the committed snapshots (`src/data/pinned-repos.json`, `src/data/netlify-sites.json`); the serverless functions run in the Netlify environment.
+In local development the site renders from the committed snapshot (`src/data/pinned-repos.json`); the serverless function runs in the Netlify environment.
 
 ## Featured projects (GitHub pins)
 
@@ -81,17 +80,6 @@ npm run screenshots -- alfa-rent       # one project
 ```
 
 `scripts/shots.config.mjs` lists, per project, the pages to capture and any in-page steps (scroll position, clicking through to a product). The `portfolio` entry captures this site from `npm run dev`, so start the dev server first.
-
-## Live-deployment data
-
-The *More deployments* section reads from the serverless function at `/api/fetch-sites` (`netlify/functions/fetch-sites.mjs`). Sites already featured via a GitHub pin (matched by URL host or repo URL) are left out. The function:
-
-1. calls the Netlify API for the account's sites and the user's starred (favorite) sites,
-2. keeps only published, starred sites (minus an explicit exclude list),
-3. probes each URL so unreachable deployments are filtered out, and
-4. returns the survivors, newest first, with a 10-minute cache.
-
-To run it against a real account, set `NETLIFY_AUTH_TOKEN` in the Netlify site's environment variables. Star a site in the Netlify UI to list it; unstar or disable it to remove it — no code change needed.
 
 ## Deployment
 

@@ -163,8 +163,19 @@
   justify-self: end;
 }
 
+/* Stays two-up on phones: the links are short, so they shrink instead of stacking. */
 @media (max-width: 40rem) {
   .pager {
-    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-top: 3.5rem;
+  }
+
+  .pagerLink {
+    padding: 0.9rem 1rem;
+  }
+
+  .pagerLink strong {
+    font-size: var(--text-sm);
+    line-height: 1.3;
   }
 }
