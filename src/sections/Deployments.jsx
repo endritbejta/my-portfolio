@@ -4,18 +4,19 @@ import Card from "../components/ui/Card";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
 import { mapSitesToDeployments } from "../data/deployments";
-import { featuredSiteIds } from "../data/projects";
+import { isFeaturedSite } from "../data/projects";
 import { useNetlifySites } from "../hooks/useNetlifySites";
+import { usePinnedRepos } from "../hooks/usePinnedRepos";
 import { formatMonth } from "../utils/date";
 import classes from "./Deployments.module.css";
 
 const Deployments = () => {
   const { sites } = useNetlifySites();
-  const data = mapSitesToDeployments(sites);
+  const { pins } = usePinnedRepos();
 
-  /** Everything live on Netlify that isn't already a featured project. */
-  const moreDeployments = data.filter(
-    (deployment) => !featuredSiteIds.has(deployment.id)
+  /** Everything live on Netlify that isn't already a featured (pinned) project. */
+  const moreDeployments = mapSitesToDeployments(
+    sites.filter((site) => !isFeaturedSite(site, pins))
   );
 
   return (

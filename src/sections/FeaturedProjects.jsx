@@ -3,17 +3,18 @@ import { FiSearch } from "react-icons/fi";
 import ProjectCard from "../components/ProjectCard";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
-import { hydrateProjects } from "../data/projects";
-import { useNetlifySites } from "../hooks/useNetlifySites";
+import { useProjects } from "../hooks/useProjects";
 import classes from "./FeaturedProjects.module.css";
+
+/** More chips than this stop being a filter and start being a tag cloud. */
+const MAX_FILTERS = 8;
 
 const FeaturedProjects = () => {
   const [activeTag, setActiveTag] = useState("All");
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
-  const { sites, status } = useNetlifySites();
+  const { projects } = useProjects();
 
-  const projects = useMemo(() => hydrateProjects(sites), [sites]);
   const tags = useMemo(
     () =>
       [
@@ -26,6 +27,7 @@ const FeaturedProjects = () => {
           .entries(),
       ]
         .sort((a, b) => b[1] - a[1])
+        .slice(0, MAX_FILTERS)
         .map(([tag]) => tag),
     [projects]
   );
@@ -48,7 +50,7 @@ const FeaturedProjects = () => {
       id="projects"
       eyebrow="Work"
       title="Featured projects"
-      description="Real applications with real constraints — each card links to code, a live deployment, or a full case study."
+      description="My pinned work — real applications with real constraints. Each card links to the code, the live site and a case study."
     >
       <Reveal className={classes.controls}>
         <div className={classes.filters} role="group" aria-label="Filter projects by technology">
@@ -76,15 +78,9 @@ const FeaturedProjects = () => {
         </label>
       </Reveal>
 
-      {status === "loading" ? (
+      {visible.length === 0 ? (
         <p className={classes.empty} role="status">
-          Loading starred projects...
-        </p>
-      ) : visible.length === 0 ? (
-        <p className={classes.empty} role="status">
-          {status === "error"
-            ? "Could not load starred projects right now."
-            : `No projects match “${deferredQuery}” — try a different search.`}
+          No projects match “{deferredQuery}” — try a different search.
         </p>
       ) : (
         <div className={classes.grid}>

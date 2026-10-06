@@ -12,7 +12,7 @@ import {
 } from "react-icons/fi";
 import { NAV_LINKS } from "../constants";
 import { profile, socials } from "../data/profile";
-import { projects } from "../data/projects";
+import { useProjects } from "../hooks/useProjects";
 import { useTheme } from "../hooks/useTheme";
 import classes from "./CommandPalette.module.css";
 
@@ -23,6 +23,7 @@ import classes from "./CommandPalette.module.css";
 const CommandPalette = ({ open, onClose }) => {
   const navigate = useNavigate();
   const { toggleTheme } = useTheme();
+  const { projects } = useProjects();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef(null);
@@ -35,9 +36,7 @@ const CommandPalette = ({ open, onClose }) => {
         group: "Navigate",
         label: `Go to ${label}`,
         icon: <FiNavigation />,
-        run: () => {
-          window.location.assign(`/#${id}`);
-        },
+        run: () => navigate({ pathname: "/", hash: `#${id}` }),
       })),
       ...projects
         .filter((project) => project.caseStudy)
@@ -84,7 +83,7 @@ const CommandPalette = ({ open, onClose }) => {
         run: toggleTheme,
       },
     ],
-    [navigate, toggleTheme]
+    [navigate, projects, toggleTheme]
   );
 
   const results = useMemo(() => {

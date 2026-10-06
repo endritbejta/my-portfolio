@@ -36,7 +36,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
 
       <div className={classes.body}>
         <h3 className={classes.title}>{title}</h3>
-        <p className={classes.problem}>{problem}</p>
+        {problem && <p className={classes.problem}>{problem}</p>}
 
         <ul className={classes.tags} role="list" aria-label="Technologies used">
           {tags.map((tag) => (
@@ -46,15 +46,17 @@ const ProjectCard = memo(function ProjectCard({ project }) {
           ))}
         </ul>
 
-        <ul className={classes.highlights} role="list" aria-label="Key features">
-          {highlights.slice(0, 4).map((highlight) => (
-            <li key={highlight}>
-              <FiCheck aria-hidden="true" /> {highlight}
-            </li>
-          ))}
-        </ul>
+        {highlights.length > 0 && (
+          <ul className={classes.highlights} role="list" aria-label="Key features">
+            {highlights.slice(0, 4).map((highlight) => (
+              <li key={highlight}>
+                <FiCheck aria-hidden="true" /> {highlight}
+              </li>
+            ))}
+          </ul>
+        )}
 
-        <p className={classes.role}>{role}</p>
+        {role && <p className={classes.role}>{role}</p>}
 
         <div className={classes.actions}>
           {links.live && (
