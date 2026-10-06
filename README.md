@@ -88,6 +88,10 @@ Note that sites typically allow only the production origin, so under `npm run de
 npm run check:embed
 ```
 
+## App screenshots
+
+For a project with no live site to embed (a desktop app, say), drop screenshots in `src/assets/shots/<slug>/`, named `NN-what-it-shows.webp` (for example `src/assets/shots/window-switcher/01-switcher.webp`). They appear in order in a Screenshots section on the case-study page, captioned from the `captions` map in that project's entry in `src/data/projects.js` (or from the file name), and the first one becomes the card image if the project has no cover of its own.
+
 ## Cover images
 
 Each project has two small images in `src/assets/covers/`: `<slug>.webp` (desktop) and `<slug>-mobile.webp` (phone). They are the card image on the home page and the poster in the live preview. A dependency-free script captures them from the live sites with your local Google Chrome:

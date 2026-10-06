@@ -176,6 +176,37 @@
 /* Previous on the left, Next on the right, each a fixed-width card rather than
    half the page — with the same frosted-glass treatment as the cards on the
    home page (ui/Card.module.css), so the blur and glow match. */
+/* App screenshots. Their shapes differ (a wide overlay, a narrow settings
+   window), so they wrap rather than sit in fixed columns. */
+.shots {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 2rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.shot {
+  flex: 1 1 24rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border, var(--border));
+  box-shadow: var(--shadow-card);
+}
+
+.shot figcaption {
+  margin-top: 0.75rem;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
 .pager {
   display: flex;
   justify-content: space-between;
