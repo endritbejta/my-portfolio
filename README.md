@@ -58,6 +58,7 @@ npm run preview  # preview the production build locally
 npm run lint     # run ESLint
 npm run sync:pins     # refresh src/data/pinned-repos.json from your GitHub pins (uses `gh`)
 npm run screenshots   # re-capture live-site screenshots (see below)
+npm run build:cv      # rebuild the downloadable CV PDF (uses local Chrome)
 ```
 
 In local development the site renders from the committed snapshot (`src/data/pinned-repos.json`); the serverless function runs in the Netlify environment.
@@ -69,6 +70,10 @@ In local development the site renders from the committed snapshot (`src/data/pin
 After changing your pins, run `npm run sync:pins` and commit the updated snapshot so local dev and the fallback stay current.
 
 To give a newly pinned repo a case study, add an entry to `editorial` in `src/data/projects.js` (keyed by the repo name) and a block in `scripts/shots.config.mjs` for its screenshots.
+
+## CV
+
+The downloadable CV (`src/assets/pdf/Endrit-Bejta-CV.pdf`) is generated, not hand-edited: `npm run build:cv` lays it out as HTML and prints a one-page, tagged A4 PDF with headless Chrome. Experience and skills come from `src/data`, so the CV and the site stay in sync; the summary, project blurbs, contact details and education live in `scripts/build-cv.mjs`. The script fails if the CV spills onto a second page.
 
 ## Screenshots
 
