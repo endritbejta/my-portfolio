@@ -11,6 +11,12 @@
  * for the phone view) — see scripts/capture-covers.mjs. They're the card image
  * on the home page and the poster in the live preview.
  *
+ * App screenshots (for projects with no live site to embed, like a desktop
+ * app) live in src/assets/shots/<slug>/, named "NN-what-it-shows.webp". They
+ * appear in order in a Screenshots section on the case study, captioned from
+ * `captions` in the editorial entry (or from the file name), and the first is
+ * the card image when the project has no cover of its own.
+ *
  * `preview: true` asks for the live site to be embedded on the case-study
  * page. It is only honoured for a site that allows being framed — one that
  * sends X-Frame-Options or a restrictive CSP frame-ancestors would show a blank
@@ -24,6 +30,19 @@ const coverFiles = import.meta.glob("../assets/covers/*.webp", {
   eager: true,
   import: "default",
 });
+
+const shotFiles = import.meta.glob("../assets/shots/*/*.webp", {
+  eager: true,
+  import: "default",
+});
+
+/** { slug: [{ name: "01-switcher", src }] }, in file-name order. */
+const shotsBySlug = Object.entries(shotFiles).reduce((bySlug, [filePath, src]) => {
+  const [, slug, name] = filePath.match(/shots\/([^/]+)\/([^/]+)\.webp$/);
+  (bySlug[slug] ??= []).push({ name, src });
+  return bySlug;
+}, {});
+Object.values(shotsBySlug).forEach((list) => list.sort((a, b) => a.name.localeCompare(b.name)));
 
 /** Cover image for a project: "<slug>.webp", plus an optional "<slug>-mobile.webp". */
 const coverFor = (slug, suffix = "") =>
@@ -123,6 +142,11 @@ const editorial = {
     role: "Solo developer",
     year: "2026",
     tags: ["Swift", "SwiftUI", "macOS", "ScreenCaptureKit"],
+    // Keyed by file name in src/assets/shots/window-switcher/.
+    captions: {
+      "01-switcher": "The switcher: every window is its own tile, with a live thumbnail and the app icon.",
+      "02-settings": "Settings: the shortcut, window order and which display to use.",
+    },
     problem:
       "macOS's Command+Tab switches between apps, not windows. WindowSwitcher gives it Windows-style per-window Alt+Tab, with live thumbnails.",
     highlights: [
@@ -304,6 +328,11 @@ export const buildProjects = (pins) =>
     const extra = editorial[pin.name] ?? {};
     const slug = extra.slug ?? slugify(pin.name);
 
+    const shots = (shotsBySlug[slug] ?? []).map(({ name, src }) => ({
+      src,
+      caption: extra.captions?.[name] ?? prettify(name.replace(/^\d+-/, "")),
+    }));
+
     return {
       repo: pin.name,
       slug,
@@ -314,8 +343,9 @@ export const buildProjects = (pins) =>
       tags: extra.tags ?? [pin.language, ...pin.topics].filter(Boolean).slice(0, 4),
       highlights: extra.highlights ?? [],
       caseStudy: extra.caseStudy ?? null,
-      cover: coverFor(slug),
+      cover: coverFor(slug) ?? shots[0]?.src ?? null,
       coverMobile: coverFor(slug, "-mobile"),
+      shots,
       preview: Boolean(extra.preview && pin.homepage && canEmbed(pin)),
       links: { live: pin.homepage, github: pin.url },
       updated: pin.pushedAt,

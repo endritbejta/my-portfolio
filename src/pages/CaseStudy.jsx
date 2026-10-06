@@ -144,6 +144,20 @@ const CaseStudy = () => {
         </Reveal>
       )}
 
+      {project.shots.length > 0 && (
+        <Reveal as="section" className={classes.walkthrough} aria-label="Screenshots">
+          <h2>Screenshots</h2>
+          <div className={classes.shots}>
+            {project.shots.map((shot) => (
+              <figure key={shot.src} className={classes.shot}>
+                <img src={shot.src} alt={shot.caption} loading="lazy" decoding="async" />
+                <figcaption>{shot.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </Reveal>
+      )}
+
       <div className={classes.content}>
         <Block title="Overview">
           <p>{study.overview}</p>
