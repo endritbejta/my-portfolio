@@ -2,9 +2,9 @@
   position: fixed;
   inset: 0;
   z-index: 150;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   padding: 12vh 1rem 1rem;
@@ -16,10 +16,16 @@
   max-height: 60vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  /* Unlike the cards, this one overlays real content, so a heavy blur does
+     visible work and there is only ever one of it on screen. It takes
+     --overlay-bg rather than the panels' --glass-bg: at panel alpha the page
+     behind read straight through the option list. */
+  background: var(--overlay-bg);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(var(--overlay-blur)) saturate(120%);
+  -webkit-backdrop-filter: blur(var(--overlay-blur)) saturate(120%);
+  box-shadow: var(--glass-shadow), var(--shadow-card);
   overflow: hidden;
 }
 

@@ -16,7 +16,8 @@
   --text-xl: 1.375rem;
   --text-2xl: 1.75rem;
   --text-3xl: clamp(2rem, 4vw, 2.75rem);
-  --text-hero: clamp(2.5rem, 6.5vw, 4.25rem);
+  /* Sized so the hero's CTA row stays above the fold on a laptop */
+  --text-hero: clamp(2.1rem, 5vw, 3.4rem);
 
   /* Spacing / layout */
   --container: 72rem;
@@ -29,10 +30,36 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --speed-fast: 150ms;
   --speed-base: 250ms;
-  --speed-slow: 600ms;
+  --speed-slow: 800ms;
+
+  /* Dot field geometry — shared across themes, only the color changes.
+     --dot-rest-opacity is what the dots sit at when the cursor is nowhere
+     near: low enough that text reads cleanly straight over the field. The
+     cursor still ramps them to full opacity, so the interaction reads more
+     against a dim field, not less. */
+  --dot-gap: 40px;
+  --dot-size: 4px;
+  --dot-rest-opacity: 0.16;
+
+  /* Backdrop blur. Identical in both themes, so it lives here: --glass-blur
+     is for panels, --overlay-blur for things covering actual content. */
+  --glass-blur: 5px;
+  --overlay-blur: 28px;
+
+  /* Trailing cursor dot */
+  --cursor-size: 16px;
+  /* Cards get the big dot; links and buttons a smaller one, since a 64px
+     blob over an inline text link swallows the thing it's pointing at. */
+  --cursor-hover-scale: 4;
+  --cursor-hover-scale-sm: 2.5;
+  /* The swell is a CSS transition, so this is an exact duration — unlike the
+     follow, which is a per-frame ease with no fixed length. */
+  --cursor-swell: 800ms;
 
   /* Accent is shared across themes */
   --accent: #f43f5e;
+  /* Same colour as a bare triplet, for rgba()/color-mix() use */
+  --accent-rgb: 244, 63, 94;
   --accent-strong: #e11d48;
   --accent-soft: rgba(244, 63, 94, 0.12);
   --accent-contrast: #ffffff;
@@ -52,6 +79,34 @@
   --nav-glass: rgba(11, 12, 16, 0.72);
   --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.35);
   --success: #4ade80;
+
+  /* Page gradient behind the dot field */
+  --page-top: #14151a;
+  --page-bottom: #0a0a0c;
+
+  /* Dot field. The field's JS writes each dot's own --opacity; the scale
+     lets one interaction curve read right against either background. */
+  --dot-rgb: 255, 255, 255;
+  --dot-alpha-scale: 1;
+
+  /* Frosted panels. The white outer glow is what lifts a panel off the
+     dark background — an ordinary dark drop shadow disappears into it. */
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-bg-hover: rgba(255, 255, 255, 0.11);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 12px 36px -14px rgba(0, 0, 0, 0.5),
+    0 0 24px -8px rgba(255, 255, 255, 0.07);
+
+  /* Fill for modals. Far denser than --glass-bg: a panel can afford to be
+     see-through, a dialog full of text cannot. */
+  --overlay-bg: rgba(20, 21, 28, 0.9);
+
+  /* Trailing cursor: -fg is the icon riding inside the dot, so it has to
+     contrast against -bg, not against the page. */
+  --cursor-bg: rgba(255, 255, 255, 0.9);
+  --cursor-fg: #0b0c10;
 }
 
 :root[data-theme="light"] {
@@ -68,6 +123,30 @@
   --nav-glass: rgba(250, 250, 250, 0.78);
   --shadow-card: 0 8px 30px rgba(17, 17, 20, 0.08);
   --success: #16a34a;
+
+  --page-top: #ffffff;
+  --page-bottom: #e8eaef;
+
+  /* Ink at the dark theme's alpha is far heavier on white than white is on
+     near-black, so the whole opacity curve gets scaled down here. */
+  --dot-rgb: 20, 21, 26;
+  --dot-alpha-scale: 0.7;
+
+  /* Frosted white, not tinted ink: a dark wash at glass alphas over a light
+     background just reads as dirty gray, so panels stay white and the
+     border + a tight drop shadow do the separating instead. */
+  --glass-bg: rgba(255, 255, 255, 0.34);
+  --glass-bg-hover: rgba(255, 255, 255, 0.46);
+  --glass-border: rgba(20, 21, 26, 0.1);
+  --glass-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 4px 12px -8px rgba(20, 21, 26, 0.18),
+    0 0 8px -4px rgba(20, 21, 26, 0.05);
+
+  --overlay-bg: rgba(252, 252, 253, 0.92);
+
+  --cursor-bg: rgba(20, 21, 26, 0.88);
+  --cursor-fg: #ffffff;
 }
 
 /* ---------------------------------- */
@@ -231,6 +310,52 @@ h4 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ---------------------------------- */
+/* Trailing cursor                    */
+/* ---------------------------------- */
+
+/* Toggled by CursorTrailer while the dot is over something clickable: the
+   swollen dot stands in for the pointer there. !important and the descendant
+   selector are both needed — links and buttons set cursor: pointer
+   themselves, and the rule has to beat every one of them. */
+html.cursor-none,
+html.cursor-none * {
+  cursor: none !important;
+}
+
+/* ---------------------------------- */
+/* Stretched links                    */
+/* ---------------------------------- */
+
+/* A card-wide click target: a real, empty anchor absolutely positioned over
+   the card, so clicking anywhere on the card follows it.
+
+   This started as `::after` on an existing link — the classic stretched-link
+   trick — and that DID NOT WORK: real mouse clicks passed straight through the
+   pseudo-element and landed on whatever was underneath, even though
+   elementFromPoint() happily reported the anchor. Verify this with real
+   clicks, not elementFromPoint.
+
+   The overlay is aria-hidden and untabbable on purpose: it duplicates a link
+   that is already visible in the card, so exposing it would announce the same
+   destination twice and add a tab stop that goes nowhere new. Keyboard and
+   screen-reader users get the real buttons; the overlay is a pointer
+   convenience. The card supplies the containing block (Card.module.css). */
+.stretch-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+/* Everything else interactive in the card must sit above the overlay, or it
+   swallows their clicks — they are the reason for this pattern. */
+.stretch-host a:not(.stretch-link),
+.stretch-host button {
+  position: relative;
+  z-index: 2;
 }
 
 /* ---------------------------------- */

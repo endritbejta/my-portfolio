@@ -2,6 +2,7 @@ import { FiArrowRight, FiDownload, FiGithub, FiMapPin } from "react-icons/fi";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import Reveal from "../components/ui/Reveal";
+import ScrambleText from "../components/ScrambleText";
 import { profile, socials } from "../data/profile";
 import classes from "./Hero.module.css";
 
@@ -11,7 +12,6 @@ const Hero = () => (
     <div className={`container ${classes.inner}`}>
       <Reveal>
         <div className={classes.meta}>
-          <Badge tone="success">{profile.availability}</Badge>
           <span className={classes.location}>
             <FiMapPin aria-hidden="true" /> {profile.location}
           </span>
@@ -23,7 +23,7 @@ const Hero = () => (
 
       <Reveal delay={80}>
         <h1 className={classes.title}>
-          Hi, I'm {profile.name.split(" ")[0]}.
+          Hi, I'm <ScrambleText>{profile.name.split(" ")[0]}</ScrambleText>.
           <br />
           <span className={classes.titleAccent}>
             I engineer commerce platforms where performance is revenue.

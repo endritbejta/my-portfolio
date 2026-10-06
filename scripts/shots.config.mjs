@@ -49,7 +49,7 @@ export const shots = [
     ],
   },
   {
-    slug: "alfa-globe",
+    slug: "alfa-trade",
     url: "https://alfa-trade.netlify.app",
     shots: [
       { name: "01-home" },

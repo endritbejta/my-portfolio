@@ -31,7 +31,7 @@ export const skillGroups = [
   },
   {
     title: "Backend",
-    skills: ["Node.js", "Express", "REST APIs", "MongoDB", ".NET (learning)"],
+    skills: ["Node.js", "Express", "REST APIs", "MongoDB"],
   },
   {
     title: "Mobile",

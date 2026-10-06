@@ -27,10 +27,15 @@ const OpenSource = () => (
     <div className={classes.grid}>
       {repos.map((repo, index) => (
         <Reveal key={repo.name} delay={(index % 3) * 80}>
-          <Card as="article" interactive className={classes.card}>
+          <Card as="article" interactive className={`stretch-host ${classes.card}`}>
             <div className={classes.header}>
               <h3 className={classes.name}>
-                <a href={repo.url} target="_blank" rel="noreferrer">
+                <a
+                  href={repo.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`${repo.name} — open on GitHub`}
+                >
                   {repo.name}
                 </a>
               </h3>
@@ -59,6 +64,16 @@ const OpenSource = () => (
               </span>
               <span className={classes.updated}>Updated {formatMonth(repo.updated)}</span>
             </div>
+
+            <a
+              href={repo.url}
+              target="_blank"
+              rel="noreferrer"
+              className="stretch-link"
+              data-cursor-size="lg"
+              aria-hidden="true"
+              tabIndex={-1}
+            />
           </Card>
         </Reveal>
       ))}

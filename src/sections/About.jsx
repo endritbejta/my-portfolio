@@ -1,7 +1,6 @@
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
-import StatCounter from "../components/StatCounter";
-import { profile, stats } from "../data/profile";
+import { profile } from "../data/profile";
 import classes from "./About.module.css";
 
 const About = () => (
@@ -32,15 +31,6 @@ const About = () => (
         />
       </Reveal>
     </div>
-
-    <dl className={classes.stats}>
-      {stats.map((stat, index) => (
-        <Reveal key={stat.label} delay={index * 90} as="div" className={classes.stat}>
-          <StatCounter value={stat.value} suffix={stat.suffix} />
-          <dd>{stat.label}</dd>
-        </Reveal>
-      ))}
-    </dl>
   </Section>
 );
 

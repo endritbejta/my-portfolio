@@ -48,10 +48,10 @@ const META = {
     description: "Note-taking app with folders, editing and Redux-managed state.",
     stack: ["React", "Redux Toolkit", "SCSS"],
   },
-  alfaglobe: {
-    name: "Alfa Globe",
-    description: "Marketing site for a gas company — products, locations, company info.",
-    stack: ["React", "SCSS"],
+  "alfa-trade": {
+    name: "Alfa Trade",
+    description: "Corporate site for a petroleum company — products, divisions, locations.",
+    stack: ["React", "Tailwind CSS"],
   },
   "endrits-multistepform": {
     name: "Multi-step Form",

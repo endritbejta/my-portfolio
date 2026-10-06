@@ -3,7 +3,7 @@
  * Captures screenshots of live project deployments into src/assets/screenshots/<slug>/.
  *
  *   node scripts/capture-screenshots.mjs            # every project in shots.config.mjs
- *   node scripts/capture-screenshots.mjs alfa-globe # just one
+ *   node scripts/capture-screenshots.mjs alfa-rent # just one
  *
  * Drives the locally installed Google Chrome over the DevTools protocol, so
  * there are no npm dependencies. Override the binary with CHROME_PATH.

@@ -95,7 +95,7 @@ To run it against a real account, set `NETLIFY_AUTH_TOKEN` in the Netlify site's
 
 ## Deployment
 
-Deployed on Netlify. `public/_redirects` provides the SPA fallback so deep links (e.g. `/projects/alfa-globe`) resolve to `index.html` and are handled by the client router.
+Deployed on Netlify. `public/_redirects` provides the SPA fallback so deep links (e.g. `/projects/alfa-rent`) resolve to `index.html` and are handled by the client router.
 
 ---
 

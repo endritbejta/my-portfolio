@@ -14,8 +14,20 @@ const ProjectCard = memo(function ProjectCard({ project }) {
   const { title, problem, role, year, tags, highlights, cover, links, slug, caseStudy } =
     project;
 
+  // Where a click anywhere on the card goes. The live site wins — it's what a
+  // visitor most wants from a project card — then the case study, then the
+  // repo. The repo is the last resort so a card with no homepage and no case
+  // study still goes somewhere. A project with none of the three stays inert.
+  const cardLink = links.live
+    ? { href: links.live }
+    : caseStudy
+      ? { to: `/projects/${slug}` }
+      : links.github
+        ? { href: links.github }
+        : null;
+
   return (
-    <Card as="article" interactive className={classes.card}>
+    <Card as="article" interactive className={`stretch-host ${classes.card}`}>
       <div className={classes.media}>
         {cover ? (
           <img
@@ -60,22 +72,61 @@ const ProjectCard = memo(function ProjectCard({ project }) {
 
         <div className={classes.actions}>
           {links.live && (
-            <Button href={links.live} size="sm" icon={<FiExternalLink />}>
+            <Button
+              href={links.live}
+              size="sm"
+              icon={<FiExternalLink />}
+              /* Names it uniquely among the page's many "Live demo" links,
+                 while still starting with the visible text so the accessible
+                 name contains it (WCAG 2.5.3). */
+              aria-label={`Live demo — ${title}`}
+            >
               Live demo
             </Button>
           )}
           {links.github && (
-            <Button href={links.github} size="sm" variant="secondary" icon={<FiGithub />}>
+            <Button
+              href={links.github}
+              size="sm"
+              variant="secondary"
+              icon={<FiGithub />}
+              aria-label={`GitHub — ${title}`}
+            >
               GitHub
             </Button>
           )}
           {caseStudy && (
-            <Link to={`/projects/${slug}`} className={classes.caseStudyLink}>
+            <Link
+              to={`/projects/${slug}`}
+              className={classes.caseStudyLink}
+              aria-label={`Case study — ${title}`}
+            >
               Case study →
             </Link>
           )}
         </div>
       </div>
+
+      {cardLink &&
+        (cardLink.to ? (
+          <Link
+            to={cardLink.to}
+            className="stretch-link"
+            data-cursor-size="lg"
+            aria-hidden="true"
+            tabIndex={-1}
+          />
+        ) : (
+          <a
+            href={cardLink.href}
+            target="_blank"
+            rel="noreferrer"
+            className="stretch-link"
+            data-cursor-size="lg"
+            aria-hidden="true"
+            tabIndex={-1}
+          />
+        ))}
     </Card>
   );
 });

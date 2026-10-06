@@ -1,0 +1,71 @@
+/* Sits above every other layer — the command palette overlay is z-index 150
+   and the skip link 200 — because a cursor should never be occluded. */
+.trailer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+  border-radius: 50%;
+  background: var(--cursor-bg);
+
+  /* Never intercept anything: the trailer follows the pointer, so without
+     this it would sit under the cursor and swallow every hover and click. */
+  pointer-events: none;
+
+  display: grid;
+  place-items: center;
+
+  /* Position and scale are deliberately separate properties rather than one
+     `transform`. The JS writes `translate` every frame for the follow, which
+     would otherwise clobber any transition on the scale; split like this the
+     browser owns the swell and it gets an exact duration. Order is fixed by
+     spec — translate, then rotate, then scale — so the dot scales about its
+     own centre, which is already sitting on the pointer. */
+  translate: 0 0;
+  scale: 1;
+
+  opacity: 0;
+  transition: opacity var(--speed-base) ease,
+    scale var(--cursor-swell) var(--ease-out);
+
+  /* One element, animated on every frame — the promotion is worth it here in
+     a way it would not be on the dot field's several hundred nodes. */
+  will-change: translate, scale;
+}
+
+.visible {
+  opacity: 1;
+}
+
+/* Small is the default for links and buttons; only a card opts up to the
+   large scale. */
+.hovering {
+  scale: var(--cursor-hover-scale-sm);
+}
+
+.hovering[data-size="lg"] {
+  scale: var(--cursor-hover-scale);
+}
+
+/* Laid out tiny and scaled up with the dot, so this is ~1/4 of the swollen
+   dot's width. Sized off --cursor-size to hold that ratio if the dot
+   changes. */
+.icon {
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--cursor-size) / 3.2);
+  line-height: 1;
+  color: var(--cursor-fg);
+
+  opacity: 0;
+  /* Quicker than the swell on purpose: the cue should read as soon as the
+     dot starts growing, not arrive after it. */
+  transition: opacity 300ms ease;
+}
+
+.iconVisible {
+  opacity: 1;
+}

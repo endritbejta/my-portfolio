@@ -34,16 +34,16 @@ const editorial = {
   shitblej: {
     slug: "shitblej",
     title: "Shitblej",
-    role: "Solo developer · full-stack",
-    year: "2026",
-    tags: ["React", "Node.js", "MongoDB", "Socket.IO"],
     problem:
-      "Peer-to-peer selling in Kosovo needs more than a listings page — a marketplace where price negotiation, checkout and messaging follow one enforced flow.",
+      "Kosovo has no real peer-to-peer marketplace — second-hand trade happens in Facebook groups, where there is no search, no categories and no way to judge a seller.",
+    role: "Solo developer",
+    year: "2026",
+    tags: ["React", "React Router", "Vite", "i18next", "REST API"],
     highlights: [
-      "Offer → counteroffer → checkout → order flow",
-      "Real-time updates and order-gated messaging",
-      "Search, filters, saved items, profiles",
-      "AI listing assistant: photo → draft listing",
+      "Listing, browsing and buying flows end-to-end",
+      "Nine categories with per-collection routes",
+      "Buyer/seller inbox and wishlist",
+      "Bilingual UI via i18next",
     ],
     captions: {
       "01-home": "Landing page — search, category navigation and popular categories.",
@@ -54,29 +54,30 @@ const editorial = {
     },
     caseStudy: {
       overview:
-        "Shitblej (Albanian for “sell” + “buy”) is a full-stack marketplace for discovering, listing, negotiating, buying and selling products. One repository holds a versioned REST API, a real-time layer and a responsive React web app.",
+        "A peer-to-peer marketplace for second-hand goods in Kosovo — list an item in a few minutes, browse nine categories, save what you like and message the seller. Listings carry a graded condition, a price and a location, and the home page is merchandised rather than a raw feed: trending, recently added, curated collections and an editor's luxury edit.",
       problem:
-        "Casual classifieds leave the hard part — agreeing a price and trusting the deal — to loose chat threads. The goal was to make negotiation a first-class, structured flow: a buyer makes an offer, the seller accepts, declines or counters, and only an accepted offer can be checked out into an order.",
+        "Second-hand trade here happens in Facebook groups. There is no structured search, no categories, no condition grading and no way to tell a serious seller from a dead post. The goal was the boring infrastructure a marketplace actually needs — findable listings, a real listing flow, and a place for buyer and seller to talk.",
       architecture:
-        "A monorepo with four parts. The backend is Node.js with Express 5, MongoDB via Mongoose, Socket.IO for real-time events, JWT auth, Zod validation and Cloudinary for images. The web app is React 19 on Vite with Tailwind, React Router, Axios, i18next and Swiper. A separate TypeScript service (Fastify + the Anthropic SDK with vision) turns a photo into a draft listing. Playwright drives a browser against the real stack. The frontend deploys to Netlify and the API to Render.",
+        "React SPA on Vite with React Router, talking to a REST API of its own at /api/v1 hosted on Render, with Bearer-token auth. Routes and heavy components are code-split — the product grid, product card, wishlist button and image component each load on demand, so the category and product routes do not pay for the home page's merchandising sections. Copy runs through i18next with a fallback language and an in-header switcher.",
       decisions: [
-        "The transaction flow is enforced on the server. The UI hides invalid actions, but the API is the boundary — messaging between two users is only authorised once an order exists.",
-        "Two health probes with different jobs: /health says the process is alive and checks nothing external; /health/ready pings MongoDB and returns 503 so a load balancer routes around a sick instance.",
-        "Every request carries an X-Request-Id that is echoed back and attached to every log line, and the logger redacts credentials itself so no call site can leak one.",
-        "Image storage is pluggable: a local driver lets a fresh clone list a product without a Cloudinary account, and the API refuses to start with it in production.",
+        "A REST API of its own rather than a backend-as-a-service, so listings, users and messages are modelled explicitly and the contract is mine to change.",
+        "No global state library — React state and context carry the app, which keeps the bundle honest for a catalogue that mostly renders server data.",
+        "Wishlist kept in localStorage as well as on the account, so saving something does not force a signup first.",
+        "A single SmartImage component for every listing photo, because a marketplace is mostly user-uploaded images of unpredictable size.",
       ],
       challenges: [
-        "Rate limiting behind a reverse proxy — without trusting the proxy hop, every client appears to share one IP and one user can exhaust the login limit for everyone.",
-        "Keeping a state machine (offers, counteroffers, orders) consistent across REST calls and real-time events.",
-        "Testing across layers: Jest + Supertest with an in-memory MongoDB for the API, Vitest + Testing Library for the UI, and Playwright end to end.",
+        "Merchandising an empty marketplace: trending and curated sections have to look intentional before there is real traffic to derive them from.",
+        "Condition and price are the whole trust model when there are no reviews yet, so both had to be unavoidable in the listing flow and legible on every card.",
+        "Keeping a free-tier API responsive enough that browsing does not feel broken on a cold start.",
       ],
       lessons: [
-        "Put the rule where it can't be bypassed. Client-side checks are UX; the server is the security boundary.",
-        "Operational details — probes, request IDs, log redaction — are cheap early and expensive to retrofit.",
+        "A marketplace is two products — the buying flow and the selling flow — and the selling side is where people give up. It deserved the most iteration.",
+        "Internationalisation is far cheaper to wire in from the first screen than to retrofit once copy is scattered through components.",
       ],
       future: [
-        "Translate page copy (the English / Albanian / Serbian locale files currently cover the site chrome only)",
-        "Payments integration at checkout",
+        "Reviews and seller ratings",
+        "Image upload straight from the phone camera",
+        "Saved searches with notifications",
       ],
     },
   },
@@ -215,7 +216,7 @@ const editorial = {
   },
 
   alfa_globe: {
-    slug: "alfa-globe",
+    slug: "alfa-trade",
     title: "Alfa Trade",
     role: "Solo developer (client project)",
     year: "2023 — 2026",

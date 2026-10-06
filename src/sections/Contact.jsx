@@ -8,7 +8,6 @@ import {
   FiMail,
   FiMapPin,
 } from "react-icons/fi";
-import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import Reveal from "../components/ui/Reveal";
@@ -40,7 +39,6 @@ const Contact = () => {
         <Card className={classes.card}>
           <div className={classes.info}>
             <div className={classes.status}>
-              <Badge tone="success">{profile.availability}</Badge>
               <span className={classes.location}>
                 <FiMapPin aria-hidden="true" /> {profile.location} · CET
               </span>
