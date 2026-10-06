@@ -9,6 +9,9 @@ import {
   FiSmartphone,
 } from "react-icons/fi";
 import { isReducedMotion } from "../hooks/useMotionPreference";
+import { useOs } from "../hooks/useOs";
+import PreviewDialog from "./PreviewDialog";
+import WindowControls from "./WindowControls";
 import classes from "./LivePreview.module.css";
 
 // The size the site is rendered at, then scaled down to fit. Rendering at a
@@ -27,6 +30,16 @@ const MIN_SCREEN_HEIGHT = 150;
 
 // Below this the desktop view would be scaled to an unreadable thumbnail.
 const NARROW_PX = 700;
+
+// A short sideways shake: how a control says "I heard you, but no".
+const SHAKE_FRAMES = [
+  { transform: "translateX(0)" },
+  { transform: "translateX(-3px)" },
+  { transform: "translateX(3px)" },
+  { transform: "translateX(-2px)" },
+  { transform: "translateX(2px)" },
+  { transform: "translateX(0)" },
+];
 
 // If a site never reports that it has loaded, stop covering it with the
 // cover image after this long and show whatever is there.
@@ -88,6 +101,12 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
   const [nativeFull, setNativeFull] = useState(false); // browser fullscreen
   const [fakeFull, setFakeFull] = useState(false); // full-window overlay fallback
   const [slotHeight, setSlotHeight] = useState(0); // space held open while fullscreen
+  const [minimized, setMinimized] = useState(false); // folded down to the title bar
+  const [dialogOpen, setDialogOpen] = useState(false); // the "can't be closed" alert
+  const dialogOpenRef = useRef(false);
+  dialogOpenRef.current = dialogOpen;
+  const dialogReturnFocus = useRef(null);
+  const os = useOs();
   const [room, setRoom] = useState({ width: 0, height: 0, padX: 0, padY: 0, bezel: 0 });
   const rootRef = useRef(null);
   const viewportRef = useRef(null);
@@ -108,7 +127,9 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
   // screens.
   const measure = () => {
     const stage = stageRef.current;
-    if (!stage) return;
+    // No width means the stage is hidden (minimized): keep the last size so
+    // it comes back right.
+    if (!stage || !stage.clientWidth) return;
     // Fullscreen covers the page header, and has no page around it to leave
     // room for.
     const header = fullRef.current ? 0 : document.querySelector("header")?.offsetHeight ?? 0;
@@ -171,6 +192,7 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
 
   const enterFull = async () => {
     if (embed) setLoaded(true);
+    setMinimized(false); // fullscreen of a folded-up frame would be empty
     const root = rootRef.current;
     // Fullscreen takes the container out of the page flow. Without something
     // holding its place the page would shrink by its height and scroll out
@@ -241,10 +263,122 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
     }
   };
 
+  const reload = () => {
+    setReady(false);
+    setReloads((count) => count + 1);
+  };
+
+  // Keyboard shortcuts, deliberately unadvertised (they're a convenience, not
+  // the interface): F fullscreen, M minimize, R reload, Esc restore. They only
+  // act while the preview is in use — pointer over it, focus inside it, or
+  // fullscreen — never while typing, and never with Ctrl/Cmd/Alt, so they
+  // can't collide with the browser's or the page's own shortcuts. Keys typed
+  // *into* the embedded site go to that site and never reach this page.
+  const shortcuts = useRef({});
+  shortcuts.current = {
+    toggleFull: () => (fullRef.current ? exitFull() : enterFull()),
+    // Looked up when the key is pressed, not now: it is defined further down.
+    toggleMinimize: () => toggleMinimize(),
+    restore: () => setMinimized(false),
+    reload: () => loaded && reload(),
+    minimized,
+  };
+
+  useEffect(() => {
+    if (!embed) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.defaultPrevented || event.repeat || dialogOpenRef.current) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      const target = event.target;
+      const typing =
+        target instanceof HTMLElement &&
+        (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+      if (typing) return;
+
+      const root = rootRef.current;
+      const inUse =
+        fullRef.current || root?.matches(":hover") || root?.contains(document.activeElement);
+      if (!root || !inUse) return;
+
+      const actions = shortcuts.current;
+      const key = event.key.toLowerCase();
+      if (key === "f") actions.toggleFull();
+      else if (key === "m") actions.toggleMinimize();
+      else if (key === "r") actions.reload();
+      else if (key === "escape" && actions.minimized) actions.restore();
+      else return;
+      event.preventDefault();
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [embed]);
+
   const load = () => {
+    setMinimized(false);
     setLoaded(true);
     bringIntoView();
   };
+
+  // Shake a window control that did something other than what it normally
+  // does (or nothing), so the click never feels dropped. Skipped under reduced
+  // motion — the shake is feedback, not information.
+  const shake = (control) => {
+    if (isReducedMotion()) return;
+    rootRef.current
+      ?.querySelector(`[data-control="${control}"]`)
+      ?.animate(SHAKE_FRAMES, { duration: 380, easing: "ease-in-out" });
+  };
+
+  // The whole container, for the "can't close" case — a bigger, slower shake
+  // than a single control's.
+  const shakeContainer = () => {
+    if (isReducedMotion()) return;
+    rootRef.current?.animate(
+      [0, -7, 7, -5, 5, -2, 0].map((x) => ({ transform: `translateX(${x}px)` })),
+      { duration: 460, easing: "ease-in-out" }
+    );
+  };
+
+  // Minimizing a fullscreen window makes no sense: refuse, with a shake.
+  const toggleMinimize = () => {
+    if (fullRef.current) shake("minimize");
+    else setMinimized((value) => !value);
+  };
+
+  // Close: a preview isn't a window anyone can dismiss, so ✕ says so — the
+  // container shakes and an alert in the visitor's OS style explains. (In
+  // fullscreen it only leaves fullscreen, with a shake on the ✕ itself.)
+  const closeWindow = () => {
+    if (fullRef.current) {
+      exitFull();
+      shake("close");
+      return;
+    }
+    dialogReturnFocus.current = document.activeElement;
+    setMinimized(false); // the alert needs the container's full height
+    shakeContainer();
+    setDialogOpen(true);
+  };
+
+  const dismissDialog = () => {
+    setDialogOpen(false);
+    // Hand focus back to where it was (the ✕), as a real alert does.
+    requestAnimationFrame(() => dialogReturnFocus.current?.focus?.());
+  };
+
+  const controls = embed ? (
+    <WindowControls
+      os={os}
+      minimized={minimized}
+      fullscreen={full}
+      onClose={closeWindow}
+      onMinimize={toggleMinimize}
+      onToggleFullscreen={full ? exitFull : enterFull}
+    />
+  ) : null;
 
   const poster = device === "mobile" ? coverMobile ?? cover : cover;
 
@@ -256,73 +390,106 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
         className={classes.preview}
         ref={rootRef}
         data-full={nativeFull ? "native" : fakeFull ? "fake" : undefined}
+        data-minimized={minimized ? "" : undefined}
       >
-        <div className={classes.toolbar} ref={toolbarRef}>
-          <span className={classes.lights} aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-          <span className={classes.url}>{host}</span>
-
-          {embed && (
-          <div className={classes.devices} role="group" aria-label="Preview size">
-            <button
-              type="button"
-              aria-pressed={device === "desktop"}
-              onClick={() => setDevice("desktop")}
-            >
-              <FiMonitor aria-hidden="true" /> <span>Desktop</span>
-            </button>
-            <button
-              type="button"
-              aria-pressed={device === "mobile"}
-              onClick={() => setDevice("mobile")}
-            >
-              <FiSmartphone aria-hidden="true" /> <span>Mobile</span>
-            </button>
+        <div
+          className={classes.toolbar}
+          ref={toolbarRef}
+          data-os={embed ? os : undefined}
+          inert={dialogOpen ? "" : undefined}
+        >
+          {/* Row 1, the title bar: window controls and the address. macOS puts
+              its lights on the left; every other style puts them on the right
+              and has nothing on the left at all. */}
+          <div className={classes.titleBar}>
+            {os === "mac" &&
+              (controls ?? (
+                // A static snapshot has nothing to control: plain dots.
+                <span className={classes.lights} aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+              ))}
+            <span className={classes.url}>{host}</span>
+            {controls && os !== "mac" && controls}
+            {!embed && (
+              <a
+                className={classes.iconButton}
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Open ${host} in a new tab`}
+                title="Open in a new tab"
+              >
+                <FiExternalLink aria-hidden="true" />
+              </a>
+            )}
           </div>
-          )}
 
+          {/* Row 2, the actions: what to show it as, and what to do with it. */}
           {embed && (
-            <button
-              type="button"
-              className={classes.iconButton}
-              onClick={() => {
-                setReady(false);
-                setReloads((count) => count + 1);
-              }}
-              disabled={!loaded}
-              aria-label="Reload preview"
-              title="Reload preview"
-            >
-              <FiRefreshCw aria-hidden="true" />
-            </button>
+            <div className={classes.actionBar}>
+              <div className={classes.devices} role="group" aria-label="Preview size">
+                <button
+                  type="button"
+                  aria-pressed={device === "desktop"}
+                  onClick={() => setDevice("desktop")}
+                >
+                  <FiMonitor aria-hidden="true" /> <span>Desktop</span>
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={device === "mobile"}
+                  onClick={() => setDevice("mobile")}
+                >
+                  <FiSmartphone aria-hidden="true" /> <span>Mobile</span>
+                </button>
+              </div>
+
+              <div className={classes.actions}>
+                <button
+                  type="button"
+                  className={classes.iconButton}
+                  onClick={reload}
+                  disabled={!loaded}
+                  aria-keyshortcuts="R"
+                  aria-label="Reload preview"
+                  title="Reload preview"
+                >
+                  <FiRefreshCw aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  className={`${classes.iconButton} ${classes.fullscreenButton}`}
+                  onClick={full ? exitFull : enterFull}
+                  aria-keyshortcuts="F"
+                  aria-label={full ? "Exit fullscreen" : "View fullscreen"}
+                  title={full ? "Exit fullscreen" : "Fullscreen"}
+                >
+                  {full ? <FiMinimize aria-hidden="true" /> : <FiMaximize aria-hidden="true" />}
+                </button>
+                <a
+                  className={classes.iconButton}
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`Open ${host} in a new tab`}
+                  title="Open in a new tab"
+                >
+                  <FiExternalLink aria-hidden="true" />
+                </a>
+              </div>
+            </div>
           )}
-          {embed && (
-            <button
-              type="button"
-              className={classes.iconButton}
-              onClick={full ? exitFull : enterFull}
-              aria-label={full ? "Exit fullscreen" : "View fullscreen"}
-              title={full ? "Exit fullscreen" : "Fullscreen"}
-            >
-              {full ? <FiMinimize aria-hidden="true" /> : <FiMaximize aria-hidden="true" />}
-            </button>
-          )}
-          <a
-            className={classes.iconButton}
-            href={url}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`Open ${host} in a new tab`}
-            title="Open in a new tab"
-          >
-            <FiExternalLink aria-hidden="true" />
-          </a>
         </div>
 
-        <div className={classes.stage} ref={stageRef} data-device={device}>
+        <div
+          className={classes.stage}
+          ref={stageRef}
+          data-device={device}
+          inert={dialogOpen ? "" : undefined}
+        >
           <div
             className={classes.viewport}
             ref={viewportRef}
@@ -401,7 +568,7 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
           </div>
         </div>
 
-        <p className={classes.note} ref={noteRef}>
+        <p className={classes.note} ref={noteRef} inert={dialogOpen ? "" : undefined}>
           {!embed
             ? "This site can't be shown embedded, so this is a snapshot of its home page."
             : !loaded
@@ -410,6 +577,16 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
                 ? "Live and interactive. Some features may be limited when a site is embedded."
                 : `Loading ${host}…`}
         </p>
+
+        {dialogOpen && (
+          <PreviewDialog
+            os={os}
+            title="This window can't be closed"
+            message={`It's a live preview of ${host}, so there's nothing to close. Minimize it or view it fullscreen instead.`}
+            windowTitle="Live preview"
+            onClose={dismissDialog}
+          />
+        )}
       </div>
     </div>
   );

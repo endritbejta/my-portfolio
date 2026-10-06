@@ -1,4 +1,5 @@
 .preview {
+  position: relative; /* the "can't be closed" alert is placed inside it */
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--bg-elevated);
@@ -8,14 +9,38 @@
 
 /* ---- Toolbar ---- */
 
-/* Never wraps: the URL pill is what gives way when space runs out. */
+/* Two rows. The title bar (window controls and the address) is what carries
+   the OS styling, and the WindowControls padding trick needs it to be the
+   only thing the toolbar's --pad values apply to. The actions sit under it. */
 .toolbar {
+  --pad-y: 0.65rem; /* WindowControls cancels these to sit flush in the corner */
+  --pad-x: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-hover);
+  border-bottom: 1px solid var(--border);
+}
+
+.titleBar {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.65rem 0.9rem;
-  background: var(--surface-hover);
-  border-bottom: 1px solid var(--border);
+  padding: var(--pad-y) var(--pad-x);
+}
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.4rem var(--pad-x);
+  border-top: 1px solid var(--border);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .lights {
@@ -28,6 +53,24 @@
   height: 0.65rem;
   border-radius: 50%;
   background: var(--border-strong);
+}
+
+/* The standalone fullscreen button is for screens too small for window
+   controls (they are hidden there); elsewhere the maximize control does it. */
+/* Same specificity as .iconButton (which sets display) so order can't undo it. */
+.iconButton.fullscreenButton {
+  display: none;
+}
+
+/* Minimized: only the title bar is left. */
+.preview[data-minimized] .stage,
+.preview[data-minimized] .note,
+.preview[data-minimized] .actionBar {
+  display: none;
+}
+
+.preview[data-minimized] .toolbar {
+  border-bottom: 0;
 }
 
 .url {
@@ -246,8 +289,14 @@ a.poster:hover img {
     display: none;
   }
 
-  .lights {
+  /* No room for window controls: the standalone fullscreen button returns. */
+  .lights,
+  .titleBar > :global([role="group"][aria-label="Window controls"]) {
     display: none;
+  }
+
+  .iconButton.fullscreenButton {
+    display: inline-grid;
   }
 
   /* Edge to edge, so the phone gets every pixel of the screen's width, and
@@ -258,8 +307,26 @@ a.poster:hover img {
     border-radius: 0;
   }
 
+  /* No window controls here, so the two rows would just be a URL pill and a
+     row of buttons: put them back on one line and give the height to the
+     phone, which is what limits how large it can be drawn. */
   .toolbar {
-    padding: 0.55rem 0.75rem;
+    --pad-y: 0.55rem;
+    --pad-x: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .titleBar {
+    flex: 1;
+    min-width: 0;
+    padding-right: 0;
+  }
+
+  .actionBar {
+    flex: none;
+    padding: var(--pad-y) var(--pad-x) var(--pad-y) 0.6rem;
+    border-top: 0;
   }
 
   .stage {

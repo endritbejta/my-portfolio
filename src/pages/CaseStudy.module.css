@@ -104,8 +104,8 @@
   border-radius: var(--radius-lg);
   background: var(--glass-bg, var(--surface));
   box-shadow: var(--glass-shadow, none);
-  -webkit-backdrop-filter: blur(var(--glass-blur, 0px));
-  backdrop-filter: blur(var(--glass-blur, 0px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 0px)) saturate(120%);
+  backdrop-filter: blur(var(--glass-blur, 0px)) saturate(120%);
 }
 
 .facts dl {
@@ -173,26 +173,35 @@
   color: var(--text-muted);
 }
 
+/* Previous on the left, Next on the right, each a fixed-width card rather than
+   half the page — with the same frosted-glass treatment as the cards on the
+   home page (ui/Card.module.css), so the blur and glow match. */
 .pager {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  justify-content: space-between;
   gap: 1rem;
   margin-top: 5rem;
 }
 
 .pagerLink {
+  flex: 0 1 22rem;
   display: grid;
   gap: 0.35rem;
   padding: 1.25rem 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  transition: border-color var(--speed-base), background var(--speed-base);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(120%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(120%);
+  transition: background-color var(--speed-base) ease,
+    border-color var(--speed-base) ease, box-shadow var(--speed-base) ease;
 }
 
 .pagerLink:hover {
-  border-color: var(--accent);
-  background: var(--surface-hover);
+  background: var(--glass-bg-hover);
+  border-color: var(--border-strong);
+  box-shadow: var(--glass-shadow), var(--shadow-card);
 }
 
 .pagerLink span {
@@ -219,6 +228,8 @@
   }
 
   .pagerLink {
+    flex: 1 1 0;
+    min-width: 0;
     padding: 0.9rem 1rem;
   }
 

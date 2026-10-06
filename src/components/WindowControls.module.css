@@ -1,0 +1,175 @@
+/* ---- macOS: traffic lights, on the left ---- */
+
+.lights {
+  flex: none;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.light {
+  display: grid;
+  place-items: center;
+  width: 0.85rem;
+  height: 0.85rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  cursor: default;
+}
+
+/* The glyphs appear when the pointer (or focus) is anywhere on the group,
+   exactly as on a real window, each in a dark shade of its own colour. */
+.light svg {
+  width: 72%;
+  height: 72%;
+  opacity: 0;
+  transition: opacity var(--speed-fast) ease;
+}
+
+/* Feather's arrows are drawn with a 2px stroke; thicken them to match the
+   cross and bar next to them. */
+.zoom svg {
+  stroke-width: 2.8;
+}
+
+.lights:hover .light svg,
+.lights:focus-within .light svg {
+  opacity: 1;
+}
+
+.close {
+  background: #ff5f57;
+  border-color: #e0443e;
+  color: rgba(100, 6, 2, 0.82);
+}
+
+.minimize {
+  background: #febc2e;
+  border-color: #dea123;
+  color: rgba(112, 66, 0, 0.82);
+}
+
+.zoom {
+  background: #28c840;
+  border-color: #1aab29;
+  color: rgba(0, 72, 6, 0.82);
+}
+
+.light:hover {
+  filter: brightness(0.92);
+}
+
+/* Unavailable (minimize while fullscreen): the yellow light goes grey, as on a
+   real Mac. It stays clickable so that it can shake instead of doing nothing. */
+.minimize[aria-disabled="true"] {
+  background: #8e8e93;
+  border-color: #7a7a80;
+  filter: none;
+}
+
+.minimize[aria-disabled="true"] svg {
+  opacity: 0 !important;
+}
+
+.light:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---- Windows: caption buttons, flush to the right edge ---- */
+
+.caption {
+  flex: none;
+  display: flex;
+  align-self: stretch;
+  /* Cancels the toolbar's padding (--pad-x / --pad-y, set on .toolbar) so the
+     buttons span its full height and touch the corner, like a real title bar. */
+  margin: calc(var(--pad-y, 0px) * -1) calc(var(--pad-x, 0px) * -1) calc(var(--pad-y, 0px) * -1) 0.25rem;
+}
+
+.caption button {
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  padding: 0;
+  color: var(--text);
+  transition: background var(--speed-fast) ease, color var(--speed-fast) ease;
+}
+
+.caption svg {
+  width: 0.65rem;
+  height: 0.65rem;
+}
+
+/* Minimize / maximize: a neutral wash that reads on either theme. Close is
+   the one that goes red, as on Windows. */
+.caption button:hover {
+  background: rgba(128, 128, 128, 0.22);
+}
+
+.caption .captionClose:hover {
+  background: #c42b1c;
+  color: #fff;
+}
+
+.caption button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* Windows and the general style: dimmed when unavailable. */
+.caption button[aria-disabled="true"],
+.generic button[aria-disabled="true"] {
+  opacity: 0.35;
+}
+
+.caption button[aria-disabled="true"]:hover,
+.generic button[aria-disabled="true"]:hover {
+  background: none;
+}
+
+/* ---- Everything else: general round buttons, on the right ---- */
+
+.generic {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.25rem;
+}
+
+.generic button {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.16);
+  color: var(--text);
+  font-size: 0.85rem;
+  transition: background var(--speed-fast) ease;
+}
+
+.generic button:hover {
+  background: rgba(128, 128, 128, 0.34);
+}
+
+.generic button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .light svg,
+  .caption button,
+  .generic button {
+    transition: none;
+  }
+}
+
+:global(:root[data-motion="reduced"]) .light svg,
+:global(:root[data-motion="reduced"]) .caption button,
+:global(:root[data-motion="reduced"]) .generic button {
+  transition: none;
+}

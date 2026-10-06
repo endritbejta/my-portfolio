@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  FiBookOpen,
   FiExternalLink,
-  FiFileText,
   FiGithub,
   FiLinkedin,
   FiMail,
@@ -47,7 +47,7 @@ const CommandPalette = ({ open, onClose }) => {
           id: `project-${project.slug}`,
           group: "Case studies",
           label: project.title,
-          icon: <FiFileText />,
+          icon: <FiBookOpen />,
           run: () => navigate(`/projects/${project.slug}`),
         })),
       {

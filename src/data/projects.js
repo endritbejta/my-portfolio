@@ -287,6 +287,17 @@ const prettify = (name) =>
 
 const slugify = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
+/**
+ * Whether the browser will let this page frame the pin's live site. The live
+ * function answers for the origin it is served from; the snapshot also records
+ * how `npm run dev` fares, because a site that allows only the production
+ * origin would show a blank frame on localhost.
+ */
+const canEmbed = (pin) =>
+  import.meta.env.DEV && pin.embeddableDev !== undefined
+    ? pin.embeddableDev === true
+    : pin.embeddable === true;
+
 /** Turns the GitHub pins into the project list, in pin order. */
 export const buildProjects = (pins) =>
   pins.map((pin) => {
@@ -305,7 +316,7 @@ export const buildProjects = (pins) =>
       caseStudy: extra.caseStudy ?? null,
       cover: coverFor(slug),
       coverMobile: coverFor(slug, "-mobile"),
-      preview: Boolean(extra.preview && pin.homepage && pin.embeddable === true),
+      preview: Boolean(extra.preview && pin.homepage && canEmbed(pin)),
       links: { live: pin.homepage, github: pin.url },
       updated: pin.pushedAt,
     };

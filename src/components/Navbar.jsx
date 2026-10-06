@@ -1,29 +1,32 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiCommand, FiMenu, FiMoon, FiSun, FiX } from "react-icons/fi";
+import { FiMenu, FiMoon, FiSearch, FiSun, FiX } from "react-icons/fi";
 import { NAV_LINKS, SECTION_IDS } from "../constants";
+import { useOs } from "../hooks/useOs";
 import { useTheme } from "../hooks/useTheme";
 import { useScrollProgress } from "../hooks/useScrollProgress";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import classes from "./Navbar.module.css";
 
 
-/** Detects macOS once on mount — avoids SSR / server mismatch. */
-const isMac = () =>
-  typeof navigator !== "undefined" &&
-  /mac/i.test(navigator.platform || navigator.userAgentData?.platform || "");
+/**
+ * The shortcut hint, as it is written on each kind of system: ⌘ K on macOS,
+ * Ctrl K everywhere else. The icon is a search magnifier on all of them — it
+ * says what the palette is for, and doesn't depend on a key symbol the
+ * visitor's keyboard may not have.
+ */
+const SHORTCUT = {
+  mac: { key: "⌘", label: "Open command palette (⌘K)" },
+  windows: { key: "Ctrl", label: "Open command palette (Ctrl+K)" },
+  other: { key: "Ctrl", label: "Open command palette (Ctrl+K)" },
+};
 
 /**
  * Command-palette trigger button.
  * Hidden on touch/mobile (keyboard shortcuts don't apply there).
- * Shows ⌘K on macOS and Ctrl K on Windows / Linux.
  */
 const PaletteButton = ({ onOpen }) => {
-  const [mac, setMac] = useState(false);
-  useEffect(() => setMac(isMac()), []);
-
-  const label = mac ? "Open command palette (⌘K)" : "Open command palette (Ctrl+K)";
-  const shortcut = mac ? "⌘" : "Ctrl";
+  const { key, label } = SHORTCUT[useOs()];
 
   return (
     <button
@@ -33,8 +36,8 @@ const PaletteButton = ({ onOpen }) => {
       aria-label={label}
       title={label}
     >
-      <FiCommand aria-hidden="true" />
-      <kbd className={classes.kbd}>{shortcut} K</kbd>
+      <FiSearch aria-hidden="true" />
+      <kbd className={classes.kbd}>{key} K</kbd>
     </button>
   );
 };

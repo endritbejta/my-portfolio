@@ -11,6 +11,11 @@ import Home from "./pages/Home";
 const CaseStudy = lazy(() => import("./pages/CaseStudy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+// DEV ONLY, TEMPORARY: switch the preview's window controls between macOS and
+// Windows styles. `import.meta.env.DEV` is false in production, so the import
+// below is dropped from the build. See src/dev/OsSwitch.jsx to remove it.
+const OsSwitch = import.meta.env.DEV ? lazy(() => import("./dev/OsSwitch")) : null;
+
 /** Scrolls to the #hash target after navigation (e.g. /#projects from a case study). */
 const ScrollToHash = () => {
   const { hash, pathname } = useLocation();
@@ -54,6 +59,11 @@ const Shell = () => {
       <ScrollToHash />
       <DotField />
       <CursorTrailer />
+      {OsSwitch && (
+        <Suspense fallback={null}>
+          <OsSwitch />
+        </Suspense>
+      )}
       <Navbar onOpenPalette={() => setPaletteOpen(true)} />
       <main id="main">
         <Suspense fallback={null}>

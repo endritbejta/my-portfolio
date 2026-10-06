@@ -28,6 +28,7 @@ const raw = execFileSync("gh", ["api", "graphql", "-f", `query=${query}`], {
 const nodes = JSON.parse(raw).data.user.pinnedItems.nodes;
 
 const PORTFOLIO = "https://endritsportfolio.netlify.app";
+const DEV_ORIGIN = "http://localhost:5173"; // `npm run dev`
 
 const pins = await Promise.all(nodes.map(async (repo) => ({
   name: repo.name,
@@ -37,8 +38,12 @@ const pins = await Promise.all(nodes.map(async (repo) => ({
   language: repo.primaryLanguage?.name ?? null,
   topics: repo.repositoryTopics.nodes.map((n) => n.topic.name),
   pushedAt: repo.pushedAt,
-  // Whether the live site lets this portfolio frame it (see embeddable.mjs).
+  // Whether the live site lets this portfolio frame it (see embeddable.mjs):
+  // from the production origin, and from `npm run dev`. Sites usually allow
+  // only the former, so a local page would get a blank frame where
+  // production gets a working one.
   embeddable: repo.homepageUrl ? (await probeEmbeddable(repo.homepageUrl, PORTFOLIO)).embeddable : false,
+  embeddableDev: repo.homepageUrl ? (await probeEmbeddable(repo.homepageUrl, DEV_ORIGIN)).embeddable : false,
 })));
 
 await writeFile(OUT, `${JSON.stringify(pins, null, 2)}\n`);
