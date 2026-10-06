@@ -9,6 +9,7 @@ Personal portfolio of **Endrit Bejta**, a software engineer specializing in comm
 ## Highlights
 
 - **Featured projects follow my GitHub pins.** The *Featured projects* section shows the repositories pinned on my GitHub profile, in pin order — re-pin a repo and the site changes. A serverless function reads the pins from GitHub's GraphQL API; a committed JSON snapshot is rendered first and used as the fallback, so the site works in local dev and if the API is unreachable.
+- **Live previews.** Case studies for sites that allow framing embed the deployed site in a browser frame, with a Desktop / Mobile switch, reload and open-in-new-tab. It loads on click, so visiting a case study doesn't fetch third-party sites.
 - **Engineering case studies.** Each featured project links to a dedicated page: a framed screenshot walkthrough (captured from the live site, with a lightbox), then overview → problem → architecture → technical decisions → challenges → lessons learned → future work.
 - **Command palette** (`⌘K` / `Ctrl+K`) for jumping to any section or case study.
 - **Dark / light theme** set before first paint to avoid a flash, persisted to `localStorage`.
@@ -74,6 +75,16 @@ To give a newly pinned repo a case study, add an entry to `editorial` in `src/da
 ## CV
 
 The downloadable CV (`src/assets/pdf/Endrit-Bejta-CV.pdf`) is generated, not hand-edited: `npm run build:cv` lays it out as HTML and prints a one-page, tagged A4 PDF with headless Chrome. Experience and skills come from `src/data`, so the CV and the site stay in sync; the summary, project blurbs, contact details and education live in `scripts/build-cv.mjs`. The script fails if the CV spills onto a second page.
+
+## Live previews
+
+A case study shows a live, interactive embed when its project has `preview: true` in `src/data/projects.js`. That only works for sites that allow being framed: a site that sends `X-Frame-Options: DENY|SAMEORIGIN`, or a CSP `frame-ancestors` that doesn't list this portfolio, renders a blank frame (and the page can't detect it). Check before enabling:
+
+```bash
+npm run check:embed
+```
+
+To make another project embeddable, allow this site in *that* project's headers (`Content-Security-Policy: frame-ancestors 'self' https://endritsportfolio.netlify.app`, and drop any `X-Frame-Options`), re-run the check, then set `preview: true`. Projects without a preview keep the screenshot walkthrough.
 
 ## Screenshots
 

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { FiArrowLeft, FiArrowRight, FiExternalLink, FiGithub } from "react-icons/fi";
+import LivePreview from "../components/LivePreview";
 import ScreenshotGallery from "../components/ScreenshotGallery";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -106,11 +107,27 @@ const CaseStudy = () => {
         </dl>
       </Reveal>
 
+      {project.preview && (
+        <Reveal as="section" className={classes.walkthrough} aria-label="Live preview">
+          <h2>Live preview</h2>
+          <p className={classes.walkthroughNote}>
+            The deployed site, running here. Switch between a desktop and a phone-sized view.
+          </p>
+          <LivePreview
+            url={project.links.live}
+            title={project.title}
+            images={project.images}
+          />
+        </Reveal>
+      )}
+
       {project.images.length > 0 && (
         <Reveal as="section" className={classes.walkthrough} aria-label="Screenshots">
-          <h2>Walkthrough</h2>
+          <h2>{project.preview ? "Screenshots" : "Walkthrough"}</h2>
           <p className={classes.walkthroughNote}>
-            Captured from the live site. Select any screenshot to enlarge it.
+            {project.preview
+              ? "Key screens captured from the live site. Select one to enlarge it."
+              : "Captured from the live site. Select any screenshot to enlarge it."}
           </p>
           <ScreenshotGallery
             images={project.images}

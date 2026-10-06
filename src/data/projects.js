@@ -9,6 +9,11 @@
  *
  * Screenshots live in src/assets/screenshots/<slug>/ (see
  * scripts/capture-screenshots.mjs) and are picked up automatically.
+ *
+ * `preview: true` embeds the live site on the case-study page. It only works
+ * for sites that allow framing — one that sends X-Frame-Options or a CSP
+ * frame-ancestors header would show a blank frame — so leave it off until
+ * `npm run check:embed` says the site is embeddable.
  */
 
 const screenshotFiles = import.meta.glob("../assets/screenshots/*/*.webp", {
@@ -32,6 +37,7 @@ Object.values(screenshotsBySlug).forEach((list) =>
 /** Keyed by GitHub repository name. */
 const editorial = {
   shitblej: {
+    preview: true,
     slug: "shitblej",
     title: "Shitblej",
     problem:
@@ -216,6 +222,7 @@ const editorial = {
   },
 
   alfa_globe: {
+    preview: true,
     slug: "alfa-trade",
     title: "Alfa Trade",
     role: "Solo developer (client project)",
@@ -264,6 +271,7 @@ const editorial = {
   },
 
   "my-portfolio": {
+    preview: true,
     slug: "portfolio",
     title: "This Portfolio",
     role: "Solo developer",
@@ -341,6 +349,7 @@ export const buildProjects = (pins) =>
       highlights: extra.highlights ?? [],
       caseStudy: extra.caseStudy ?? null,
       images,
+      preview: Boolean(extra.preview && pin.homepage),
       cover: images[0]?.src ?? null,
       links: { live: pin.homepage, github: pin.url },
       updated: pin.pushedAt,

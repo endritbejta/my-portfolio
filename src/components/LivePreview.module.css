@@ -1,0 +1,220 @@
+.preview {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+/* ---- Toolbar ---- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem 0.75rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--surface-hover);
+  border-bottom: 1px solid var(--border);
+}
+
+.lights {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.lights i {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+.url {
+  flex: 1 1 8rem;
+  min-width: 0;
+  padding: 0.25rem 0.85rem;
+  border-radius: 999px;
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.devices {
+  display: inline-flex;
+  padding: 0.2rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.devices button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: background var(--speed-fast) ease, color var(--speed-fast) ease;
+}
+
+.devices button:hover {
+  color: var(--text);
+}
+
+.devices button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.iconButton {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  transition: background var(--speed-fast) ease, color var(--speed-fast) ease;
+}
+
+.iconButton:hover:not(:disabled) {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.iconButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---- Stage ---- */
+
+.stage {
+  display: flex;
+  justify-content: center;
+  padding: 1.25rem;
+  background: var(--surface);
+}
+
+.stage[data-device="desktop"] {
+  padding: 0;
+  background: transparent;
+}
+
+.viewport {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* A real bezel colour: --border-strong is translucent, and over the white
+   viewport behind it would read as a white frame. */
+.stage[data-device="mobile"] .viewport {
+  border: 7px solid #1c1e26;
+  border-radius: 2.2rem;
+  box-sizing: content-box;
+  background-clip: padding-box;
+  box-shadow: 0 0 0 1px var(--border-strong), 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.screen {
+  position: absolute;
+  inset: 0 auto auto 0;
+  transform-origin: top left;
+}
+
+.frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+
+/* ---- Click-to-load poster ---- */
+
+.poster {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-elevated);
+}
+
+.poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  filter: brightness(0.7);
+  transition: filter var(--speed-base) ease;
+}
+
+.poster:hover img {
+  filter: brightness(0.55);
+}
+
+.poster:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.3rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: var(--text-base);
+  font-weight: 700;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.note {
+  margin: 0;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+  text-align: center;
+}
+
+@media (max-width: 40rem) {
+  .devices span {
+    display: none;
+  }
+
+  .lights {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster img,
+  .devices button,
+  .iconButton {
+    transition: none;
+  }
+}
+
+:global(:root[data-motion="reduced"]) .poster img,
+:global(:root[data-motion="reduced"]) .devices button,
+:global(:root[data-motion="reduced"]) .iconButton {
+  transition: none;
+}
