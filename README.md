@@ -9,8 +9,8 @@ Personal portfolio of **Endrit Bejta**, a software engineer specializing in comm
 ## Highlights
 
 - **Featured projects follow my GitHub pins.** The *Featured projects* section shows the repositories pinned on my GitHub profile, in pin order — re-pin a repo and the site changes. A serverless function reads the pins from GitHub's GraphQL API; a committed JSON snapshot is rendered first and used as the fallback, so the site works in local dev and if the API is unreachable.
-- **Live previews.** Case studies for sites that allow framing embed the deployed site in a browser frame, with a Desktop / Mobile switch, reload and open-in-new-tab. It loads on click, so visiting a case study doesn't fetch third-party sites.
-- **Engineering case studies.** Each featured project links to a dedicated page: a framed screenshot walkthrough (captured from the live site, with a lightbox), then overview → problem → architecture → technical decisions → challenges → lessons learned → future work.
+- **Live previews.** Case studies for sites that allow framing embed the deployed site in a browser frame, with a Desktop / Mobile switch, reload and open-in-new-tab. It loads on click, so visiting a case study doesn't fetch third-party sites, and the whole frame is sized to fit the visible window under the header.
+- **Engineering case studies.** Each featured project links to a dedicated page: a live preview of the deployed site (or, where the site blocks framing, a snapshot linking to it), then overview → problem → architecture → technical decisions → challenges → lessons learned → future work.
 - **Command palette** (`⌘K` / `Ctrl+K`) for jumping to any section or case study.
 - **Dark / light theme** set before first paint to avoid a flash, persisted to `localStorage`.
 - **Motion, done tastefully.** Scroll-spy nav, scroll-progress bar, and intersection-triggered reveals — all built with custom hooks, no animation library, and fully disabled under `prefers-reduced-motion`. With reduced motion on, the interactive dot background and cursor-following dot aren't rendered at all. A "Reduce motion" switch in the footer (and the command palette) gives the same result to visitors who haven't set it in their OS; the OS setting always wins and is never overridden.
@@ -35,13 +35,13 @@ src/
   pages/           Route components (Home, CaseStudy, NotFound)
   data/            profile, skills, experience, pinned-repos.json (snapshot),
                    projects.js (editorial layer: case studies, captions)
-  assets/screenshots/<slug>/   Live-site screenshots shown on case-study pages
+  assets/covers/     One cover image per project (card image + preview poster)
   hooks/           useTheme, useScrollSpy, useScrollProgress, useInView, useCountUp,
                    useRemoteData, usePinnedRepos, useProjects
   constants/       Nav links and section ids
   styles/          Global design tokens
 netlify/functions/ pinned-repos.mjs — returns the repos pinned on GitHub
-scripts/           capture-screenshots.mjs, shots.config.mjs, sync-pins.mjs
+scripts/           capture-covers.mjs, covers.config.mjs, sync-pins.mjs, build-cv.mjs, check-embeddable.mjs
 public/            favicon, robots.txt, sitemap.xml, _redirects (SPA fallback)
 ```
 
@@ -58,7 +58,7 @@ npm run build    # production build to dist/
 npm run preview  # preview the production build locally
 npm run lint     # run ESLint
 npm run sync:pins     # refresh src/data/pinned-repos.json from your GitHub pins (uses `gh`)
-npm run screenshots   # re-capture live-site screenshots (see below)
+npm run covers        # re-capture the cover images (see below)
 npm run build:cv      # rebuild the downloadable CV PDF (uses local Chrome)
 ```
 
@@ -70,7 +70,7 @@ In local development the site renders from the committed snapshot (`src/data/pin
 
 After changing your pins, run `npm run sync:pins` and commit the updated snapshot so local dev and the fallback stay current.
 
-To give a newly pinned repo a case study, add an entry to `editorial` in `src/data/projects.js` (keyed by the repo name) and a block in `scripts/shots.config.mjs` for its screenshots.
+To give a newly pinned repo a case study, add an entry to `editorial` in `src/data/projects.js` (keyed by the repo name) and an entry in `scripts/covers.config.mjs` so its cover image is captured.
 
 ## CV
 
@@ -84,18 +84,18 @@ A case study shows a live, interactive embed when its project has `preview: true
 npm run check:embed
 ```
 
-To make another project embeddable, allow this site in *that* project's headers (`Content-Security-Policy: frame-ancestors 'self' https://endritsportfolio.netlify.app`, and drop any `X-Frame-Options`), re-run the check, then set `preview: true`. Projects without a preview keep the screenshot walkthrough.
+To make another project embeddable, allow this site in *that* project's headers (`Content-Security-Policy: frame-ancestors 'self' https://endritsportfolio.netlify.app`, and drop any `X-Frame-Options`), re-run the check, then set `preview: true`. Projects without a preview show their cover image in the same frame, linking to the live site.
 
-## Screenshots
+## Cover images
 
-Case-study screenshots live in `src/assets/screenshots/<slug>/` and are picked up automatically, in file-name order (a name containing `mobile` is shown in a phone frame). They are captured from the live sites by a dependency-free script that drives your local Google Chrome:
+Each project has two small images in `src/assets/covers/`: `<slug>.webp` (desktop) and `<slug>-mobile.webp` (phone). They are the card image on the home page and the poster in the live preview. A dependency-free script captures them from the live sites with your local Google Chrome:
 
 ```bash
-npm run screenshots                    # everything in scripts/shots.config.mjs
-npm run screenshots -- alfa-rent       # one project
+npm run covers                  # everything in scripts/covers.config.mjs
+npm run covers -- alfa-rent     # one project
 ```
 
-`scripts/shots.config.mjs` lists, per project, the pages to capture and any in-page steps (scroll position, clicking through to a product). The `portfolio` entry captures this site from `npm run dev`, so start the dev server first.
+The `portfolio` entry captures this site from `npm run dev`, so start the dev server first.
 
 ## Deployment
 

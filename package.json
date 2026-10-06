@@ -9,9 +9,9 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "sync:pins": "node scripts/sync-pins.mjs",
-    "screenshots": "node scripts/capture-screenshots.mjs",
     "build:cv": "node scripts/build-cv.mjs",
-    "check:embed": "node scripts/check-embeddable.mjs"
+    "check:embed": "node scripts/check-embeddable.mjs",
+    "covers": "node scripts/capture-covers.mjs"
   },
   "dependencies": {
     "react": "^18.2.0",

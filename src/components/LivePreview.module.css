@@ -98,13 +98,15 @@
 .stage {
   display: flex;
   justify-content: center;
-  padding: 1.25rem;
+  align-items: flex-start;
+  padding: 1.25rem; /* keep in step with PHONE_STAGE_PADDING in LivePreview.jsx */
   background: var(--surface);
 }
 
+/* A desktop view limited by height is narrower than the stage and sits
+   centred in it, so the backdrop needs no padding of its own. */
 .stage[data-device="desktop"] {
   padding: 0;
-  background: transparent;
 }
 
 .viewport {
@@ -193,6 +195,13 @@
   font-size: var(--text-xs);
   color: var(--text-faint);
   text-align: center;
+}
+
+/* On a short window every pixel goes to the site; the caption can go. */
+@media (max-height: 560px) {
+  .note {
+    display: none;
+  }
 }
 
 @media (max-width: 40rem) {

@@ -3,12 +3,13 @@
  *
  * GitHub supplies the facts that change (which repos, their order, description,
  * homepage URL, topics). This file supplies the editorial layer that GitHub
- * can't: the case study, role, highlights and screenshot captions, keyed by
+ * can't: the case study, role and highlights, keyed by
  * repository name. A pinned repo with no entry here still renders as a card,
  * built from its GitHub description and topics.
  *
- * Screenshots live in src/assets/screenshots/<slug>/ (see
- * scripts/capture-screenshots.mjs) and are picked up automatically.
+ * Cover images live in src/assets/covers/<slug>.webp (and <slug>-mobile.webp
+ * for the phone view) — see scripts/capture-covers.mjs. They're the card image
+ * on the home page and the poster in the live preview.
  *
  * `preview: true` embeds the live site on the case-study page. It only works
  * for sites that allow framing — one that sends X-Frame-Options or a CSP
@@ -16,23 +17,14 @@
  * `npm run check:embed` says the site is embeddable.
  */
 
-const screenshotFiles = import.meta.glob("../assets/screenshots/*/*.webp", {
+const coverFiles = import.meta.glob("../assets/covers/*.webp", {
   eager: true,
   import: "default",
 });
 
-/** { slug: [{ name: "01-home", src }] } with files in name order. */
-const screenshotsBySlug = Object.entries(screenshotFiles).reduce(
-  (bySlug, [filePath, src]) => {
-    const [, slug, file] = filePath.match(/screenshots\/([^/]+)\/([^/]+)\.webp$/);
-    (bySlug[slug] ??= []).push({ name: file, src });
-    return bySlug;
-  },
-  {}
-);
-Object.values(screenshotsBySlug).forEach((list) =>
-  list.sort((a, b) => a.name.localeCompare(b.name))
-);
+/** Cover image for a project: "<slug>.webp", plus an optional "<slug>-mobile.webp". */
+const coverFor = (slug, suffix = "") =>
+  coverFiles[`../assets/covers/${slug}${suffix}.webp`] ?? null;
 
 /** Keyed by GitHub repository name. */
 const editorial = {
@@ -51,13 +43,6 @@ const editorial = {
       "Buyer/seller inbox and wishlist",
       "Bilingual UI via i18next",
     ],
-    captions: {
-      "01-home": "Landing page — search, category navigation and popular categories.",
-      "02-trending": "Category browsing and the trending carousel, fed by the live API.",
-      "03-collection": "A category page with condition, price and sort filters.",
-      "04-product": "Product detail — gallery, condition, seller card and chat entry point.",
-      "05-mobile": "Mobile layout with a bottom tab bar for the core actions.",
-    },
     caseStudy: {
       overview:
         "A peer-to-peer marketplace for second-hand goods in Kosovo — list an item in a few minutes, browse nine categories, save what you like and message the seller. Listings carry a graded condition, a price and a location, and the home page is merchandised rather than a raw feed: trending, recently added, curated collections and an editor's luxury edit.",
@@ -102,13 +87,6 @@ const editorial = {
       "Overlapping reservations rejected by the database itself",
       "Role-based auth, Albanian-first with a language switch",
     ],
-    captions: {
-      "01-home": "Landing page — hero with a date and category search bar.",
-      "02-fleet": "The fleet page with category, transmission, budget and sort filters.",
-      "03-car-details": "Car detail page — specs, daily price and a date picker for the booking.",
-      "04-fleet-grid": "The vehicle grid, with availability badges and daily prices.",
-      "05-mobile": "Mobile layout of the landing page.",
-    },
     caseStudy: {
       overview:
         "Alfa Rent a Car is a rental management platform: a customer-facing website where visitors browse the fleet and book, plus an authenticated admin dashboard for managing vehicles, reservations and customers.",
@@ -188,12 +166,6 @@ const editorial = {
       "React 19 with the React Compiler",
       "Fly-to-cart animation on the Web Animations API",
     ],
-    captions: {
-      "01-home": "Home — hero carousel with Our Favourite / Best Sellers tabs.",
-      "02-catalog": "Shop All, with sort and a switchable grid density.",
-      "03-electronics": "A collection page — collections are driven by the catalog data.",
-      "04-mobile": "Mobile layout of the home page.",
-    },
     caseStudy: {
       overview:
         "Minimalist Essentials is a storefront covering the full buying flow: collections, product pages, a cart drawer and a checkout. It is client-side only — the catalog is static data and the cart and placed orders live in localStorage.",
@@ -236,14 +208,6 @@ const editorial = {
       "Albanian / English switch",
       "Redesigned in 2026 (Vite + Tailwind v4)",
     ],
-    captions: {
-      "01-home": "Home — hero with delivery options and certifications.",
-      "02-about": "About — company story, mission and values.",
-      "03-products": "Product catalog — fuels, lubricants and AdBlue®.",
-      "04-fleet": "Fleet programme — controlled access, reporting and invoicing.",
-      "05-services": "Services section of the home page.",
-      "06-mobile": "Mobile layout of the home page.",
-    },
     caseStudy: {
       overview:
         "A premium corporate website for Alfa Trade, a petroleum distribution company operating fuel stations and a bulk-delivery network across Kosovo. First shipped in 2023, then fully redesigned in 2026.",
@@ -281,23 +245,17 @@ const editorial = {
       "A portfolio that stays current by itself: it reads my GitHub pins instead of a hand-edited list.",
     highlights: [
       "Featured projects driven by GitHub pins",
-      "Case studies with live-site screenshots",
+      "Case studies with a live site preview",
       "Command palette, scroll-spy, dark / light theme",
       "No animation library, respects reduced motion",
     ],
-    captions: {
-      "01-home": "Home — hero, with the command palette hint in the nav.",
-      "02-projects": "Featured projects, with tag filtering and search.",
-      "03-case-study": "A case-study page with its screenshot gallery.",
-      "04-mobile": "Mobile layout of the home page.",
-    },
     caseStudy: {
       overview:
         "A single-page React app with dedicated case-study pages, a dark / light theme and a command palette. Nearly everything on it is data, and the project list is not hand-maintained: it follows the repositories pinned on my GitHub profile.",
       problem:
         "Portfolios go stale because the project list lives in code. I wanted re-pinning a repository on GitHub to be the only step needed to change what a visitor sees.",
       architecture:
-        "React 18 and Vite with React Router (lazy-loaded case-study routes) and CSS Modules over a design-token layer, with no CSS framework. A Netlify function reads the GitHub profile's pinned repositories through the GraphQL API, and a shared hook renders a committed JSON snapshot immediately and swaps in the live response, so the site works offline and in local dev. An editorial layer keyed by repository name adds case studies and captions on top.",
+        "React 18 and Vite with React Router (lazy-loaded case-study routes) and CSS Modules over a design-token layer, with no CSS framework. A Netlify function reads the GitHub profile's pinned repositories through the GraphQL API, and a shared hook renders a committed JSON snapshot immediately and swaps in the live response, so the site works offline and in local dev. An editorial layer keyed by repository name adds case studies on top.",
       decisions: [
         "Snapshot-first data: the UI never shows a loading state for content that is already in the bundle.",
         "Editorial content is separate from live data, so a newly pinned repo appears as a basic card until a case study is written for it.",
@@ -324,19 +282,11 @@ const prettify = (name) =>
 
 const slugify = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
-const toImages = (slug, captions = {}) =>
-  (screenshotsBySlug[slug] ?? []).map(({ name, src }) => ({
-    src,
-    caption: captions[name] ?? prettify(name.replace(/^\d+-/, "")),
-    mobile: name.includes("mobile"),
-  }));
-
 /** Turns the GitHub pins into the project list, in pin order. */
 export const buildProjects = (pins) =>
   pins.map((pin) => {
     const extra = editorial[pin.name] ?? {};
     const slug = extra.slug ?? slugify(pin.name);
-    const images = toImages(slug, extra.captions);
 
     return {
       repo: pin.name,
@@ -348,9 +298,9 @@ export const buildProjects = (pins) =>
       tags: extra.tags ?? [pin.language, ...pin.topics].filter(Boolean).slice(0, 4),
       highlights: extra.highlights ?? [],
       caseStudy: extra.caseStudy ?? null,
-      images,
+      cover: coverFor(slug),
+      coverMobile: coverFor(slug, "-mobile"),
       preview: Boolean(extra.preview && pin.homepage),
-      cover: images[0]?.src ?? null,
       links: { live: pin.homepage, github: pin.url },
       updated: pin.pushedAt,
     };
