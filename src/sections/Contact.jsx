@@ -60,6 +60,7 @@ const Contact = () => {
               onClick={copyEmail}
               icon={copied ? <FiCheck /> : <FiCopy />}
               aria-live="polite"
+              data-cursor="copy"
             >
               {copied ? "Copied!" : "Copy email"}
             </Button>
