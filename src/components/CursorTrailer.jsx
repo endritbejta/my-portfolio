@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { FiArrowUpRight, FiBookOpen, FiCopy, FiDownload, FiMail, FiPlay } from "react-icons/fi";
+import { FiArrowUpRight, FiCopy, FiDownload, FiLayout, FiMail, FiPlay } from "react-icons/fi";
 import { useReducedMotion } from "../hooks/useMotionPreference";
 import classes from "./CursorTrailer.module.css";
 
 const ICONS = {
   external: FiArrowUpRight,
   internal: FiArrowUpRight,
-  read: FiBookOpen,
+  read: FiLayout, // opens a project page
   download: FiDownload,
   mail: FiMail,
   copy: FiCopy,
