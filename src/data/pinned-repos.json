@@ -16,7 +16,8 @@
       "react"
     ],
     "pushedAt": "2026-09-18T06:10:23Z",
-    "embeddable": true
+    "embeddable": true,
+    "embeddableDev": true
   },
   {
     "name": "alfa-rent",
@@ -34,8 +35,9 @@
       "shadcn-ui",
       "tailwindcss"
     ],
-    "pushedAt": "2026-09-07T09:07:20Z",
-    "embeddable": false
+    "pushedAt": "2026-10-06T15:30:04Z",
+    "embeddable": true,
+    "embeddableDev": false
   },
   {
     "name": "WindowSwitcher",
@@ -54,7 +56,8 @@
       "window-manager"
     ],
     "pushedAt": "2026-09-04T13:34:40Z",
-    "embeddable": false
+    "embeddable": false,
+    "embeddableDev": false
   },
   {
     "name": "minimalist-e-commerce",
@@ -71,8 +74,9 @@
       "vite",
       "vitest"
     ],
-    "pushedAt": "2026-09-14T17:57:33Z",
-    "embeddable": false
+    "pushedAt": "2026-10-06T15:19:47Z",
+    "embeddable": true,
+    "embeddableDev": false
   },
   {
     "name": "alfa_globe",
@@ -88,7 +92,8 @@
       "vite"
     ],
     "pushedAt": "2026-09-14T17:56:51Z",
-    "embeddable": true
+    "embeddable": true,
+    "embeddableDev": true
   },
   {
     "name": "my-portfolio",
@@ -102,7 +107,8 @@
       "react",
       "vite"
     ],
-    "pushedAt": "2026-10-06T14:43:14Z",
-    "embeddable": true
+    "pushedAt": "2026-10-06T15:47:39Z",
+    "embeddable": true,
+    "embeddableDev": true
   }
 ]

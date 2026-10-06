@@ -50,6 +50,7 @@ export function connect(wsUrl) {
   let nextId = 1;
   const pending = new Map();
   const waiters = [];
+  const handlers = new Map(); // method -> listener, for event streams
 
   ws.addEventListener("message", ({ data }) => {
     const msg = JSON.parse(data);
@@ -58,6 +59,7 @@ export function connect(wsUrl) {
       pending.delete(msg.id);
       msg.error ? reject(new Error(msg.error.message)) : resolve(msg.result);
     } else if (msg.method) {
+      handlers.get(msg.method)?.(msg.params);
       for (const w of [...waiters]) {
         if (w.method === msg.method) {
           waiters.splice(waiters.indexOf(w), 1);
@@ -81,8 +83,10 @@ export function connect(wsUrl) {
       setTimeout(() => resolve(null), timeout);
     });
 
+  const on = (method, handler) => handlers.set(method, handler);
+
   return new Promise((resolve) =>
-    ws.addEventListener("open", () => resolve({ send, once, close: () => ws.close() }))
+    ws.addEventListener("open", () => resolve({ send, once, on, close: () => ws.close() }))
   );
 }
 
