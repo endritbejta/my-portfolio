@@ -1,4 +1,4 @@
-import { FiCopy, FiMinus, FiSquare, FiX } from "react-icons/fi";
+import { FiCopy, FiMaximize2, FiMinus, FiSquare, FiX } from "react-icons/fi";
 import classes from "./WindowControls.module.css";
 
 /**
@@ -7,9 +7,9 @@ import classes from "./WindowControls.module.css";
  * close unloads the site, minimize folds the frame down to its title bar,
  * and maximize / zoom takes it fullscreen.
  */
-/* macOS's own glyphs, drawn rather than borrowed from an icon set: a plain
-   cross, a bar, and a square split on the diagonal for the green button.
-   They're revealed on hover by the stylesheet, as on a real window. */
+/* macOS's close and minimize glyphs, drawn rather than borrowed from an icon
+   set; the green button uses the diagonal-arrows icon. All are revealed on
+   hover by the stylesheet, as on a real window. */
 const Glyph = ({ children }) => (
   <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false">
     {children}
@@ -25,13 +25,6 @@ const CloseGlyph = () => (
 const MinimizeGlyph = () => (
   <Glyph>
     <path d="M2.8 6h6.4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-  </Glyph>
-);
-
-const ZoomGlyph = () => (
-  <Glyph>
-    <rect x="2.6" y="2.6" width="6.8" height="6.8" rx="1" fill="none" stroke="currentColor" strokeWidth="1.1" />
-    <path d="M9.4 2.6V9.4H2.6Z" fill="currentColor" />
   </Glyph>
 );
 
@@ -103,7 +96,7 @@ const WindowControls = ({ os, minimized, fullscreen, onClose, onMinimize, onTogg
           aria-pressed={fullscreen}
           title={fullscreenLabel}
         >
-          <ZoomGlyph />
+          <FiMaximize2 aria-hidden="true" />
         </button>
       </div>
     );

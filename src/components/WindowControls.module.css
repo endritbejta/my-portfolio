@@ -26,6 +26,12 @@
   transition: opacity var(--speed-fast) ease;
 }
 
+/* Feather's arrows are drawn with a 2px stroke; thicken them to match the
+   cross and bar next to them. */
+.zoom svg {
+  stroke-width: 2.8;
+}
+
 .lights:hover .light svg,
 .lights:focus-within .light svg {
   opacity: 1;
