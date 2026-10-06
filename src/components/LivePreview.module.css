@@ -293,3 +293,31 @@ a.poster:hover img {
 :global(:root[data-motion="reduced"]) .iconButton {
   transition: none;
 }
+
+/* ---- Fullscreen ----
+   Native fullscreen (the UA already pins the element to the screen) and the
+   overlay fallback share one layout: toolbar on top, the stage filling what
+   is left. Placed last so it wins over the small-screen rules above. */
+.preview[data-full] {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--bg-elevated);
+}
+
+.preview[data-full="fake"] {
+  position: fixed;
+  inset: 0;
+  z-index: 250; /* above the sticky header, below the cursor dot */
+  width: auto;
+  height: 100dvh;
+}
+
+.preview[data-full] .stage {
+  flex: 1;
+  align-items: center;
+  min-height: 0;
+}
