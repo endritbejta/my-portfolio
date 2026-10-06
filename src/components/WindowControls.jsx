@@ -63,6 +63,13 @@ const CloseCaption = () => (
 const WindowControls = ({ os, minimized, fullscreen, onClose, onMinimize, onToggleFullscreen }) => {
   const minimizeLabel = minimized ? "Restore preview" : "Minimize preview";
   const fullscreenLabel = fullscreen ? "Exit fullscreen" : "Fullscreen";
+  // In fullscreen the close control only leaves fullscreen (it never unloads
+  // the site), so it is labelled for what it does.
+  const closeLabel = fullscreen ? "Exit fullscreen" : "Close preview";
+  const closeTitle = fullscreen ? "Exit fullscreen" : "Close";
+  // Minimizing a fullscreen window makes no sense. The control stays clickable
+  // (so it can answer with a shake) but says it is unavailable.
+  const minimizeBlocked = fullscreen;
 
   if (os === "mac") {
     return (
@@ -70,17 +77,20 @@ const WindowControls = ({ os, minimized, fullscreen, onClose, onMinimize, onTogg
         <button
           type="button"
           className={`${classes.light} ${classes.close}`}
+          data-control="close"
           onClick={onClose}
-          aria-label="Close preview"
-          title="Close"
+          aria-label={closeLabel}
+          title={closeTitle}
         >
           <CloseGlyph />
         </button>
         <button
           type="button"
           className={`${classes.light} ${classes.minimize}`}
+          data-control="minimize"
           onClick={onMinimize}
           aria-label={minimizeLabel}
+          aria-disabled={minimizeBlocked || undefined}
           aria-keyshortcuts="M"
           aria-pressed={minimized}
           title={minimized ? "Restore" : "Minimize"}
@@ -90,6 +100,7 @@ const WindowControls = ({ os, minimized, fullscreen, onClose, onMinimize, onTogg
         <button
           type="button"
           className={`${classes.light} ${classes.zoom}`}
+          data-control="zoom"
           onClick={onToggleFullscreen}
           aria-label={fullscreenLabel}
           aria-keyshortcuts="F"
@@ -109,8 +120,10 @@ const WindowControls = ({ os, minimized, fullscreen, onClose, onMinimize, onTogg
       <div className={classes.generic} role="group" aria-label="Window controls">
         <button
           type="button"
+          data-control="minimize"
           onClick={onMinimize}
           aria-label={minimizeLabel}
+          aria-disabled={minimizeBlocked || undefined}
           aria-keyshortcuts="M"
           aria-pressed={minimized}
           title={minimized ? "Restore" : "Minimize"}
@@ -127,7 +140,7 @@ const WindowControls = ({ os, minimized, fullscreen, onClose, onMinimize, onTogg
         >
           {fullscreen ? <FiCopy aria-hidden="true" /> : <FiSquare aria-hidden="true" />}
         </button>
-        <button type="button" onClick={onClose} aria-label="Close preview" title="Close">
+        <button type="button" data-control="close" onClick={onClose} aria-label={closeLabel} title={closeTitle}>
           <FiX aria-hidden="true" />
         </button>
       </div>
@@ -138,8 +151,10 @@ const WindowControls = ({ os, minimized, fullscreen, onClose, onMinimize, onTogg
     <div className={classes.caption} role="group" aria-label="Window controls">
       <button
         type="button"
+        data-control="minimize"
         onClick={onMinimize}
         aria-label={minimizeLabel}
+        aria-disabled={minimizeBlocked || undefined}
         aria-keyshortcuts="M"
         aria-pressed={minimized}
         title={minimized ? "Restore" : "Minimize"}
@@ -156,7 +171,14 @@ const WindowControls = ({ os, minimized, fullscreen, onClose, onMinimize, onTogg
       >
         {fullscreen ? <RestoreCaption /> : <MaximizeCaption />}
       </button>
-      <button type="button" className={classes.captionClose} onClick={onClose} aria-label="Close preview" title="Close">
+      <button
+        type="button"
+        className={classes.captionClose}
+        data-control="close"
+        onClick={onClose}
+        aria-label={closeLabel}
+        title={closeTitle}
+      >
         <CloseCaption />
       </button>
     </div>

@@ -1,4 +1,5 @@
 .preview {
+  position: relative; /* the "can't be closed" alert is placed inside it */
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--bg-elevated);
@@ -8,16 +9,38 @@
 
 /* ---- Toolbar ---- */
 
-/* Never wraps: the URL pill is what gives way when space runs out. */
+/* Two rows. The title bar (window controls and the address) is what carries
+   the OS styling, and the WindowControls padding trick needs it to be the
+   only thing the toolbar's --pad values apply to. The actions sit under it. */
 .toolbar {
+  --pad-y: 0.65rem; /* WindowControls cancels these to sit flush in the corner */
+  --pad-x: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-hover);
+  border-bottom: 1px solid var(--border);
+}
+
+.titleBar {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  --pad-y: 0.65rem; /* WindowControls cancels these to sit flush in the corner */
-  --pad-x: 0.9rem;
   padding: var(--pad-y) var(--pad-x);
-  background: var(--surface-hover);
-  border-bottom: 1px solid var(--border);
+}
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.4rem var(--pad-x);
+  border-top: 1px solid var(--border);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .lights {
@@ -41,7 +64,8 @@
 
 /* Minimized: only the title bar is left. */
 .preview[data-minimized] .stage,
-.preview[data-minimized] .note {
+.preview[data-minimized] .note,
+.preview[data-minimized] .actionBar {
   display: none;
 }
 
@@ -267,7 +291,7 @@ a.poster:hover img {
 
   /* No room for window controls: the standalone fullscreen button returns. */
   .lights,
-  .toolbar > :global([role="group"][aria-label="Window controls"]) {
+  .titleBar > :global([role="group"][aria-label="Window controls"]) {
     display: none;
   }
 
@@ -283,9 +307,26 @@ a.poster:hover img {
     border-radius: 0;
   }
 
+  /* No window controls here, so the two rows would just be a URL pill and a
+     row of buttons: put them back on one line and give the height to the
+     phone, which is what limits how large it can be drawn. */
   .toolbar {
     --pad-y: 0.55rem;
     --pad-x: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .titleBar {
+    flex: 1;
+    min-width: 0;
+    padding-right: 0;
+  }
+
+  .actionBar {
+    flex: none;
+    padding: var(--pad-y) var(--pad-x) var(--pad-y) 0.6rem;
+    border-top: 0;
   }
 
   .stage {
