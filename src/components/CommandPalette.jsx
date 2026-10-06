@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FiArrowRight,
   FiExternalLink,
   FiGithub,
+  FiLayout,
   FiLinkedin,
   FiMail,
   FiMoon,
@@ -47,7 +47,7 @@ const CommandPalette = ({ open, onClose }) => {
           id: `project-${project.slug}`,
           group: "Case studies",
           label: project.title,
-          icon: <FiArrowRight />,
+          icon: <FiLayout />,
           run: () => navigate(`/projects/${project.slug}`),
         })),
       {
