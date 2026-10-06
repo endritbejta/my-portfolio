@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiCommand, FiMenu, FiMoon, FiSearch, FiSun, FiX } from "react-icons/fi";
-import { MdKeyboardControlKey } from "react-icons/md";
+import { FiMenu, FiMoon, FiSearch, FiSun, FiX } from "react-icons/fi";
 import { NAV_LINKS, SECTION_IDS } from "../constants";
 import { useOs } from "../hooks/useOs";
 import { useTheme } from "../hooks/useTheme";
@@ -11,16 +10,15 @@ import classes from "./Navbar.module.css";
 
 
 /**
- * What the palette shortcut looks like on each kind of system: the icon is the
- * key you press, and the hint is how that key is written there. macOS has ⌘;
- * Windows has Ctrl, drawn as the control-key glyph; anything else gets Ctrl
- * and a plain search icon, which says what the palette is for without
- * assuming a keyboard layout.
+ * The shortcut hint, as it is written on each kind of system: ⌘ K on macOS,
+ * Ctrl K everywhere else. The icon is a search magnifier on all of them — it
+ * says what the palette is for, and doesn't depend on a key symbol the
+ * visitor's keyboard may not have.
  */
-const PALETTE = {
-  mac: { Icon: FiCommand, key: "⌘", label: "Open command palette (⌘K)" },
-  windows: { Icon: MdKeyboardControlKey, key: "Ctrl", label: "Open command palette (Ctrl+K)" },
-  other: { Icon: FiSearch, key: "Ctrl", label: "Open command palette (Ctrl+K)" },
+const SHORTCUT = {
+  mac: { key: "⌘", label: "Open command palette (⌘K)" },
+  windows: { key: "Ctrl", label: "Open command palette (Ctrl+K)" },
+  other: { key: "Ctrl", label: "Open command palette (Ctrl+K)" },
 };
 
 /**
@@ -28,7 +26,7 @@ const PALETTE = {
  * Hidden on touch/mobile (keyboard shortcuts don't apply there).
  */
 const PaletteButton = ({ onOpen }) => {
-  const { Icon, key, label } = PALETTE[useOs()];
+  const { key, label } = SHORTCUT[useOs()];
 
   return (
     <button
@@ -38,7 +36,7 @@ const PaletteButton = ({ onOpen }) => {
       aria-label={label}
       title={label}
     >
-      <Icon aria-hidden="true" />
+      <FiSearch aria-hidden="true" />
       <kbd className={classes.kbd}>{key} K</kbd>
     </button>
   );
