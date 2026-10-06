@@ -3,14 +3,7 @@
  */
 export const timeline = [
   {
-    period: "Aug 2026 — Present",
-    title: "Software Developer — Solution25",
-    items: [
-      "Recently joined — building software as part of the Solution25 engineering team",
-    ],
-  },
-  {
-    period: "Jan 2022 — Aug 2026",
+    period: "Jan 2022 — Present",
     title: "Shopify Developer — GRENION Brands",
     meta: "Berlin, Germany (Remote) · Banana Beauty, HelloBody, MyRapunzel, Sophie Rosenburg",
     items: [

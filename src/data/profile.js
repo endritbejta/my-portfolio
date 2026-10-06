@@ -16,10 +16,10 @@ export const profile = {
   portrait,
   currentStack: ["React", "TypeScript", "Shopify", "Hydrogen", "Node.js"],
   summary:
-    "For four years I owned four Shopify storefronts end-to-end at GRENION Brands in Berlin — Banana Beauty, HelloBody, MyRapunzel and Sophie Rosenburg — built in Liquid, TypeScript and React, and lifted their PageSpeed scores by up to 20 points. Now a software developer at Solution25.",
+    "For four years I have owned four Shopify storefronts end-to-end at GRENION Brands in Berlin — Banana Beauty, HelloBody, MyRapunzel and Sophie Rosenburg — built in Liquid, TypeScript and React, and lifted their PageSpeed scores by up to 20 points.",
   about: [
     "I came to software from electrical engineering. Managing infrastructure projects at KEDS, Kosovo's electricity distribution company, taught me to think in systems, constraints and failure modes before committing to an implementation.",
-    "From 2022 to 2026 I was the engineer behind production commerce storefronts at GRENION Brands, owning them end to end — from architecture and delivery to performance and reliability. I care about the unhappy paths as much as the happy ones, and I'm most interested in the architecture that connects storefronts to the platforms behind them.",
+    "Since 2022 I have been the engineer behind production commerce storefronts at GRENION Brands, owning them end to end — from architecture and delivery to performance and reliability. I care about the unhappy paths as much as the happy ones, and I'm most interested in the architecture that connects storefronts to the platforms behind them.",
   ],
   education: {
     school: "Universiteti i Prishtinës 'Hasan Prishtina'",
