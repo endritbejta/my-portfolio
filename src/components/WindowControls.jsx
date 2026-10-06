@@ -1,3 +1,4 @@
+import { FiCopy, FiMinus, FiSquare, FiX } from "react-icons/fi";
 import classes from "./WindowControls.module.css";
 
 /**
@@ -103,6 +104,38 @@ const WindowControls = ({ os, minimized, fullscreen, onClose, onMinimize, onTogg
           title={fullscreenLabel}
         >
           <ZoomGlyph />
+        </button>
+      </div>
+    );
+  }
+
+  // Linux, ChromeOS and anything else: system-neutral round buttons with
+  // plain icons, rather than imitating a desktop we can't identify.
+  if (os === "other") {
+    return (
+      <div className={classes.generic} role="group" aria-label="Window controls">
+        <button
+          type="button"
+          onClick={onMinimize}
+          aria-label={minimizeLabel}
+          aria-keyshortcuts="M"
+          aria-pressed={minimized}
+          title={minimized ? "Restore" : "Minimize"}
+        >
+          <FiMinus aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          onClick={onToggleFullscreen}
+          aria-label={fullscreenLabel}
+          aria-keyshortcuts="F"
+          aria-pressed={fullscreen}
+          title={fullscreenLabel}
+        >
+          {fullscreen ? <FiCopy aria-hidden="true" /> : <FiSquare aria-hidden="true" />}
+        </button>
+        <button type="button" onClick={onClose} aria-label="Close preview" title="Close">
+          <FiX aria-hidden="true" />
         </button>
       </div>
     );

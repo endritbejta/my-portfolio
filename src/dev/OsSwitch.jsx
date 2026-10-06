@@ -1,6 +1,7 @@
 /**
- * DEVELOPMENT ONLY, TEMPORARY. A small switch to preview the live preview's
- * window controls in either OS style (or the detected one).
+ * DEVELOPMENT ONLY, TEMPORARY. A small switch to preview the OS-dependent
+ * bits — the live preview's window controls and the navbar's shortcut hint —
+ * as macOS, Windows or any other system (or the detected one).
  *
  * It is loaded lazily behind `import.meta.env.DEV` in src/App.jsx, so it is not
  * part of a production build. To remove it: delete this file, the `OsSwitch`
@@ -10,6 +11,7 @@ const OPTIONS = [
   ["auto", "Auto"],
   ["mac", "macOS"],
   ["windows", "Windows"],
+  ["other", "Linux/other"],
 ];
 
 const current = () => {
@@ -36,7 +38,7 @@ const OsSwitch = () => {
   return (
     <div
       role="group"
-      aria-label="Development: window controls style"
+      aria-label="Development: operating system style"
       style={{
         position: "fixed",
         left: 12,
@@ -53,7 +55,7 @@ const OsSwitch = () => {
         boxShadow: "0 4px 18px rgba(0, 0, 0, 0.4)",
       }}
     >
-      <span style={{ padding: "0 8px", opacity: 0.6 }}>DEV controls</span>
+      <span style={{ padding: "0 8px", opacity: 0.6 }}>DEV system</span>
       {OPTIONS.map(([value, label]) => (
         <button
           key={value}

@@ -1,29 +1,34 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiCommand, FiMenu, FiMoon, FiSun, FiX } from "react-icons/fi";
+import { FiCommand, FiMenu, FiMoon, FiSearch, FiSun, FiX } from "react-icons/fi";
+import { MdKeyboardControlKey } from "react-icons/md";
 import { NAV_LINKS, SECTION_IDS } from "../constants";
+import { useOs } from "../hooks/useOs";
 import { useTheme } from "../hooks/useTheme";
 import { useScrollProgress } from "../hooks/useScrollProgress";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import classes from "./Navbar.module.css";
 
 
-/** Detects macOS once on mount — avoids SSR / server mismatch. */
-const isMac = () =>
-  typeof navigator !== "undefined" &&
-  /mac/i.test(navigator.platform || navigator.userAgentData?.platform || "");
+/**
+ * What the palette shortcut looks like on each kind of system: the icon is the
+ * key you press, and the hint is how that key is written there. macOS has ⌘;
+ * Windows has Ctrl, drawn as the control-key glyph; anything else gets Ctrl
+ * and a plain search icon, which says what the palette is for without
+ * assuming a keyboard layout.
+ */
+const PALETTE = {
+  mac: { Icon: FiCommand, key: "⌘", label: "Open command palette (⌘K)" },
+  windows: { Icon: MdKeyboardControlKey, key: "Ctrl", label: "Open command palette (Ctrl+K)" },
+  other: { Icon: FiSearch, key: "Ctrl", label: "Open command palette (Ctrl+K)" },
+};
 
 /**
  * Command-palette trigger button.
  * Hidden on touch/mobile (keyboard shortcuts don't apply there).
- * Shows ⌘K on macOS and Ctrl K on Windows / Linux.
  */
 const PaletteButton = ({ onOpen }) => {
-  const [mac, setMac] = useState(false);
-  useEffect(() => setMac(isMac()), []);
-
-  const label = mac ? "Open command palette (⌘K)" : "Open command palette (Ctrl+K)";
-  const shortcut = mac ? "⌘" : "Ctrl";
+  const { Icon, key, label } = PALETTE[useOs()];
 
   return (
     <button
@@ -33,8 +38,8 @@ const PaletteButton = ({ onOpen }) => {
       aria-label={label}
       title={label}
     >
-      <FiCommand aria-hidden="true" />
-      <kbd className={classes.kbd}>{shortcut} K</kbd>
+      <Icon aria-hidden="true" />
+      <kbd className={classes.kbd}>{key} K</kbd>
     </button>
   );
 };

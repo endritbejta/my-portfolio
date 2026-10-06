@@ -406,7 +406,7 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
           >
             <FiExternalLink aria-hidden="true" />
           </a>
-          {controls && os === "windows" && controls}
+          {controls && os !== "mac" && controls}
         </div>
 
         <div className={classes.stage} ref={stageRef} data-device={device}>
