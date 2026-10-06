@@ -72,6 +72,17 @@
         document.documentElement.dataset.theme = theme;
       })();
     </script>
+
+    <!-- Same for motion: the OS setting or the site's own switch -->
+    <script>
+      (function () {
+        var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        try {
+          reduced = reduced || localStorage.getItem("motion") === "reduced";
+        } catch (e) {}
+        document.documentElement.dataset.motion = reduced ? "reduced" : "full";
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

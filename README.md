@@ -12,7 +12,7 @@ Personal portfolio of **Endrit Bejta**, a software engineer specializing in comm
 - **Engineering case studies.** Each featured project links to a dedicated page: a framed screenshot walkthrough (captured from the live site, with a lightbox), then overview → problem → architecture → technical decisions → challenges → lessons learned → future work.
 - **Command palette** (`⌘K` / `Ctrl+K`) for jumping to any section or case study.
 - **Dark / light theme** set before first paint to avoid a flash, persisted to `localStorage`.
-- **Motion, done tastefully.** Scroll-spy nav, scroll-progress bar, and intersection-triggered reveals — all built with custom hooks, no animation library, and fully disabled under `prefers-reduced-motion`.
+- **Motion, done tastefully.** Scroll-spy nav, scroll-progress bar, and intersection-triggered reveals — all built with custom hooks, no animation library, and fully disabled under `prefers-reduced-motion`. With reduced motion on, the interactive dot background and cursor-following dot aren't rendered at all. A "Reduce motion" switch in the footer (and the command palette) gives the same result to visitors who haven't set it in their OS; the OS setting always wins and is never overridden.
 - **SEO & accessibility.** Meta / OpenGraph / Twitter tags, JSON-LD structured data, `sitemap.xml`, `robots.txt`, semantic landmarks, focus states, ARIA, and a skip link.
 - **Performance-minded.** Route-level code splitting, lazy-loaded images, and optimized assets.
 

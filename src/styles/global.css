@@ -315,6 +315,27 @@ h4 {
   }
 }
 
+/* The same rules for the site's own reduced-motion switch, which sets
+   data-motion on <html> (see useMotionPreference). Kept beside the media
+   query so the two can't drift. */
+:root[data-motion="reduced"] {
+  scroll-behavior: auto;
+}
+
+:root[data-motion="reduced"] .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
 /* ---------------------------------- */
 /* Trailing cursor                    */
 /* ---------------------------------- */

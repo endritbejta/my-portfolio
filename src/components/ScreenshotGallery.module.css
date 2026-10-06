@@ -211,3 +211,11 @@
     transform: none;
   }
 }
+
+:global(:root[data-motion="reduced"]) .frame {
+  transition: none;
+}
+
+:global(:root[data-motion="reduced"]) .frame:hover {
+  transform: none;
+}

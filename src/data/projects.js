@@ -293,7 +293,7 @@ const editorial = {
       decisions: [
         "Snapshot-first data: the UI never shows a loading state for content that is already in the bundle.",
         "Editorial content is separate from live data, so a newly pinned repo appears as a basic card until a case study is written for it.",
-        "Motion is built from small hooks — scroll-spy, scroll progress, intersection reveals — with no animation library, and is disabled under prefers-reduced-motion.",
+        "Motion is built from small hooks — scroll-spy, scroll progress, intersection reveals — with no animation library, and is disabled under prefers-reduced-motion — including the dot background, which is not drawn at all — or with the site's own Reduce motion switch.",
         "Theme is set before first paint by an inline script, so there's no flash.",
       ],
       challenges: [

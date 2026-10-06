@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useReducedMotion } from "../hooks/useMotionPreference";
 import classes from "./DotField.module.css";
 
 /* Grid geometry. Kept in sync with --dot-gap / --dot-size in global.css:
@@ -45,19 +46,21 @@ const MOBILE_CHROME_PX = 150;
  * brighten as it nears them. Fixed to the viewport and behind all content,
  * so it never moves with scroll and never needs re-measuring on scroll.
  *
- * Inert for touch/coarse pointers (there is no cursor to follow) and for
- * `prefers-reduced-motion`, both of which still get the static grid.
+ * Inert for touch/coarse pointers (there is no cursor to follow), which still
+ * get the static grid. With reduced motion — the OS setting or the site's own
+ * switch — the dots are not drawn at all: the layer keeps only the page
+ * gradient it paints behind everything.
  */
 const DotField = () => {
   const fieldRef = useRef(null);
   const gridRef = useRef(null);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     const field = fieldRef.current;
     const grid = gridRef.current;
-    if (!field || !grid) return undefined;
+    if (reduced || !field || !grid) return undefined;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 
     let dots = [];
@@ -224,13 +227,13 @@ const DotField = () => {
       resizeTimer = setTimeout(build, 150);
     };
 
-    // Re-evaluated whenever either query flips (OS motion setting changed,
-    // or the window moved to a touch screen), not just on mount.
+    // Re-evaluated whenever the pointer query flips (the window moved to a
+    // touch screen), not just on mount.
     const syncInteractivity = () => {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
 
-      if (finePointer.matches && !reduceMotion.matches) {
+      if (finePointer.matches) {
         window.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseleave", onMouseLeave);
       } else {
@@ -246,7 +249,6 @@ const DotField = () => {
     const observer = new ResizeObserver(onFieldResize);
     observer.observe(field);
 
-    reduceMotion.addEventListener("change", syncInteractivity);
     finePointer.addEventListener("change", syncInteractivity);
 
     return () => {
@@ -254,15 +256,14 @@ const DotField = () => {
       observer.disconnect();
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
-      reduceMotion.removeEventListener("change", syncInteractivity);
       finePointer.removeEventListener("change", syncInteractivity);
       grid.textContent = "";
     };
-  }, []);
+  }, [reduced]);
 
   return (
     <div className={classes.field} ref={fieldRef} aria-hidden="true">
-      <div className={classes.grid} ref={gridRef} />
+      {!reduced && <div className={classes.grid} ref={gridRef} />}
     </div>
   );
 };
