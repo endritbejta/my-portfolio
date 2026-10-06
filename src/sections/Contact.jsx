@@ -48,8 +48,7 @@ const Contact = () => {
             </a>
             <p className={classes.note}>
               Open to software engineering roles across frontend and commerce
-              platforms, freelance work and interesting collaborations —
-              remote-first.
+              platforms, freelance work and interesting collaborations.
             </p>
           </div>
           <div className={classes.actions}>

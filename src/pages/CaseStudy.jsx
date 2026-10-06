@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { FiArrowLeft, FiArrowRight, FiExternalLink, FiGithub } from "react-icons/fi";
-import ScreenshotGallery from "../components/ScreenshotGallery";
+import LivePreview from "../components/LivePreview";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import Reveal from "../components/ui/Reveal";
@@ -71,51 +71,75 @@ const CaseStudy = () => {
           <FiArrowLeft aria-hidden="true" /> All projects
         </Link>
 
-        <header className={classes.header}>
-          <p className={classes.eyebrow}>Case study</p>
-          <h1>{project.title}</h1>
-          <p className={classes.problem}>{project.problem}</p>
+        <div className={classes.hero}>
+          <header className={classes.header}>
+            <p className={classes.eyebrow}>Case study</p>
+            <h1>{project.title}</h1>
+            <p className={classes.problem}>{project.problem}</p>
 
-          <ul className={classes.tags} role="list" aria-label="Tech stack">
-            {project.tags.map((tag) => (
-              <li key={tag}>
-                <Badge>{tag}</Badge>
-              </li>
-            ))}
-          </ul>
+            <ul className={classes.tags} role="list" aria-label="Tech stack">
+              {project.tags.map((tag) => (
+                <li key={tag}>
+                  <Badge>{tag}</Badge>
+                </li>
+              ))}
+            </ul>
 
-          <div className={classes.actions}>
-            {project.links.live && (
-              <Button href={project.links.live} icon={<FiExternalLink />}>
-                Live demo
-              </Button>
-            )}
-            {project.links.github && (
-              <Button href={project.links.github} variant="secondary" icon={<FiGithub />}>
-                View code
-              </Button>
-            )}
-          </div>
-        </header>
+            <div className={classes.actions}>
+              {project.links.live && (
+                <Button href={project.links.live} icon={<FiExternalLink />}>
+                  Live demo
+                </Button>
+              )}
+              {project.links.github && (
+                <Button href={project.links.github} variant="secondary" icon={<FiGithub />}>
+                  View code
+                </Button>
+              )}
+            </div>
+          </header>
 
-        <dl className={classes.facts}>
-          {project.role && <Fact label="Role">{project.role}</Fact>}
-          <Fact label="Year">{project.year}</Fact>
-          {project.links.live && <Fact label="Live">{hostOf(project.links.live)}</Fact>}
-          {project.links.github && <Fact label="Source">{repoLabel(project.links.github)}</Fact>}
-        </dl>
+          <aside className={classes.facts} aria-label="Project details">
+            <dl>
+              {project.role && <Fact label="Role">{project.role}</Fact>}
+              <Fact label="Year">{project.year}</Fact>
+              {project.links.live && (
+                <Fact label="Live">
+                  <a href={project.links.live} target="_blank" rel="noreferrer">
+                    {hostOf(project.links.live)}
+                  </a>
+                </Fact>
+              )}
+              {project.links.github && (
+                <Fact label="Source">
+                  <a href={project.links.github} target="_blank" rel="noreferrer">
+                    {repoLabel(project.links.github)}
+                  </a>
+                </Fact>
+              )}
+            </dl>
+          </aside>
+        </div>
       </Reveal>
 
-      {project.images.length > 0 && (
-        <Reveal as="section" className={classes.walkthrough} aria-label="Screenshots">
-          <h2>Walkthrough</h2>
+      {project.links.live && (project.preview || project.cover) && (
+        <Reveal
+          as="section"
+          className={classes.walkthrough}
+          aria-label={project.preview ? "Live preview" : "Live site"}
+        >
+          <h2>{project.preview ? "Live preview" : "Live site"}</h2>
           <p className={classes.walkthroughNote}>
-            Captured from the live site. Select any screenshot to enlarge it.
+            {project.preview
+              ? "The deployed site, running here. Switch between a desktop and a phone-sized view."
+              : "The deployed site, one click away."}
           </p>
-          <ScreenshotGallery
-            images={project.images}
+          <LivePreview
+            url={project.links.live}
             title={project.title}
-            liveUrl={project.links.live}
+            cover={project.cover}
+            coverMobile={project.coverMobile}
+            embed={project.preview}
           />
         </Reveal>
       )}

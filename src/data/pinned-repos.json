@@ -15,7 +15,8 @@
       "playwright",
       "react"
     ],
-    "pushedAt": "2026-09-18T06:10:23Z"
+    "pushedAt": "2026-09-18T06:10:23Z",
+    "embeddable": true
   },
   {
     "name": "alfa-rent",
@@ -33,7 +34,8 @@
       "shadcn-ui",
       "tailwindcss"
     ],
-    "pushedAt": "2026-09-07T09:07:20Z"
+    "pushedAt": "2026-09-07T09:07:20Z",
+    "embeddable": false
   },
   {
     "name": "WindowSwitcher",
@@ -51,7 +53,8 @@
       "swiftui",
       "window-manager"
     ],
-    "pushedAt": "2026-09-04T13:34:40Z"
+    "pushedAt": "2026-09-04T13:34:40Z",
+    "embeddable": false
   },
   {
     "name": "minimalist-e-commerce",
@@ -68,7 +71,8 @@
       "vite",
       "vitest"
     ],
-    "pushedAt": "2026-09-14T17:57:33Z"
+    "pushedAt": "2026-09-14T17:57:33Z",
+    "embeddable": false
   },
   {
     "name": "alfa_globe",
@@ -83,7 +87,8 @@
       "tailwindcss",
       "vite"
     ],
-    "pushedAt": "2026-09-14T17:56:51Z"
+    "pushedAt": "2026-09-14T17:56:51Z",
+    "embeddable": true
   },
   {
     "name": "my-portfolio",
@@ -97,6 +102,7 @@
       "react",
       "vite"
     ],
-    "pushedAt": "2026-08-21T07:42:10Z"
+    "pushedAt": "2026-10-06T14:43:14Z",
+    "embeddable": true
   }
 ]

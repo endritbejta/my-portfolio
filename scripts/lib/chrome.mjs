@@ -1,7 +1,7 @@
 /* eslint-env node */
 /**
  * Minimal headless-Chrome driver over the DevTools protocol (no npm
- * dependencies). Shared by the screenshot and CV scripts. Override the
+ * dependencies). Shared by the cover-image and CV scripts. Override the
  * binary with CHROME_PATH.
  */
 import { spawn } from "node:child_process";

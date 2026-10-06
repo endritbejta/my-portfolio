@@ -8,7 +8,7 @@ export const timeline = [
     meta: "Berlin, Germany (Remote) · Banana Beauty, HelloBody, MyRapunzel, Sophie Rosenburg",
     items: [
       "Owned end-to-end development and maintenance of 4 production Shopify storefronts, from theme implementation through deployment",
-      "Improved Google PageSpeed performance scores by up to 20 points (≈45–50 → 65–70) via asset optimization, lazy loading and JavaScript cleanup",
+      "Improved storefront performance through asset optimization, lazy loading and JavaScript cleanup",
       "Built reusable theme components with Liquid, JavaScript/TypeScript and React across the Dawn, Horizon and Concept themes, plus headless components with Shopify Hydrogen",
       "Integrated Shopify apps, APIs and third-party services; ran A/B testing experiments with marketing to lift conversion",
       "Shipped through Git/GitHub workflows with CI/CD, working directly with designers, marketers and product owners",
