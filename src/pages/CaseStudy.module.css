@@ -16,6 +16,15 @@
   color: var(--accent);
 }
 
+/* Title and summary on the left, the project's facts in a card on the right.
+   The card drops under the header on narrow screens. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
+  gap: 2rem 3.5rem;
+  align-items: start;
+}
+
 .header {
   max-width: 46rem;
 }
@@ -89,12 +98,27 @@
 
 
 .facts {
+  margin-top: 0.4rem;
+  padding: 0.35rem 1.25rem;
+  border: 1px solid var(--glass-border, var(--border));
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg, var(--surface));
+  box-shadow: var(--glass-shadow, none);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 0px));
+  backdrop-filter: blur(var(--glass-blur, 0px));
+}
+
+.facts dl {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-  gap: 1.25rem 2rem;
-  margin-top: 2.5rem;
-  padding-block: 1.5rem;
-  border-block: 1px solid var(--border);
+  margin: 0;
+}
+
+.fact {
+  padding-block: 0.95rem;
+}
+
+.fact + .fact {
+  border-top: 1px solid var(--border);
 }
 
 .fact dt {
@@ -106,9 +130,33 @@
 }
 
 .fact dd {
-  margin-top: 0.3rem;
+  margin: 0.3rem 0 0;
   font-size: var(--text-sm);
   overflow-wrap: anywhere;
+}
+
+.fact a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 56rem) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  /* Under the header the card is a short, wide strip: two columns, no rules. */
+  .facts dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1.5rem;
+  }
+
+  .fact + .fact {
+    border-top: 0;
+  }
+
+  .fact:nth-child(n + 3) {
+    border-top: 1px solid var(--border);
+  }
 }
 
 .walkthrough {
