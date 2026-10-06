@@ -9,6 +9,8 @@ import {
   FiSmartphone,
 } from "react-icons/fi";
 import { isReducedMotion } from "../hooks/useMotionPreference";
+import { useOs } from "../hooks/useOs";
+import WindowControls from "./WindowControls";
 import classes from "./LivePreview.module.css";
 
 // The size the site is rendered at, then scaled down to fit. Rendering at a
@@ -88,6 +90,9 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
   const [nativeFull, setNativeFull] = useState(false); // browser fullscreen
   const [fakeFull, setFakeFull] = useState(false); // full-window overlay fallback
   const [slotHeight, setSlotHeight] = useState(0); // space held open while fullscreen
+  const [minimized, setMinimized] = useState(false); // folded down to the title bar
+  const [dismissed, setDismissed] = useState(false); // closed: don't autoload again
+  const os = useOs();
   const [room, setRoom] = useState({ width: 0, height: 0, padX: 0, padY: 0, bezel: 0 });
   const rootRef = useRef(null);
   const viewportRef = useRef(null);
@@ -108,7 +113,9 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
   // screens.
   const measure = () => {
     const stage = stageRef.current;
-    if (!stage) return;
+    // No width means the stage is hidden (minimized): keep the last size so
+    // it comes back right.
+    if (!stage || !stage.clientWidth) return;
     // Fullscreen covers the page header, and has no page around it to leave
     // room for.
     const header = fullRef.current ? 0 : document.querySelector("header")?.offsetHeight ?? 0;
@@ -195,7 +202,7 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
   // Load when the container comes into view — not on page load.
   useEffect(() => {
     const root = rootRef.current;
-    if (!embed || loaded || !root || !mayAutoload()) return undefined;
+    if (!embed || loaded || dismissed || !root || !mayAutoload()) return undefined;
     if (typeof IntersectionObserver === "undefined") return undefined;
 
     const observer = new IntersectionObserver(
@@ -209,7 +216,7 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
     );
     observer.observe(root);
     return () => observer.disconnect();
-  }, [embed, loaded]);
+  }, [embed, loaded, dismissed]);
 
   // A site that never fires `load` shouldn't be hidden behind a picture forever.
   useEffect(() => {
@@ -241,10 +248,85 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
     }
   };
 
+  const reload = () => {
+    setReady(false);
+    setReloads((count) => count + 1);
+  };
+
+  // Keyboard shortcuts, deliberately unadvertised (they're a convenience, not
+  // the interface): F fullscreen, M minimize, R reload, Esc restore. They only
+  // act while the preview is in use — pointer over it, focus inside it, or
+  // fullscreen — never while typing, and never with Ctrl/Cmd/Alt, so they
+  // can't collide with the browser's or the page's own shortcuts. Keys typed
+  // *into* the embedded site go to that site and never reach this page.
+  const shortcuts = useRef({});
+  shortcuts.current = {
+    toggleFull: () => (fullRef.current ? exitFull() : enterFull()),
+    toggleMinimize: () => setMinimized((value) => !value),
+    restore: () => setMinimized(false),
+    reload: () => loaded && reload(),
+    minimized,
+  };
+
+  useEffect(() => {
+    if (!embed) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.defaultPrevented || event.repeat) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      const target = event.target;
+      const typing =
+        target instanceof HTMLElement &&
+        (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+      if (typing) return;
+
+      const root = rootRef.current;
+      const inUse =
+        fullRef.current || root?.matches(":hover") || root?.contains(document.activeElement);
+      if (!root || !inUse) return;
+
+      const actions = shortcuts.current;
+      const key = event.key.toLowerCase();
+      if (key === "f") actions.toggleFull();
+      else if (key === "m") actions.toggleMinimize();
+      else if (key === "r") actions.reload();
+      else if (key === "escape" && actions.minimized) actions.restore();
+      else return;
+      event.preventDefault();
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [embed]);
+
   const load = () => {
+    setDismissed(false);
+    setMinimized(false);
     setLoaded(true);
     bringIntoView();
   };
+
+  // Close: unload the site and go back to the poster. `dismissed` stops the
+  // autoload from immediately loading it again — only pressing play does.
+  const closeWindow = () => {
+    exitFull();
+    setLoaded(false);
+    setReady(false);
+    setDismissed(true);
+    setMinimized(false);
+  };
+
+  const controls = embed ? (
+    <WindowControls
+      os={os}
+      minimized={minimized}
+      fullscreen={full}
+      onClose={closeWindow}
+      onMinimize={() => setMinimized((value) => !value)}
+      onToggleFullscreen={full ? exitFull : enterFull}
+    />
+  ) : null;
 
   const poster = device === "mobile" ? coverMobile ?? cover : cover;
 
@@ -256,13 +338,18 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
         className={classes.preview}
         ref={rootRef}
         data-full={nativeFull ? "native" : fakeFull ? "fake" : undefined}
+        data-minimized={minimized ? "" : undefined}
       >
-        <div className={classes.toolbar} ref={toolbarRef}>
-          <span className={classes.lights} aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
+        <div className={classes.toolbar} ref={toolbarRef} data-os={embed ? os : undefined}>
+          {controls && os === "mac" ? (
+            controls
+          ) : (
+            <span className={classes.lights} aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+          )}
           <span className={classes.url}>{host}</span>
 
           {embed && (
@@ -288,11 +375,9 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
             <button
               type="button"
               className={classes.iconButton}
-              onClick={() => {
-                setReady(false);
-                setReloads((count) => count + 1);
-              }}
+              onClick={reload}
               disabled={!loaded}
+              aria-keyshortcuts="R"
               aria-label="Reload preview"
               title="Reload preview"
             >
@@ -302,8 +387,9 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
           {embed && (
             <button
               type="button"
-              className={classes.iconButton}
+              className={`${classes.iconButton} ${classes.fullscreenButton}`}
               onClick={full ? exitFull : enterFull}
+              aria-keyshortcuts="F"
               aria-label={full ? "Exit fullscreen" : "View fullscreen"}
               title={full ? "Exit fullscreen" : "Fullscreen"}
             >
@@ -320,6 +406,7 @@ const LivePreview = ({ url, title, cover, coverMobile, embed }) => {
           >
             <FiExternalLink aria-hidden="true" />
           </a>
+          {controls && os === "windows" && controls}
         </div>
 
         <div className={classes.stage} ref={stageRef} data-device={device}>
