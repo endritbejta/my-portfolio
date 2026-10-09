@@ -16,15 +16,6 @@
   color: var(--accent);
 }
 
-/* Title and summary on the left, the project's facts in a card on the right.
-   The card drops under the header on narrow screens. */
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 19rem;
-  gap: 2rem 3.5rem;
-  align-items: start;
-}
-
 .header {
   max-width: 46rem;
 }
@@ -48,11 +39,20 @@
   color: var(--text-muted);
 }
 
+/* Under the live preview: the stack and code link on the left, the project's
+   facts in a card on the right. The card drops below on narrow screens. */
+.details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
+  gap: 2rem 3.5rem;
+  align-items: start;
+  margin-top: 3.5rem;
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-top: 1.25rem;
 }
 
 .actions {
@@ -98,7 +98,6 @@
 
 
 .facts {
-  margin-top: 0.4rem;
   padding: 0.35rem 1.25rem;
   border: 1px solid var(--glass-border, var(--border));
   border-radius: var(--radius-lg);
@@ -140,7 +139,7 @@
 }
 
 @media (max-width: 56rem) {
-  .hero {
+  .details {
     grid-template-columns: 1fr;
   }
 
@@ -173,9 +172,6 @@
   color: var(--text-muted);
 }
 
-/* Previous on the left, Next on the right, each a fixed-width card rather than
-   half the page — with the same frosted-glass treatment as the cards on the
-   home page (ui/Card.module.css), so the blur and glow match. */
 /* App screenshots. Their shapes differ (a wide overlay, a narrow settings
    window), so they wrap rather than sit in fixed columns. */
 .shots {
@@ -207,6 +203,9 @@
   color: var(--text-muted);
 }
 
+/* Previous on the left, Next on the right, each a fixed-width card rather than
+   half the page — with the same frosted-glass treatment as the cards on the
+   home page (ui/Card.module.css), so the blur and glow match. */
 .pager {
   display: flex;
   justify-content: space-between;

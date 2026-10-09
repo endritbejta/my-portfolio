@@ -64,6 +64,11 @@ const CaseStudy = () => {
   const previous = studies[(index - 1 + studies.length) % studies.length];
   const next = studies[(index + 1) % studies.length];
 
+  // The preview carries its own "open in a new tab" control, so the Live demo
+  // button is only needed when there is no preview section to open the site from.
+  const hasLiveSection = Boolean(project.links.live && (project.preview || project.cover));
+  const showLiveButton = Boolean(project.links.live) && !hasLiveSection;
+
   return (
     <article className={`container ${classes.page}`}>
       <Reveal>
@@ -71,58 +76,14 @@ const CaseStudy = () => {
           <FiArrowLeft aria-hidden="true" /> All projects
         </Link>
 
-        <div className={classes.hero}>
-          <header className={classes.header}>
-            <p className={classes.eyebrow}>Case study</p>
-            <h1>{project.title}</h1>
-            <p className={classes.problem}>{project.problem}</p>
-
-            <ul className={classes.tags} role="list" aria-label="Tech stack">
-              {project.tags.map((tag) => (
-                <li key={tag}>
-                  <Badge>{tag}</Badge>
-                </li>
-              ))}
-            </ul>
-
-            <div className={classes.actions}>
-              {project.links.live && (
-                <Button href={project.links.live} icon={<FiExternalLink />}>
-                  Live demo
-                </Button>
-              )}
-              {project.links.github && (
-                <Button href={project.links.github} variant="secondary" icon={<FiGithub />}>
-                  View code
-                </Button>
-              )}
-            </div>
-          </header>
-
-          <aside className={classes.facts} aria-label="Project details">
-            <dl>
-              {project.role && <Fact label="Role">{project.role}</Fact>}
-              <Fact label="Year">{project.year}</Fact>
-              {project.links.live && (
-                <Fact label="Live">
-                  <a href={project.links.live} target="_blank" rel="noreferrer">
-                    {hostOf(project.links.live)}
-                  </a>
-                </Fact>
-              )}
-              {project.links.github && (
-                <Fact label="Source">
-                  <a href={project.links.github} target="_blank" rel="noreferrer">
-                    {repoLabel(project.links.github)}
-                  </a>
-                </Fact>
-              )}
-            </dl>
-          </aside>
-        </div>
+        <header className={classes.header}>
+          <p className={classes.eyebrow}>Case study</p>
+          <h1>{project.title}</h1>
+          <p className={classes.problem}>{project.problem}</p>
+        </header>
       </Reveal>
 
-      {project.links.live && (project.preview || project.cover) && (
+      {hasLiveSection && (
         <Reveal
           as="section"
           className={classes.walkthrough}
@@ -143,6 +104,56 @@ const CaseStudy = () => {
           />
         </Reveal>
       )}
+
+      {/* Stack and facts come after the preview, so the live site is the first
+          thing under the summary. Title and summary sit in the header above. */}
+      <Reveal className={classes.details}>
+        <div>
+          <ul className={classes.tags} role="list" aria-label="Tech stack">
+            {project.tags.map((tag) => (
+              <li key={tag}>
+                <Badge>{tag}</Badge>
+              </li>
+            ))}
+          </ul>
+
+          {(showLiveButton || project.links.github) && (
+            <div className={classes.actions}>
+              {showLiveButton && (
+                <Button href={project.links.live} icon={<FiExternalLink />}>
+                  Live demo
+                </Button>
+              )}
+              {project.links.github && (
+                <Button href={project.links.github} variant="secondary" icon={<FiGithub />}>
+                  View code
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+
+        <aside className={classes.facts} aria-label="Project details">
+          <dl>
+            {project.role && <Fact label="Role">{project.role}</Fact>}
+            <Fact label="Year">{project.year}</Fact>
+            {project.links.live && (
+              <Fact label="Live">
+                <a href={project.links.live} target="_blank" rel="noreferrer">
+                  {hostOf(project.links.live)}
+                </a>
+              </Fact>
+            )}
+            {project.links.github && (
+              <Fact label="Source">
+                <a href={project.links.github} target="_blank" rel="noreferrer">
+                  {repoLabel(project.links.github)}
+                </a>
+              </Fact>
+            )}
+          </dl>
+        </aside>
+      </Reveal>
 
       {project.shots.length > 0 && (
         <Reveal as="section" className={classes.walkthrough} aria-label="Screenshots">
