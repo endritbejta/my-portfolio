@@ -39,13 +39,9 @@
   color: var(--text-muted);
 }
 
-/* Under the live preview: the stack and code link on the left, the project's
-   facts in a card on the right. The card drops below on narrow screens. */
+/* Under the live preview: the stack, the code link, then the project's facts
+   as a full-width card. */
 .details {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 19rem;
-  gap: 2rem 3.5rem;
-  align-items: start;
   margin-top: 3.5rem;
 }
 
@@ -98,7 +94,8 @@
 
 
 .facts {
-  padding: 0.35rem 1.25rem;
+  margin-top: 2rem;
+  padding: 0.35rem 1.5rem;
   border: 1px solid var(--glass-border, var(--border));
   border-radius: var(--radius-lg);
   background: var(--glass-bg, var(--surface));
@@ -107,17 +104,29 @@
   backdrop-filter: blur(var(--glass-blur, 0px)) saturate(120%);
 }
 
+/* One row of columns sized to what they hold (Role and Year stay narrow, the
+   links get the room), with a rule between them. */
 .facts dl {
   display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
   margin: 0;
 }
 
 .fact {
-  padding-block: 0.95rem;
+  padding: 0.95rem 1.5rem;
+}
+
+.fact:first-child {
+  padding-left: 0;
+}
+
+.fact:last-child {
+  padding-right: 0;
 }
 
 .fact + .fact {
-  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
 }
 
 .fact dt {
@@ -138,22 +147,37 @@
   color: var(--accent);
 }
 
+/* Narrower screens: two columns, with a rule between the rows instead. */
 @media (max-width: 56rem) {
-  .details {
-    grid-template-columns: 1fr;
-  }
-
-  /* Under the header the card is a short, wide strip: two columns, no rules. */
   .facts dl {
+    grid-auto-flow: row;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0 1.5rem;
   }
 
+  .fact,
+  .fact:first-child,
+  .fact:last-child {
+    padding-inline: 0;
+  }
+
   .fact + .fact {
-    border-top: 0;
+    border-left: 0;
   }
 
   .fact:nth-child(n + 3) {
+    border-top: 1px solid var(--border);
+  }
+}
+
+/* On a phone a half-width column breaks a link mid-word, so the two links get
+   a full row each. */
+@media (max-width: 40rem) {
+  .factWide {
+    grid-column: 1 / -1;
+  }
+
+  .fact + .factWide {
     border-top: 1px solid var(--border);
   }
 }

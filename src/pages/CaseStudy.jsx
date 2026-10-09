@@ -24,8 +24,8 @@ const List = ({ items }) => (
   </ul>
 );
 
-const Fact = ({ label, children }) => (
-  <div className={classes.fact}>
+const Fact = ({ label, wide = false, children }) => (
+  <div className={wide ? `${classes.fact} ${classes.factWide}` : classes.fact}>
     <dt>{label}</dt>
     <dd>{children}</dd>
   </div>
@@ -105,47 +105,45 @@ const CaseStudy = () => {
         </Reveal>
       )}
 
-      {/* Stack and facts come after the preview, so the live site is the first
-          thing under the summary. Title and summary sit in the header above. */}
+      {/* Stack, code link and facts come after the preview, so the live site is
+          the first thing under the summary. */}
       <Reveal className={classes.details}>
-        <div>
-          <ul className={classes.tags} role="list" aria-label="Tech stack">
-            {project.tags.map((tag) => (
-              <li key={tag}>
-                <Badge>{tag}</Badge>
-              </li>
-            ))}
-          </ul>
+        <ul className={classes.tags} role="list" aria-label="Tech stack">
+          {project.tags.map((tag) => (
+            <li key={tag}>
+              <Badge>{tag}</Badge>
+            </li>
+          ))}
+        </ul>
 
-          {(showLiveButton || project.links.github) && (
-            <div className={classes.actions}>
-              {showLiveButton && (
-                <Button href={project.links.live} icon={<FiExternalLink />}>
-                  Live demo
-                </Button>
-              )}
-              {project.links.github && (
-                <Button href={project.links.github} variant="secondary" icon={<FiGithub />}>
-                  View code
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
+        {(showLiveButton || project.links.github) && (
+          <div className={classes.actions}>
+            {showLiveButton && (
+              <Button href={project.links.live} icon={<FiExternalLink />}>
+                Live demo
+              </Button>
+            )}
+            {project.links.github && (
+              <Button href={project.links.github} variant="secondary" icon={<FiGithub />}>
+                View code
+              </Button>
+            )}
+          </div>
+        )}
 
         <aside className={classes.facts} aria-label="Project details">
           <dl>
             {project.role && <Fact label="Role">{project.role}</Fact>}
             <Fact label="Year">{project.year}</Fact>
             {project.links.live && (
-              <Fact label="Live">
+              <Fact label="Live" wide>
                 <a href={project.links.live} target="_blank" rel="noreferrer">
                   {hostOf(project.links.live)}
                 </a>
               </Fact>
             )}
             {project.links.github && (
-              <Fact label="Source">
+              <Fact label="Source" wide>
                 <a href={project.links.github} target="_blank" rel="noreferrer">
                   {repoLabel(project.links.github)}
                 </a>
