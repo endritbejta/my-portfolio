@@ -307,26 +307,15 @@ a.poster:hover img {
     border-radius: 0;
   }
 
-  /* No window controls here, so the two rows would just be a URL pill and a
-     row of buttons: put them back on one line and give the height to the
-     phone, which is what limits how large it can be drawn. */
+  /* The URL gets a full-width row of its own and the device switch and
+     buttons sit below it, so nothing is squeezed onto one line. */
   .toolbar {
     --pad-y: 0.55rem;
     --pad-x: 0.75rem;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .titleBar {
-    flex: 1;
-    min-width: 0;
-    padding-right: 0;
   }
 
   .actionBar {
-    flex: none;
-    padding: var(--pad-y) var(--pad-x) var(--pad-y) 0.6rem;
-    border-top: 0;
+    padding: 0.3rem var(--pad-x);
   }
 
   .stage {
