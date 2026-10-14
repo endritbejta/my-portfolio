@@ -46,7 +46,8 @@ const OwlEyes = () => {
       iris: el.querySelector("[data-iris]"),
       x: 0,
       y: 0,
-      travel: 0,
+      travelX: 0,
+      travelY: 0,
     }));
 
     let pointer = null; // { x, y } in viewport coordinates, or null
@@ -58,7 +59,9 @@ const OwlEyes = () => {
     // duplicate them here.
     const measure = () => {
       for (const eye of eyes) {
-        eye.travel = Math.max(0, (eye.el.clientWidth - eye.iris.offsetWidth) / 2 - TRAVEL_PAD);
+        // The eyes are ovals, so the iris has more room vertically than sideways.
+        eye.travelX = Math.max(0, (eye.el.clientWidth - eye.iris.offsetWidth) / 2 - TRAVEL_PAD);
+        eye.travelY = Math.max(0, (eye.el.clientHeight - eye.iris.offsetHeight) / 2 - TRAVEL_PAD);
       }
     };
 
@@ -84,8 +87,8 @@ const OwlEyes = () => {
           if (dist > 0.5) {
             const reach = Math.min(dist / LOOK_RADIUS, 1);
             const lean = 1 - (1 - reach) * (1 - reach); // eases out: decisive, then capped
-            targetX = (dx / dist) * eye.travel * lean;
-            targetY = (dy / dist) * eye.travel * lean;
+            targetX = (dx / dist) * eye.travelX * lean;
+            targetY = (dy / dist) * eye.travelY * lean;
           }
         }
 

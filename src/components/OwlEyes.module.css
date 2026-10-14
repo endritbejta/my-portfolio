@@ -1,7 +1,8 @@
 /* Two big round eyes. Sizes are rem-based and every colour is a token, so the
    pair scales with the page and follows the theme. */
 .owl {
-  --eye: 3.4rem;
+  --eye-w: 2.7rem;
+  --eye-h: 3.7rem;
   --iris: 2.1rem;
 
   /* Warm off-white against the dark theme rather than a glaring #fff. */
@@ -25,8 +26,8 @@
   flex: none;
   display: grid;
   place-items: center;
-  width: var(--eye);
-  height: var(--eye);
+  width: var(--eye-w);
+  height: var(--eye-h);
   border-radius: 50%;
   background: var(--sclera);
 
