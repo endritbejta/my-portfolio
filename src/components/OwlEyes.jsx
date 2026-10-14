@@ -9,8 +9,8 @@ const LOOK_RADIUS = 260; // px
 
 // How quickly the pupils catch up, as the time constant of an exponential
 // ease (the same shape the cursor dot uses), so it feels the same at 60Hz and
-// 144Hz. A little slower than the cursor: eyes should feel like they notice.
-const FOLLOW_TAU = 70; // ms
+// 144Hz. Well slower than the cursor: eyes should drift after it, not snap.
+const FOLLOW_TAU = 160; // ms
 const MAX_FRAME_MS = 50; // a long pause (hidden tab) must not become one huge step
 
 // While the email is being copied the eyes shift awkwardly: a beat looking at
