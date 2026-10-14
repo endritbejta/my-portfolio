@@ -182,6 +182,16 @@
   rotate: 0.0deg;
 }
 
+/* Looking straight at the visitor mid-copy: innocent, inner ends up. */
+.owl[data-mood="sneaky"][data-gaze="user"] .left .brow {
+  translate: 0 -0.2rem;
+  rotate: -8deg;
+}
+.owl[data-mood="sneaky"][data-gaze="user"] .right .brow {
+  translate: 0 -0.2rem;
+  rotate: 8deg;
+}
+
 .owl[data-mood="determined"] .left .brow {
   translate: 0 0.10rem;
   rotate: 6.5deg;

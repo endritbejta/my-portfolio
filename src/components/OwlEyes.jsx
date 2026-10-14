@@ -13,11 +13,12 @@ const LOOK_RADIUS = 260; // px
 const FOLLOW_TAU = 160; // ms
 const MAX_FRAME_MS = 50; // a long pause (hidden tab) must not become one huge step
 
-// While the email is being copied the eyes shift awkwardly: a beat looking at
-// the button, a beat darting toward the middle, and round again for as long
-// as it is hovered.
-const AWKWARD_LOOK_MS = 850;
-const AWKWARD_AWAY_MS = 650;
+// While the email is being copied the eyes act caught out: a long look at the
+// button (sneaky brows), then a longer one straight out at the visitor
+// ("who, me?" brows), and round again for as long as it is hovered.
+const AWKWARD_LOOK_MS = 2500; // at the button
+const AWKWARD_AWAY_MS = 3500; // at the visitor
+const COPY_HOLD_MS = 3000; // how long a click keeps the routine going
 
 // Below this the pupils count as settled and the frame loop is allowed to stop.
 const SETTLE_PX = 0.02;
@@ -90,8 +91,8 @@ const OwlEyes = () => {
 
     const apply = (next) => {
       setMood(next);
-      // Caught in the act: the eyes keep flicking between the button and
-      // each other (see AWKWARD_MS).
+      // Caught in the act: the eyes alternate between the button and the
+      // visitor (see AWKWARD_LOOK_MS).
       gaze.since = next === "sneaky" ? performance.now() : 0;
       gaze.wake?.();
     };
@@ -109,7 +110,7 @@ const OwlEyes = () => {
       hold = setTimeout(() => {
         hold = 0;
         apply(null);
-      }, 1600);
+      }, COPY_HOLD_MS);
     };
 
     document.addEventListener("mouseover", onOver, { passive: true });
@@ -164,6 +165,13 @@ const OwlEyes = () => {
       const cycle = AWKWARD_LOOK_MS + AWKWARD_AWAY_MS;
       const awayNow = gaze.since !== 0 && Math.max(now - gaze.since, 0) % cycle >= AWKWARD_LOOK_MS;
 
+      // The brows pose differently for each half, via a plain attribute so
+      // React is not involved.
+      if (awayNow !== (root.dataset.gaze === "user")) {
+        if (awayNow) root.dataset.gaze = "user";
+        else delete root.dataset.gaze;
+      }
+
       // All reads first, then all writes: no layout is forced in between.
       const rects = eyes.map((eye) => eye.el.getBoundingClientRect());
       let busy = false;
@@ -173,10 +181,9 @@ const OwlEyes = () => {
         let targetY = 0;
 
         if (awayNow) {
-          // Eyes dart toward the middle and a little down: the look of someone
-          // who would rather not have been seen.
-          targetX = (i === 0 ? 1 : -1) * eye.travelX * 0.9;
-          targetY = eye.travelY * 0.4;
+          // Pupils centred: looking straight out of the screen at the visitor.
+          targetX = 0;
+          targetY = 0;
         } else if (pointer) {
           const rect = rects[i];
           const dx = pointer.x - (rect.left + rect.width / 2);
@@ -271,6 +278,7 @@ const OwlEyes = () => {
       window.removeEventListener("scroll", onScroll);
       finePointer.removeEventListener("change", syncInteractivity);
       gaze.wake = null;
+      delete root.dataset.gaze;
       for (const eye of eyes) eye.iris.style.removeProperty("translate");
     };
   }, [reduced]);
