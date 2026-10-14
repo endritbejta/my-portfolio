@@ -3,6 +3,7 @@ import { NAV_LINKS } from "../constants";
 import { profile, site, socials } from "../data/profile";
 import { useMotionPreference } from "../hooks/useMotionPreference";
 import classes from "./Footer.module.css";
+import OwlEyes from "./OwlEyes";
 
 const Footer = () => {
   const { reduced, systemReduced, toggle } = useMotionPreference();
@@ -11,6 +12,7 @@ const Footer = () => {
     <footer className={classes.footer}>
       <div className={`container ${classes.inner}`}>
         <div className={classes.col}>
+          <OwlEyes />
           <p className={classes.name}>{profile.name}</p>
           <p className={classes.tagline}>
             {profile.role} · {profile.location}
