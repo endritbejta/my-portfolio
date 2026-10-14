@@ -13,6 +13,12 @@ const LOOK_RADIUS = 260; // px
 const FOLLOW_TAU = 70; // ms
 const MAX_FRAME_MS = 50; // a long pause (hidden tab) must not become one huge step
 
+// While the email is being copied the eyes shift awkwardly: a beat looking at
+// the button, a beat darting toward the middle, and round again for as long
+// as it is hovered.
+const AWKWARD_LOOK_MS = 850;
+const AWKWARD_AWAY_MS = 650;
+
 // Below this the pupils count as settled and the frame loop is allowed to stop.
 const SETTLE_PX = 0.02;
 
@@ -68,7 +74,7 @@ const OwlEyes = () => {
   const rootRef = useRef(null);
   // Shared between the two effects below: whether the eyes are looking away
   // (and the tracking loop's wake-up), without either re-running the other.
-  const gazeRef = useRef({ awkward: false, wake: null });
+  const gazeRef = useRef({ since: 0, wake: null });
   const [mood, setMood] = useState(null);
   const reduced = useReducedMotion();
 
@@ -84,9 +90,9 @@ const OwlEyes = () => {
 
     const apply = (next) => {
       setMood(next);
-      // Caught in the act: the pupils slide toward each other instead of
-      // following the cursor.
-      gaze.awkward = next === "sneaky";
+      // Caught in the act: the eyes keep flicking between the button and
+      // each other (see AWKWARD_MS).
+      gaze.since = next === "sneaky" ? performance.now() : 0;
       gaze.wake?.();
     };
 
@@ -114,7 +120,7 @@ const OwlEyes = () => {
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("click", onClick);
-      gaze.awkward = false;
+      gaze.since = 0;
       setMood(null);
     };
   }, [reduced]);
@@ -155,6 +161,9 @@ const OwlEyes = () => {
       lastTime = now;
       const alpha = 1 - Math.exp(-dt / FOLLOW_TAU);
 
+      const cycle = AWKWARD_LOOK_MS + AWKWARD_AWAY_MS;
+      const awayNow = gaze.since !== 0 && Math.max(now - gaze.since, 0) % cycle >= AWKWARD_LOOK_MS;
+
       // All reads first, then all writes: no layout is forced in between.
       const rects = eyes.map((eye) => eye.el.getBoundingClientRect());
       let busy = false;
@@ -163,7 +172,7 @@ const OwlEyes = () => {
         let targetX = 0;
         let targetY = 0;
 
-        if (gaze.awkward) {
+        if (awayNow) {
           // Eyes dart toward the middle and a little down: the look of someone
           // who would rather not have been seen.
           targetX = (i === 0 ? 1 : -1) * eye.travelX * 0.9;
@@ -195,7 +204,8 @@ const OwlEyes = () => {
         eye.iris.style.translate = `${eye.x.toFixed(2)}px ${eye.y.toFixed(2)}px`;
       });
 
-      frame = busy ? requestAnimationFrame(tick) : 0;
+      // The awkward routine never settles; it runs until the hover ends.
+      frame = busy || gaze.since !== 0 ? requestAnimationFrame(tick) : 0;
     };
 
     const wake = () => {
