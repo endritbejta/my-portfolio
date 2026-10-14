@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "../hooks/useMotionPreference";
 import classes from "./OwlEyes.module.css";
 
@@ -19,6 +19,36 @@ const SETTLE_PX = 0.02;
 // Keeps the iris off the very rim of the eye at full travel.
 const TRAVEL_PAD = 1.5; // px
 
+/* What the brows do over each kind of link or button, keyed by the same cue
+   names the cursor dot uses (a data-cursor value, or one worked out from the
+   link). Anything not listed leaves the brows at rest. The poses live in the
+   stylesheet; this only picks one. */
+const MOODS = {
+  mail: "surprised", // Email me: both brows shoot up
+  copy: "sneaky", // Copy email: one brow furrows, the other arches
+  download: "determined", // Resume: both brows knit
+  external: "skeptic", // GitHub, LinkedIn: one brow cocked
+  read: "curious", // a project card: a small lift
+};
+
+const moodFor = (node) => {
+  const target = node instanceof Element ? node.closest("a[href], [data-cursor]") : null;
+  if (!target) return null;
+
+  let cue = target.dataset.cursor;
+  if (!cue && target.tagName === "A") {
+    const href = target.getAttribute("href") || "";
+    if (target.hasAttribute("download")) cue = "download";
+    else if (href.startsWith("mailto:")) cue = "mail";
+    else if (target.target === "_blank" || /^https?:/i.test(href)) cue = "external";
+    else if (href.includes("/projects/")) cue = "read";
+  }
+  return MOODS[cue] ?? null;
+};
+
+// A tapered brow: a point at the outer end, a rounded blob at the inner end.
+const BROW_PATH = "M2 21 Q 24 -3 53 6 A 5.2 5.2 0 0 1 51 16.4 Q 27 7.5 2 21 Z";
+
 /**
  * A pair of owl eyes whose pupils follow the cursor.
  *
@@ -30,16 +60,71 @@ const TRAVEL_PAD = 1.5; // px
  *
  * With touch/coarse pointers there is no cursor to look at, and with reduced
  * motion nothing may move: either way the eyes stay looking straight ahead.
+ *
+ * The brows are a separate layer: hovering a link or button anywhere on the
+ * page sets a mood on the root, and the stylesheet poses the brows to match.
  */
 const OwlEyes = () => {
   const rootRef = useRef(null);
+  // Shared between the two effects below: whether the eyes are looking away
+  // (and the tracking loop's wake-up), without either re-running the other.
+  const gazeRef = useRef({ awkward: false, wake: null });
+  const [mood, setMood] = useState(null);
   const reduced = useReducedMotion();
+
+  // Brow reactions. Delegated from the document, so it covers every link and
+  // button without any of them knowing about the owl, and React only hears
+  // about it when the mood actually changes.
+  useEffect(() => {
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    if (reduced || !finePointer.matches) return undefined;
+
+    const gaze = gazeRef.current;
+    let hold = 0; // timer: a copy keeps the eyes shifty a moment after the click
+
+    const apply = (next) => {
+      setMood(next);
+      // Caught in the act: the pupils slide toward each other instead of
+      // following the cursor.
+      gaze.awkward = next === "sneaky";
+      gaze.wake?.();
+    };
+
+    const onOver = (event) => {
+      if (!hold) apply(moodFor(event.target));
+    };
+    const onLeave = () => {
+      if (!hold) apply(null);
+    };
+    const onClick = (event) => {
+      if (!(event.target instanceof Element) || !event.target.closest("[data-cursor='copy']")) return;
+      apply("sneaky");
+      clearTimeout(hold);
+      hold = setTimeout(() => {
+        hold = 0;
+        apply(null);
+      }, 1600);
+    };
+
+    document.addEventListener("mouseover", onOver, { passive: true });
+    document.addEventListener("mouseleave", onLeave);
+    document.addEventListener("click", onClick);
+    return () => {
+      clearTimeout(hold);
+      document.removeEventListener("mouseover", onOver);
+      document.removeEventListener("mouseleave", onLeave);
+      document.removeEventListener("click", onClick);
+      gaze.awkward = false;
+      setMood(null);
+    };
+  }, [reduced]);
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root || reduced) return undefined;
 
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const gaze = gazeRef.current;
 
     const eyes = [...root.querySelectorAll("[data-eye]")].map((el) => ({
       el,
@@ -78,7 +163,12 @@ const OwlEyes = () => {
         let targetX = 0;
         let targetY = 0;
 
-        if (pointer) {
+        if (gaze.awkward) {
+          // Eyes dart toward the middle and a little down: the look of someone
+          // who would rather not have been seen.
+          targetX = (i === 0 ? 1 : -1) * eye.travelX * 0.9;
+          targetY = eye.travelY * 0.4;
+        } else if (pointer) {
           const rect = rects[i];
           const dx = pointer.x - (rect.left + rect.width / 2);
           const dy = pointer.y - (rect.top + rect.height / 2);
@@ -145,6 +235,7 @@ const OwlEyes = () => {
       }
     };
 
+    gaze.wake = wake;
     measure();
     syncInteractivity();
 
@@ -169,16 +260,24 @@ const OwlEyes = () => {
       document.removeEventListener("mouseleave", onMouseLeave);
       window.removeEventListener("scroll", onScroll);
       finePointer.removeEventListener("change", syncInteractivity);
+      gaze.wake = null;
       for (const eye of eyes) eye.iris.style.removeProperty("translate");
     };
   }, [reduced]);
 
   return (
-    <div className={classes.owl} ref={rootRef} aria-hidden="true">
-      {[0, 1].map((side) => (
-        <span key={side} className={classes.eye} data-eye>
-          <span className={classes.iris} data-iris>
-            <span className={classes.glint} />
+    <div className={classes.owl} ref={rootRef} aria-hidden="true" data-mood={mood ?? undefined}>
+      {["left", "right"].map((side) => (
+        <span key={side} className={`${classes.side} ${classes[side]}`}>
+          <svg className={classes.brow} viewBox="0 0 60 24" focusable="false">
+            <path d={BROW_PATH} />
+          </svg>
+          <span className={classes.eye} data-eye>
+            <span className={classes.iris} data-iris>
+              <span className={classes.pupil}>
+                <span className={classes.glint} />
+              </span>
+            </span>
           </span>
         </span>
       ))}

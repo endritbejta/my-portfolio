@@ -1,71 +1,187 @@
-/* Two big round eyes. Sizes are rem-based and every colour is a token, so the
-   pair scales with the page and follows the theme. */
+/* Two cartoon eyes: tall ovals with a heavy outline, one bigger than the
+   other, a little overlapped, each under a tapered brow. Sizes are rem-based
+   and the colours are tokens, so the pair scales with the page and follows
+   the theme. */
 .owl {
-  --eye-w: 2.7rem;
-  --eye-h: 3.7rem;
-  --iris: 2.1rem;
-
-  /* Warm off-white against the dark theme rather than a glaring #fff. */
-  --sclera: #f1ece1;
-  --rim: rgba(255, 255, 255, 0.5);
-  --pupil: #0b0c10;
+  --ink: #0b0c10;
+  --halo: transparent; /* a hairline outside the outline, so it reads on dark */
+  --sclera: #ffffff;
+  --brow: var(--ink);
 
   display: flex;
-  gap: 0.75rem;
+  align-items: flex-end;
   width: fit-content;
   margin-bottom: 1.25rem;
+  padding-top: 1.2rem; /* room for the brows to lift into */
 }
 
-:global(:root[data-theme="light"]) .owl {
-  --sclera: #ffffff;
-  --rim: rgba(20, 21, 26, 0.18);
+:global(:root[data-theme="dark"]) .owl {
+  --halo: rgba(255, 255, 255, 0.55);
+  --sclera: #f6f3ec;
+  --brow: #e9e6dc;
+}
+
+.side {
+  position: relative;
+  flex: none;
+}
+
+.right {
+  margin-left: -0.2rem; /* the eyes touch, as in the sketch */
 }
 
 .eye {
+  --eye-w: 2.9rem;
+  --eye-h: 4.1rem;
+  --iris-w: 1.7rem;
+  --iris-h: 2.3rem;
+
   position: relative;
-  flex: none;
   display: grid;
   place-items: center;
   width: var(--eye-w);
   height: var(--eye-h);
   border-radius: 50%;
   background: var(--sclera);
-
-  /* The inner shadow gives the eyeball some roundness; the two outer rings
-     are the soft feather disc an owl's eyes sit in. */
+  border: 0.2rem solid var(--ink);
   box-shadow:
-    inset 0 -0.2rem 0.45rem rgba(11, 12, 16, 0.16),
-    inset 0 0 0 1px var(--rim),
-    0 0 0 0.28rem var(--accent-soft),
-    0 0 0 calc(0.28rem + 1px) var(--border);
+    inset 0 -0.3rem 0.45rem rgba(11, 12, 16, 0.12),
+    0 0 0 1.5px var(--halo);
 }
 
-/* The iris is the moving part. Its position is written from OwlEyes.jsx as
-   `translate`, one property on one element, so the browser can move it
-   without repainting anything around it. */
+.right .eye {
+  --eye-w: 2.5rem;
+  --eye-h: 3.5rem;
+  --iris-w: 1.45rem;
+  --iris-h: 1.95rem;
+}
+
+/* The iris is the moving part, in the site's accent colour. Its position is
+   written from OwlEyes.jsx as `translate`, one property on one element, so
+   the browser can move it without repainting anything around it. */
 .iris {
   position: relative;
-  width: var(--iris);
-  height: var(--iris);
+  display: grid;
+  place-items: center;
+  width: var(--iris-w);
+  height: var(--iris-h);
   border-radius: 50%;
   translate: 0 0;
   will-change: translate;
-
-  /* Pupil over an iris that lightens toward the top, like a lit eye. */
-  background:
-    radial-gradient(circle at 50% 50%, var(--pupil) 0 34%, transparent 35%),
-    radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--accent), #fff 38%), var(--accent) 58%, var(--accent-strong) 100%);
-  box-shadow: 0 0 0 1px rgba(11, 12, 16, 0.35);
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    color-mix(in srgb, var(--accent), #fff 38%),
+    var(--accent) 58%,
+    var(--accent-strong) 100%
+  );
 }
 
-/* A catch-light, so the pupil reads as glossy rather than a flat disc. */
+.pupil {
+  position: relative;
+  width: 58%;
+  height: 62%;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+/* The white oval catch-light in the pupil, high up like the sketch's. */
 .glint {
   position: absolute;
-  top: 17%;
-  left: 55%;
-  width: 21%;
-  height: 21%;
+  top: 12%;
+  left: 50%;
+  width: 40%;
+  height: 36%;
+  translate: -50% 0;
   border-radius: 50%;
   background: #fff;
-  opacity: 0.92;
+}
+
+/* ---- Brows ---- */
+
+.brow {
+  position: absolute;
+  left: 50%;
+  top: -0.95rem;
+  width: 3rem;
+  height: 1.2rem;
+  margin-left: -1.5rem;
+  fill: var(--brow);
+  overflow: visible;
+  pointer-events: none;
+
+  /* A touch of overshoot, so a raised brow springs rather than slides. */
+  transition:
+    translate 320ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    rotate 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* At rest the left brow arches high and the right sits lower and mirrored,
+   a little quizzical, as in the sketch. */
+.left .brow {
+  rotate: -4deg;
+}
+
+.right .brow {
+  top: -0.8rem;
+  width: 2.6rem;
+  margin-left: -1.3rem;
+  transform: scaleX(-1);
+  rotate: 4deg;
+}
+
+/* Moods. translate lifts (negative = up); rotate tips a brow, positive being
+   clockwise on screen, so the left brow's inner end drops with +, the
+   right's with -. */
+.owl[data-mood="surprised"] .left .brow {
+  translate: 0 -0.5rem;
+  rotate: -9deg;
+}
+.owl[data-mood="surprised"] .right .brow {
+  translate: 0 -0.5rem;
+  rotate: 9deg;
+}
+
+.owl[data-mood="sneaky"] .left .brow {
+  translate: 0 0.15rem;
+  rotate: 14deg;
+}
+.owl[data-mood="sneaky"] .right .brow {
+  translate: 0 -0.55rem;
+  rotate: 0deg;
+}
+
+.owl[data-mood="determined"] .left .brow {
+  translate: 0 0.2rem;
+  rotate: 13deg;
+}
+.owl[data-mood="determined"] .right .brow {
+  translate: 0 0.25rem;
+  rotate: -13deg;
+}
+
+.owl[data-mood="skeptic"] .left .brow {
+  translate: 0 -0.6rem;
+  rotate: -10deg;
+}
+.owl[data-mood="skeptic"] .right .brow {
+  translate: 0 0.15rem;
+  rotate: 8deg;
+}
+
+.owl[data-mood="curious"] .left .brow {
+  translate: 0 -0.25rem;
+}
+.owl[data-mood="curious"] .right .brow {
+  translate: 0 -0.35rem;
+  rotate: -2deg;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brow {
+    transition: none;
+  }
+}
+
+:global(:root[data-motion="reduced"]) .brow {
+  transition: none;
 }
