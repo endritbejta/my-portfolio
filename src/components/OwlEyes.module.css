@@ -7,6 +7,8 @@
   --halo: transparent; /* a hairline outside the outline, so it reads on dark */
   --sclera: #ffffff;
   --brow: var(--ink);
+  --lid-drop: 0%; /* how far the eyelids hang: open by day, heavy at night */
+  --lid: #3b3650;
 
   display: flex;
   align-items: flex-end;
@@ -19,6 +21,7 @@
   --halo: rgba(255, 255, 255, 0.55);
   --sclera: #f6f3ec;
   --brow: #e9e6dc;
+  --lid-drop: 40%;
 }
 
 .side {
@@ -42,11 +45,31 @@
   width: var(--eye-w);
   height: var(--eye-h);
   border-radius: 50%;
+  overflow: hidden; /* clips the eyelid to the oval */
   background: var(--sclera);
   border: 0.2rem solid var(--ink);
   box-shadow:
     inset 0 -0.3rem 0.45rem rgba(11, 12, 16, 0.12),
     0 0 0 1.5px var(--halo);
+}
+
+/* Tired eyes at night: a lid hangs over the top of each eye, a touch lower
+   on the right so the pair look sleepily out of step. It is a plain height
+   change, so toggling the theme lets the lids sink or lift. */
+.eye::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto -1px;
+  z-index: 1;
+  height: var(--lid-drop);
+  background: linear-gradient(to bottom, var(--lid), color-mix(in srgb, var(--lid), #fff 12%));
+  border-bottom: 0.17rem solid var(--ink);
+  border-radius: 0 0 55% 55% / 0 0 38% 38%;
+  transition: height 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.right .eye::before {
+  height: calc(var(--lid-drop) * 1.12);
 }
 
 .right .eye {
@@ -129,6 +152,15 @@
   rotate: 4deg;
 }
 
+/* Heavy-lidded at night, the brows sit a little lower too. Declared before
+   the moods so a hovered button still wins. */
+:global(:root[data-theme="dark"]) .left .brow {
+  translate: 0 0.14rem;
+}
+:global(:root[data-theme="dark"]) .right .brow {
+  translate: 0 0.1rem;
+}
+
 /* Moods. translate lifts (negative = up); rotate tips a brow, positive being
    clockwise on screen, so the left brow's inner end drops with +, the
    right's with -. */
@@ -177,12 +209,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .brow {
+  .brow,
+  .eye::before {
     transition: none;
   }
 }
 
-:global(:root[data-motion="reduced"]) .brow {
+:global(:root[data-motion="reduced"]) .brow,
+:global(:root[data-motion="reduced"]) .eye::before {
   transition: none;
 }
 
