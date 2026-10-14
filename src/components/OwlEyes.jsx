@@ -42,6 +42,15 @@ const moodFor = (node) => {
   const target = node instanceof Element ? node.closest("a[href], [data-cursor]") : null;
   if (!target) return null;
 
+  // The footer's own Contact link gets the caught-out routine too.
+  if (
+    target.tagName === "A" &&
+    target.closest("footer") &&
+    /#contact$/.test(target.getAttribute("href") || "")
+  ) {
+    return "sneaky";
+  }
+
   let cue = target.dataset.cursor;
   if (!cue && target.tagName === "A") {
     const href = target.getAttribute("href") || "";

@@ -62,14 +62,18 @@
   inset: -1px -1px auto -1px;
   z-index: 1;
   height: var(--lid-drop);
-  background: linear-gradient(to bottom, var(--lid), color-mix(in srgb, var(--lid), #fff 12%));
+  background: linear-gradient(
+    to bottom,
+    var(--lid),
+    color-mix(in srgb, var(--lid), #fff 12%)
+  );
   border-bottom: 0.17rem solid var(--ink);
   border-radius: 0 0 55% 55% / 0 0 38% 38%;
   transition: height 800ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .right .eye::before {
-  height: calc(var(--lid-drop) * 1.12);
+  height: calc(var(--lid-drop) * 0.88);
 }
 
 .right .eye {
@@ -175,11 +179,11 @@
 
 .owl[data-mood="sneaky"] .left .brow {
   translate: 0 0.07rem;
-  rotate: 7.0deg;
+  rotate: 7deg;
 }
 .owl[data-mood="sneaky"] .right .brow {
   translate: 0 -0.28rem;
-  rotate: 0.0deg;
+  rotate: 0deg;
 }
 
 /* Looking straight at the visitor mid-copy: innocent, inner ends up. */
@@ -193,7 +197,7 @@
 }
 
 .owl[data-mood="determined"] .left .brow {
-  translate: 0 0.10rem;
+  translate: 0 0.1rem;
   rotate: 6.5deg;
 }
 .owl[data-mood="determined"] .right .brow {
@@ -202,12 +206,12 @@
 }
 
 .owl[data-mood="skeptic"] .left .brow {
-  translate: 0 -0.30rem;
-  rotate: -5.0deg;
+  translate: 0 -0.3rem;
+  rotate: -5deg;
 }
 .owl[data-mood="skeptic"] .right .brow {
   translate: 0 0.07rem;
-  rotate: 4.0deg;
+  rotate: 4deg;
 }
 
 .owl[data-mood="curious"] .left .brow {
@@ -215,7 +219,7 @@
 }
 .owl[data-mood="curious"] .right .brow {
   translate: 0 -0.17rem;
-  rotate: -1.0deg;
+  rotate: -1deg;
 }
 
 @media (prefers-reduced-motion: reduce) {
