@@ -109,10 +109,10 @@
   overflow: visible;
   pointer-events: none;
 
-  /* A touch of overshoot, so a raised brow springs rather than slides. */
+  /* Slow and smooth, no overshoot: a brow settles rather than springs. */
   transition:
-    translate 320ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    rotate 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    translate 750ms cubic-bezier(0.22, 1, 0.36, 1),
+    rotate 750ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* At rest the left brow arches high and the right sits lower and mirrored,
@@ -133,47 +133,47 @@
    clockwise on screen, so the left brow's inner end drops with +, the
    right's with -. */
 .owl[data-mood="surprised"] .left .brow {
-  translate: 0 -0.5rem;
-  rotate: -9deg;
+  translate: 0 -0.25rem;
+  rotate: -4.5deg;
 }
 .owl[data-mood="surprised"] .right .brow {
-  translate: 0 -0.5rem;
-  rotate: 9deg;
+  translate: 0 -0.25rem;
+  rotate: 4.5deg;
 }
 
 .owl[data-mood="sneaky"] .left .brow {
-  translate: 0 0.15rem;
-  rotate: 14deg;
+  translate: 0 0.07rem;
+  rotate: 7.0deg;
 }
 .owl[data-mood="sneaky"] .right .brow {
-  translate: 0 -0.55rem;
-  rotate: 0deg;
+  translate: 0 -0.28rem;
+  rotate: 0.0deg;
 }
 
 .owl[data-mood="determined"] .left .brow {
-  translate: 0 0.2rem;
-  rotate: 13deg;
+  translate: 0 0.10rem;
+  rotate: 6.5deg;
 }
 .owl[data-mood="determined"] .right .brow {
-  translate: 0 0.25rem;
-  rotate: -13deg;
+  translate: 0 0.12rem;
+  rotate: -6.5deg;
 }
 
 .owl[data-mood="skeptic"] .left .brow {
-  translate: 0 -0.6rem;
-  rotate: -10deg;
+  translate: 0 -0.30rem;
+  rotate: -5.0deg;
 }
 .owl[data-mood="skeptic"] .right .brow {
-  translate: 0 0.15rem;
-  rotate: 8deg;
+  translate: 0 0.07rem;
+  rotate: 4.0deg;
 }
 
 .owl[data-mood="curious"] .left .brow {
-  translate: 0 -0.25rem;
+  translate: 0 -0.12rem;
 }
 .owl[data-mood="curious"] .right .brow {
-  translate: 0 -0.35rem;
-  rotate: -2deg;
+  translate: 0 -0.17rem;
+  rotate: -1.0deg;
 }
 
 @media (prefers-reduced-motion: reduce) {
