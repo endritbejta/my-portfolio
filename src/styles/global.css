@@ -84,7 +84,7 @@
   --page-top: #14151a;
   --page-bottom: #0a0a0c;
 
-  /* Dot field. The field's JS writes each dot's own --opacity; the scale
+  /* Dot field. The field's JS reads these and paints the dots; the scale
      lets one interaction curve read right against either background. */
   --dot-rgb: 255, 255, 255;
   --dot-alpha-scale: 1;
