@@ -185,3 +185,11 @@
 :global(:root[data-motion="reduced"]) .brow {
   transition: none;
 }
+
+/* Not for phones: touch has no cursor to follow or buttons to hover, and the
+   footer is tight there. Narrow windows get the same treatment. */
+@media (max-width: 40rem), (hover: none) and (pointer: coarse) {
+  .owl {
+    display: none;
+  }
+}
