@@ -143,15 +143,16 @@ const twinOf = (target) => {
 };
 
 /* The dizzy easter egg: swing the cursor from one side of the eyes to the
-   other a couple of times in quick succession and the pupils spin while stars
-   and question marks orbit above. */
+   other a couple of times in quick succession and the irises roll up out of
+   the eyes and back in from underneath while stars and question marks orbit. */
 const FLIP_DEAD = 60; // px either side of the eyes' centre that counts as "a side"
 const FLIP_REACH_Y = 360; // px above/below the eyes within which swings count
 const FLIPS_NEEDED = 4; // side changes (two there-and-back swings)...
 const FLIP_WINDOW_MS = 3000; // ...within this long
 const DIZZY_MS = 3200;
-const DIZZY_SPIN = 5.6; // rad/s, each pupil circling at its own pace
-const DIZZY_TAU = 80; // ms: tighter than FOLLOW_TAU so the circling reads
+// Each iris rolls up and out of the top of its eye and comes back in from the
+// bottom, in a loop, at its own pace so the two are never in step.
+const ROLL_PERIOD_MS = [1050, 1300]; // one full trip, left and right eye
 
 // A tapered brow: a point at the outer end, a rounded blob at the inner end.
 const BROW_PATH = "M2 21 Q 24 -3 53 6 A 5.2 5.2 0 0 1 51 16.4 Q 27 7.5 2 21 Z";
@@ -190,6 +191,8 @@ const OwlEyes = () => {
       y: 0,
       travelX: 0,
       travelY: 0,
+      rollH: 0,
+      rollFrom: 0,
     }));
 
     let pointer = null; // { x, y } in viewport coordinates, or null
@@ -226,6 +229,8 @@ const OwlEyes = () => {
         // The eyes are ovals, so the iris has more room vertically than sideways.
         eye.travelX = Math.max(0, (eye.el.clientWidth - eye.iris.offsetWidth) / 2 - TRAVEL_PAD);
         eye.travelY = Math.max(0, (eye.el.clientHeight - eye.iris.offsetHeight) / 2 - TRAVEL_PAD);
+        // How far from centre the iris is entirely out of the eye.
+        eye.rollH = (eye.el.clientHeight + eye.iris.offsetHeight) / 2;
       }
       const rect = root.getBoundingClientRect();
       centre = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
@@ -281,7 +286,7 @@ const OwlEyes = () => {
         dizzy = null;
         flips = [];
       }
-      const alpha = 1 - Math.exp(-dt / (dizzyNow ? DIZZY_TAU : FOLLOW_TAU));
+      const alpha = 1 - Math.exp(-dt / FOLLOW_TAU);
 
       // All reads first, then all writes: no layout is forced in between.
       const rects = eyes.map((eye) => eye.el.getBoundingClientRect());
@@ -306,11 +311,17 @@ const OwlEyes = () => {
         let targetY = 0;
 
         if (dizzyNow) {
-          // Each pupil circles at its own pace and direction: the cross-eyed,
-          // out-of-step look of someone seeing stars.
-          const angle = ((i === 0 ? 1 : -0.8) * (now - dizzy.start) * DIZZY_SPIN) / 1000 + i * 1.9;
-          targetX = Math.cos(angle) * eye.travelX;
-          targetY = Math.sin(angle) * eye.travelY;
+          // Straight up and out of the top, then in from the bottom, with a
+          // little sway side to side. Driven directly, not eased: the wrap
+          // from top to bottom must be a jump, not a streak.
+          const period = ROLL_PERIOD_MS[i] ?? ROLL_PERIOD_MS[0];
+          const rolled = ((now - dizzy.start) / period) * 2 * eye.rollH;
+          const span = 2 * eye.rollH;
+          eye.y = ((((eye.rollFrom - rolled + eye.rollH) % span) + span) % span) - eye.rollH;
+          eye.x = Math.sin(((now - dizzy.start) / 380) * (i ? -1 : 1) + i) * eye.travelX * 0.45;
+          busy = true;
+          eye.iris.style.translate = `${eye.x.toFixed(2)}px ${eye.y.toFixed(2)}px`;
+          return;
         } else if (step && step.look !== "cursor" && step.look !== "twin") {
           if (step.look !== "user") {
             targetX = step.look[0] * eye.travelX;
@@ -400,6 +411,7 @@ const OwlEyes = () => {
             flips.push(now);
             if (flips.length >= FLIPS_NEEDED) {
               dizzy = { start: now, until: now + DIZZY_MS };
+              for (const eye of eyes) eye.rollFrom = eye.y;
               flips = [];
             }
           }

@@ -42,6 +42,7 @@
   width: var(--eye-w);
   height: var(--eye-h);
   border-radius: 50%;
+  overflow: hidden; /* an iris rolling out of the eye is clipped by it */
   background: var(--sclera);
   border: 0.2rem solid var(--ink);
   box-shadow:
