@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useReducedMotion } from "../hooks/useMotionPreference";
 import classes from "./OwlEyes.module.css";
 
@@ -13,29 +13,79 @@ const LOOK_RADIUS = 260; // px
 const FOLLOW_TAU = 160; // ms
 const MAX_FRAME_MS = 50; // a long pause (hidden tab) must not become one huge step
 
-// The caught-out routine (Copy email, the footer's Contact link): a look at
-// the button (sneaky brows), a look straight out at the visitor ("who, me?"
-// brows), twice over, and then back to normal even if the cursor stays put.
-const AWKWARD_LOOK_MS = 1500; // at the button
-const AWKWARD_AWAY_MS = 1500; // at the visitor
-const AWKWARD_ROUNDS = 2;
-
 // Below this the pupils count as settled and the frame loop is allowed to stop.
 const SETTLE_PX = 0.02;
 
 // Keeps the iris off the very rim of the eye at full travel.
 const TRAVEL_PAD = 1.5; // px
 
-/* What the brows do over each kind of link or button, keyed by the same cue
-   names the cursor dot uses (a data-cursor value, or one worked out from the
-   link). Anything not listed leaves the brows at rest. The poses live in the
-   stylesheet; this only picks one. */
+/* Routines: what the eyes do while a particular button is hovered. Each is a
+   list of steps played in order (and `rounds` times over), after which the eyes
+   go back to normal even if the cursor stays put.
+
+     ms     how long the step lasts
+     look   "cursor" (follow it), "user" (straight out at the visitor), or
+            [x, y], each -1..1, a fixed glance as a fraction of the pupil's travel
+     pose   the brows' pose, a data-pose value that the stylesheet defines
+     pupils optional: "wide" dilates the irises
+
+   Anything hovered that has no routine just gets its brow pose (STATIC_POSES). */
+const ROUTINES = {
+  // Copy email, footer Contact: caught out.
+  sneaky: {
+    rounds: 2,
+    steps: [
+      { ms: 1500, look: "cursor", pose: "sneaky" },
+      { ms: 1500, look: "user", pose: "sneaky-user" },
+    ],
+  },
+  // Email me: thrilled. Wide eyes on the button, gazing up dreamily while the
+  // brows bounce, then back to the button.
+  surprised: {
+    rounds: 1,
+    steps: [
+      { ms: 900, look: "cursor", pose: "surprised", pupils: "wide" },
+      { ms: 1000, look: [0, -1], pose: "bounce", pupils: "wide" },
+      { ms: 900, look: "cursor", pose: "surprised", pupils: "wide" },
+    ],
+  },
+  // Resume, footer Skills: flirty. The left brow wiggles, a sideways glance
+  // with the right brow wiggling back, then the left again.
+  flirty: {
+    rounds: 1,
+    steps: [
+      { ms: 1200, look: "cursor", pose: "flirty" },
+      { ms: 1200, look: [-1, 0.25], pose: "flirty-b" },
+      { ms: 1200, look: "cursor", pose: "flirty" },
+    ],
+  },
+  // GitHub, LinkedIn: sizing the code up. The eyes read across and down,
+  // line by line, with the brows narrowed.
+  skeptic: {
+    rounds: 1,
+    steps: [
+      { ms: 700, look: "cursor", pose: "skeptic" },
+      { ms: 420, look: [-1, 0.05], pose: "focus" },
+      { ms: 420, look: [1, 0.35], pose: "focus" },
+      { ms: 420, look: [-1, 0.65], pose: "focus" },
+      { ms: 420, look: [1, 0.95], pose: "focus" },
+      { ms: 700, look: "cursor", pose: "skeptic" },
+    ],
+  },
+};
+
+const STATIC_POSES = new Set(["curious"]);
+
+/* What each kind of link or button maps to, keyed by the same cue names the
+   cursor dot uses (a data-cursor value, or one worked out from the link). Each
+   value is a ROUTINES key or a STATIC_POSES entry; anything not listed leaves
+   the eyes alone. */
 const MOODS = {
-  mail: "surprised", // Email me: both brows shoot up
-  copy: "sneaky", // Copy email: caught out, see above
-  download: "flirty", // Resume: one brow up, with a wiggle
-  external: "skeptic", // GitHub, LinkedIn: one brow cocked
-  read: "curious", // a project card: a small lift
+  mail: "surprised",
+  copy: "sneaky",
+  download: "flirty",
+  external: "skeptic",
+  read: "curious", // a project card
 };
 
 // Footer links get their own reactions, matched on where they point.
@@ -44,7 +94,7 @@ const FOOTER_MOODS = {
   "#skills": "flirty",
 };
 
-/** What the pointer is over, as { target, mood }, or null if it is nothing the brows react to. */
+/** What the pointer is over, as { target, mood }, or null if it is nothing the eyes react to. */
 const moodFor = (node) => {
   const target = node instanceof Element ? node.closest("a[href], [data-cursor]") : null;
   if (!target) return null;
@@ -67,101 +117,45 @@ const moodFor = (node) => {
   return mood ? { target, mood } : null;
 };
 
+/* The dizzy easter egg: swing the cursor from one side of the eyes to the
+   other a couple of times in quick succession and they go cartoon-wobbly. */
+const FLIP_DEAD = 60; // px either side of the eyes' centre that counts as "a side"
+const FLIP_REACH_Y = 360; // px above/below the eyes within which swings count
+const FLIPS_NEEDED = 4; // side changes (two there-and-back swings)...
+const FLIP_WINDOW_MS = 3000; // ...within this long
+const DIZZY_MS = 3200;
+const DIZZY_SPIN = 7; // rad/s, each pupil circling at its own pace
+const DIZZY_TAU = 70; // ms: tighter than FOLLOW_TAU so the circling reads
+
 // A tapered brow: a point at the outer end, a rounded blob at the inner end.
 const BROW_PATH = "M2 21 Q 24 -3 53 6 A 5.2 5.2 0 0 1 51 16.4 Q 27 7.5 2 21 Z";
 
 /**
- * A pair of owl eyes whose pupils follow the cursor.
+ * A pair of cartoon eyes whose pupils follow the cursor.
  *
  * Only the irises move, and only through `translate`, so a frame is two
  * rectangle reads and two style writes with no layout of its own. The loop
- * runs while the footer is on screen and the pupils are still catching up,
- * and stops otherwise; a mouse move or a scroll (which moves the eyes under a
- * still cursor) starts it again.
+ * runs while the footer is on screen and something is moving, and stops
+ * otherwise; a mouse move or a scroll (which moves the eyes under a still
+ * cursor) starts it again.
+ *
+ * Hovering a link or button anywhere on the page starts that button's routine
+ * (see ROUTINES). The brows, pupil size and wobble are all driven by data
+ * attributes on the root (data-pose, data-pupils, data-dizzy) that the
+ * stylesheet reads, so React never re-renders for any of it.
  *
  * With touch/coarse pointers there is no cursor to look at, and with reduced
  * motion nothing may move: either way the eyes stay looking straight ahead.
- *
- * The brows are a separate layer: hovering a link or button anywhere on the
- * page sets a mood on the root, and the stylesheet poses the brows to match.
  */
 const OwlEyes = () => {
   const rootRef = useRef(null);
-  // Shared between the two effects below: whether the eyes are looking away
-  // (and the tracking loop's wake-up), without either re-running the other.
-  const gazeRef = useRef({ since: 0, wake: null, finish: null });
-  const [mood, setMood] = useState(null);
   const reduced = useReducedMotion();
-
-  // Brow reactions. Delegated from the document, so it covers every link and
-  // button without any of them knowing about the owl, and React only hears
-  // about it when the mood actually changes.
-  useEffect(() => {
-    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-    if (reduced || !finePointer.matches) return undefined;
-
-    const gaze = gazeRef.current;
-    let current = null; // the element the current mood belongs to
-    let spent = null; // an element whose routine already ran: quiet until the pointer leaves it
-    let locked = false; // a click-started routine plays out whatever the pointer does
-
-    const apply = (hit) => {
-      current = hit?.target ?? null;
-      const next = hit?.mood ?? null;
-      setMood(next);
-      gaze.since = next === "sneaky" ? performance.now() : 0;
-      gaze.wake?.();
-    };
-
-    // Called by the frame loop when the routine has played its rounds.
-    gaze.finish = () => {
-      locked = false;
-      spent = current;
-      apply(null);
-    };
-
-    const onOver = (event) => {
-      if (locked) return;
-      const hit = moodFor(event.target);
-      const target = hit?.target ?? null;
-      if (target && target === spent) return;
-      spent = null;
-      if (target === current) return; // moving about inside the same button
-      apply(hit);
-    };
-    const onLeave = () => {
-      if (locked) return;
-      spent = null;
-      apply(null);
-    };
-    const onClick = (event) => {
-      if (!(event.target instanceof Element) || !event.target.closest("[data-cursor='copy']")) return;
-      const hit = moodFor(event.target);
-      if (!hit) return;
-      locked = true;
-      spent = null;
-      apply(hit);
-    };
-
-    document.addEventListener("mouseover", onOver, { passive: true });
-    document.addEventListener("mouseleave", onLeave);
-    document.addEventListener("click", onClick);
-    return () => {
-      document.removeEventListener("mouseover", onOver);
-      document.removeEventListener("mouseleave", onLeave);
-      document.removeEventListener("click", onClick);
-      gaze.finish = null;
-      gaze.since = 0;
-      setMood(null);
-    };
-  }, [reduced]);
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root || reduced) return undefined;
 
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const gaze = gazeRef.current;
 
     const eyes = [...root.querySelectorAll("[data-eye]")].map((el) => ({
       el,
@@ -176,6 +170,27 @@ const OwlEyes = () => {
     let visible = false;
     let frame = 0;
     let lastTime = 0;
+    let centre = { x: 0, y: 0 }; // of the pair, in viewport coordinates
+
+    // What the pointer is over, and what the eyes are doing about it.
+    let current = null; // the hovered element a routine/pose belongs to
+    let spent = null; // an element whose routine already ran: quiet until the pointer leaves it
+    let locked = false; // a click-started routine plays out whatever the pointer does
+    let routine = null; // { def, start } while one is playing
+    let staticPose = null;
+
+    // Dizzy easter egg state.
+    let dizzy = null; // { start, until } while wobbling
+    let side = 0; // which side of the eyes the cursor was last on: -1, 1, or 0
+    let flips = []; // timestamps of recent side changes
+
+    const setAttr = (name, value) => {
+      if (value === null) {
+        if (name in root.dataset) delete root.dataset[name];
+      } else if (root.dataset[name] !== value) {
+        root.dataset[name] = value;
+      }
+    };
 
     // Sizes come from the stylesheet (rem-based), so measure rather than
     // duplicate them here.
@@ -185,37 +200,85 @@ const OwlEyes = () => {
         eye.travelX = Math.max(0, (eye.el.clientWidth - eye.iris.offsetWidth) / 2 - TRAVEL_PAD);
         eye.travelY = Math.max(0, (eye.el.clientHeight - eye.iris.offsetHeight) / 2 - TRAVEL_PAD);
       }
+      const rect = root.getBoundingClientRect();
+      centre = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    };
+
+    // The step of the playing routine at `now`; null if none is playing, and
+    // undefined once it has played all its rounds.
+    const currentStep = (now) => {
+      if (!routine) return null;
+      const { steps, rounds } = routine.def;
+      const cycle = steps.reduce((total, step) => total + step.ms, 0);
+      const elapsed = Math.max(now - routine.start, 0);
+      if (elapsed >= cycle * rounds) return undefined;
+
+      let at = elapsed % cycle;
+      for (const step of steps) {
+        if (at < step.ms) return step;
+        at -= step.ms;
+      }
+      return steps[steps.length - 1];
+    };
+
+    const finishRoutine = () => {
+      locked = false;
+      spent = current;
+      current = null;
+      routine = null;
+      staticPose = null;
+    };
+
+    // Brings the data attributes in line with what should be happening now,
+    // and returns it for the frame loop.
+    const sync = (now) => {
+      let step = currentStep(now);
+      if (step === undefined) {
+        finishRoutine();
+        step = null;
+      }
+      const dizzyNow = dizzy !== null && now < dizzy.until;
+
+      setAttr("pose", dizzyNow ? "dizzy" : step ? step.pose : staticPose);
+      setAttr("pupils", !dizzyNow && step?.pupils ? step.pupils : null);
+      setAttr("dizzy", dizzyNow ? "" : null);
+      return { step, dizzyNow };
     };
 
     const tick = (now) => {
       const dt = Math.min(Math.max(now - lastTime, 0), MAX_FRAME_MS);
       lastTime = now;
-      const alpha = 1 - Math.exp(-dt / FOLLOW_TAU);
 
-      const cycle = AWKWARD_LOOK_MS + AWKWARD_AWAY_MS;
-      const elapsed = gaze.since !== 0 ? Math.max(now - gaze.since, 0) : 0;
-      if (gaze.since !== 0 && elapsed >= cycle * AWKWARD_ROUNDS) gaze.finish?.();
-      const awayNow = gaze.since !== 0 && elapsed % cycle >= AWKWARD_LOOK_MS;
-
-      // The brows pose differently for each half, via a plain attribute so
-      // React is not involved.
-      if (awayNow !== (root.dataset.gaze === "user")) {
-        if (awayNow) root.dataset.gaze = "user";
-        else delete root.dataset.gaze;
+      const { step, dizzyNow } = sync(now);
+      if (dizzy && !dizzyNow) {
+        dizzy = null;
+        flips = [];
       }
+      const alpha = 1 - Math.exp(-dt / (dizzyNow ? DIZZY_TAU : FOLLOW_TAU));
 
       // All reads first, then all writes: no layout is forced in between.
       const rects = eyes.map((eye) => eye.el.getBoundingClientRect());
+      centre = {
+        x: (rects[0].left + rects[rects.length - 1].right) / 2,
+        y: (rects[0].top + rects[0].bottom) / 2,
+      };
       let busy = false;
 
       eyes.forEach((eye, i) => {
         let targetX = 0;
         let targetY = 0;
 
-        if (awayNow) {
-          // Pupils centred: looking straight out of the screen at the visitor.
-          targetX = 0;
-          targetY = 0;
+        if (dizzyNow) {
+          // Each pupil circles at its own pace and direction: the cross-eyed,
+          // out-of-step look of someone seeing stars.
+          const angle = ((i === 0 ? 1 : -0.8) * (now - dizzy.start) * DIZZY_SPIN) / 1000 + i * 1.9;
+          targetX = Math.cos(angle) * eye.travelX;
+          targetY = Math.sin(angle) * eye.travelY;
+        } else if (step && step.look !== "cursor") {
+          if (step.look !== "user") {
+            targetX = step.look[0] * eye.travelX;
+            targetY = step.look[1] * eye.travelY;
+          } // "user": pupils centred, looking straight out of the screen
         } else if (pointer) {
           const rect = rects[i];
           const dx = pointer.x - (rect.left + rect.width / 2);
@@ -243,8 +306,9 @@ const OwlEyes = () => {
         eye.iris.style.translate = `${eye.x.toFixed(2)}px ${eye.y.toFixed(2)}px`;
       });
 
-      // The awkward routine never settles; it runs until the hover ends.
-      frame = busy || gaze.since !== 0 ? requestAnimationFrame(tick) : 0;
+      // A routine or a dizzy spell keeps the loop going even when the pupils
+      // happen to be still for a moment.
+      frame = busy || routine !== null || dizzyNow ? requestAnimationFrame(tick) : 0;
     };
 
     const wake = () => {
@@ -253,14 +317,71 @@ const OwlEyes = () => {
       frame = requestAnimationFrame(tick);
     };
 
+    // Starts the routine (or just the pose) for what is hovered, or clears it.
+    const apply = (hit) => {
+      const now = performance.now();
+      current = hit?.target ?? null;
+      const def = hit ? ROUTINES[hit.mood] : null;
+      routine = def ? { def, start: now } : null;
+      staticPose = hit && !def && STATIC_POSES.has(hit.mood) ? hit.mood : null;
+      sync(now);
+      wake();
+    };
+
+    const onOver = (event) => {
+      if (locked) return;
+      const hit = moodFor(event.target);
+      const target = hit?.target ?? null;
+      if (target && target === spent) return; // already played: quiet until it is left
+      spent = null;
+      if (target === current) return; // moving about inside the same button
+      apply(hit);
+    };
+
+    const onClick = (event) => {
+      if (!(event.target instanceof Element) || !event.target.closest("[data-cursor='copy']")) return;
+      const hit = moodFor(event.target);
+      if (!hit) return;
+      // Copying plays the whole routine through, whatever the pointer does.
+      locked = true;
+      spent = null;
+      apply(hit);
+    };
+
     const onMouseMove = (event) => {
       pointer = { x: event.clientX, y: event.clientY };
+
+      // Dizzy: count the cursor swinging from one side of the eyes to the other.
+      if (visible && !dizzy && Math.abs(pointer.y - centre.y) < FLIP_REACH_Y) {
+        const dx = pointer.x - centre.x;
+        const next = dx > FLIP_DEAD ? 1 : dx < -FLIP_DEAD ? -1 : 0;
+        if (next !== 0 && next !== side) {
+          const now = performance.now();
+          if (side !== 0) {
+            flips = flips.filter((time) => now - time < FLIP_WINDOW_MS);
+            flips.push(now);
+            if (flips.length >= FLIPS_NEEDED) {
+              dizzy = { start: now, until: now + DIZZY_MS };
+              flips = [];
+            }
+          }
+          side = next;
+        }
+      }
+
       wake();
     };
 
     const onMouseLeave = () => {
       pointer = null; // eyes drift back to looking straight ahead
-      wake();
+      side = 0;
+      flips = [];
+      if (!locked) {
+        spent = null;
+        apply(null);
+      } else {
+        wake();
+      }
     };
 
     // Scrolling moves the eyes under a cursor that has not moved.
@@ -273,18 +394,21 @@ const OwlEyes = () => {
     const syncInteractivity = () => {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
+      document.removeEventListener("mouseover", onOver);
+      document.removeEventListener("click", onClick);
       window.removeEventListener("scroll", onScroll);
 
       if (finePointer.matches) {
         window.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseleave", onMouseLeave);
+        document.addEventListener("mouseover", onOver, { passive: true });
+        document.addEventListener("click", onClick);
         window.addEventListener("scroll", onScroll, { passive: true });
       } else {
         onMouseLeave();
       }
     };
 
-    gaze.wake = wake;
     measure();
     syncInteractivity();
 
@@ -294,7 +418,10 @@ const OwlEyes = () => {
     // Nothing to animate while the footer is off screen.
     const visibilityObserver = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible) wake();
+      if (visible) {
+        measure();
+        wake();
+      }
     });
     visibilityObserver.observe(root);
 
@@ -307,16 +434,23 @@ const OwlEyes = () => {
       visibilityObserver.disconnect();
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
+      document.removeEventListener("mouseover", onOver);
+      document.removeEventListener("click", onClick);
       window.removeEventListener("scroll", onScroll);
       finePointer.removeEventListener("change", syncInteractivity);
-      gaze.wake = null;
-      delete root.dataset.gaze;
       for (const eye of eyes) eye.iris.style.removeProperty("translate");
+      for (const name of ["pose", "pupils", "dizzy"]) setAttr(name, null);
     };
   }, [reduced]);
 
   return (
-    <div className={classes.owl} ref={rootRef} aria-hidden="true" data-mood={mood ?? undefined}>
+    <div className={classes.owl} ref={rootRef} aria-hidden="true">
+      {/* Stars and question marks that circle above the brows when dizzy. */}
+      <span className={classes.sparks}>
+        <i>★</i>
+        <i>?</i>
+        <i>★</i>
+      </span>
       {["left", "right"].map((side) => (
         <span key={side} className={`${classes.side} ${classes[side]}`}>
           <svg className={classes.brow} viewBox="0 0 60 24" focusable="false">

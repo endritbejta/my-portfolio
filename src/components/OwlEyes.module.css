@@ -8,6 +8,7 @@
   --sclera: #ffffff;
   --brow: var(--ink);
 
+  position: relative;
   display: flex;
   align-items: flex-end;
   width: fit-content;
@@ -66,7 +67,7 @@
   height: var(--iris-h);
   border-radius: 50%;
   translate: 0 0;
-  will-change: translate;
+  will-change: translate, scale;
   background: radial-gradient(
     ellipse at 50% 30%,
     color-mix(in srgb, var(--accent), #fff 38%),
@@ -134,78 +135,220 @@
   rotate: 4deg;
 }
 
-/* Moods. translate lifts (negative = up); rotate tips a brow, positive being
-   clockwise on screen, so the left brow's inner end drops with +, the
-   right's with -. */
-.owl[data-mood="surprised"] .left .brow {
+/* Poses, set as data-pose on the root by OwlEyes.jsx. translate lifts
+   (negative = up); rotate tips a brow, positive being clockwise on screen, so
+   the left brow's inner end drops with + and the right's with -. */
+.owl[data-pose="surprised"] .left .brow {
   translate: 0 -0.25rem;
   rotate: -4.5deg;
 }
-.owl[data-mood="surprised"] .right .brow {
+.owl[data-pose="surprised"] .right .brow {
   translate: 0 -0.25rem;
   rotate: 4.5deg;
 }
 
-.owl[data-mood="sneaky"] .left .brow {
+/* Both brows bounce while the eyes gaze up. */
+.owl[data-pose="bounce"] .brow {
+  animation: bounce 1000ms ease-in-out 1 both;
+}
+.owl[data-pose="bounce"] .left .brow {
+  translate: 0 -0.3rem;
+  rotate: -5deg;
+}
+.owl[data-pose="bounce"] .right .brow {
+  translate: 0 -0.3rem;
+  rotate: 5deg;
+}
+
+@keyframes bounce {
+  0% { translate: 0 -0.25rem; }
+  20% { translate: 0 0.02rem; }
+  40% { translate: 0 -0.38rem; }
+  60% { translate: 0 0.02rem; }
+  80% { translate: 0 -0.38rem; }
+  100% { translate: 0 -0.3rem; }
+}
+
+/* Caught out: one brow furrows, the other arches... */
+.owl[data-pose="sneaky"] .left .brow {
   translate: 0 0.07rem;
   rotate: 7deg;
 }
-.owl[data-mood="sneaky"] .right .brow {
+.owl[data-pose="sneaky"] .right .brow {
   translate: 0 -0.28rem;
   rotate: 0deg;
 }
 
-/* Looking straight at the visitor mid-copy: innocent, inner ends up. */
-.owl[data-mood="sneaky"][data-gaze="user"] .left .brow {
+/* ...then, looking straight at the visitor: innocent, inner ends up. */
+.owl[data-pose="sneaky-user"] .left .brow {
   translate: 0 -0.2rem;
   rotate: -8deg;
 }
-.owl[data-mood="sneaky"][data-gaze="user"] .right .brow {
+.owl[data-pose="sneaky-user"] .right .brow {
   translate: 0 -0.2rem;
   rotate: 8deg;
 }
 
-/* Flirty: the left brow arches and wiggles twice, the right sits low and
-   relaxed, as if with a half-smile. The wiggle is a keyframe animation on the
-   one brow; the rest is the usual eased pose. */
-.owl[data-mood="flirty"] .left .brow {
+/* Flirty: one brow arches and wiggles twice while the other sits low and
+   relaxed, as if with a half-smile; the next step swaps them. The wiggle is a
+   keyframe animation on the one brow; the rest is the usual eased pose. */
+.owl[data-pose="flirty"] .left .brow {
   translate: 0 -0.17rem;
   rotate: -6deg;
-  animation: flirt 1300ms ease-in-out 120ms 1 both;
+  animation: flirt 1100ms ease-in-out 80ms 1 both;
 }
-.owl[data-mood="flirty"] .right .brow {
+.owl[data-pose="flirty"] .right .brow {
   translate: 0 0.08rem;
   rotate: 5deg;
 }
 
-@keyframes flirt {
-  0% { translate: 0 0; rotate: -4deg; }
-  22% { translate: 0 -0.2rem; rotate: -7deg; }
-  40% { translate: 0 -0.05rem; rotate: -4deg; }
-  58% { translate: 0 -0.2rem; rotate: -7deg; }
-  76% { translate: 0 -0.05rem; rotate: -4deg; }
-  100% { translate: 0 -0.17rem; rotate: -6deg; }
+.owl[data-pose="flirty-b"] .right .brow {
+  translate: 0 -0.17rem;
+  rotate: 6deg;
+  animation: flirt 1100ms ease-in-out 80ms 1 both;
+}
+.owl[data-pose="flirty-b"] .left .brow {
+  translate: 0 0.08rem;
+  rotate: -5deg;
 }
 
-.owl[data-mood="skeptic"] .left .brow {
+@keyframes flirt {
+  0% { translate: 0 0; }
+  22% { translate: 0 -0.2rem; }
+  40% { translate: 0 -0.04rem; }
+  58% { translate: 0 -0.2rem; }
+  76% { translate: 0 -0.04rem; }
+  100% { translate: 0 -0.17rem; }
+}
+
+.owl[data-pose="skeptic"] .left .brow {
   translate: 0 -0.3rem;
   rotate: -5deg;
 }
-.owl[data-mood="skeptic"] .right .brow {
+.owl[data-pose="skeptic"] .right .brow {
   translate: 0 0.07rem;
   rotate: 4deg;
 }
 
-.owl[data-mood="curious"] .left .brow {
+/* Narrowed, reading closely. */
+.owl[data-pose="focus"] .left .brow {
+  translate: 0 0.08rem;
+  rotate: 6deg;
+}
+.owl[data-pose="focus"] .right .brow {
+  translate: 0 0.08rem;
+  rotate: -6deg;
+}
+
+.owl[data-pose="curious"] .left .brow {
   translate: 0 -0.12rem;
 }
-.owl[data-mood="curious"] .right .brow {
+.owl[data-pose="curious"] .right .brow {
   translate: 0 -0.17rem;
   rotate: -1deg;
 }
 
+/* Dizzy: brows slide out of step. */
+.owl[data-pose="dizzy"] .left .brow {
+  translate: 0 0.12rem;
+  rotate: 9deg;
+}
+.owl[data-pose="dizzy"] .right .brow {
+  translate: 0 -0.22rem;
+  rotate: -9deg;
+}
+
+/* ---- Pupils ---- */
+
+/* Wide-eyed: the irises dilate. */
+.iris {
+  transition: scale 280ms ease;
+}
+
+.owl[data-pupils="wide"] .iris {
+  scale: 1.2;
+}
+
+/* ---- Dizzy ---- */
+
+/* The eyes themselves are knocked out of place, each a different way, and
+   wobble there. */
+.owl[data-dizzy] .left .eye {
+  animation: wobble-left 520ms ease-in-out infinite alternate;
+}
+.owl[data-dizzy] .right .eye {
+  animation: wobble-right 430ms ease-in-out infinite alternate;
+}
+
+@keyframes wobble-left {
+  from { translate: -0.14rem 0.2rem; rotate: -8deg; }
+  to { translate: 0.06rem -0.1rem; rotate: 5deg; }
+}
+@keyframes wobble-right {
+  from { translate: 0.14rem -0.22rem; rotate: 9deg; }
+  to { translate: -0.06rem 0.16rem; rotate: -6deg; }
+}
+
+/* Stars and question marks circling above the brows. They are out of the way
+   (and invisible) until the dizzy spell starts. */
+.sparks {
+  position: absolute;
+  left: 50%;
+  top: 0.1rem;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.owl[data-dizzy] .sparks {
+  opacity: 1;
+}
+
+.sparks i {
+  position: absolute;
+  left: -0.5rem;
+  top: -0.6rem;
+  width: 1rem;
+  text-align: center;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  color: #ffc83d;
+  animation: orbit 1500ms linear infinite;
+}
+
+.sparks i:nth-child(1) {
+  animation-delay: 0ms;
+}
+.sparks i:nth-child(2) {
+  animation-delay: -500ms;
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+.sparks i:nth-child(3) {
+  animation-delay: -1000ms;
+  font-size: 0.8rem;
+}
+
+/* A flat ellipse around the top of the head, walked in eight steps. */
+@keyframes orbit {
+  0% { translate: 2.2rem 0; }
+  12.5% { translate: 1.55rem 0.45rem; }
+  25% { translate: 0 0.6rem; }
+  37.5% { translate: -1.55rem 0.45rem; }
+  50% { translate: -2.2rem 0; }
+  62.5% { translate: -1.55rem -0.45rem; }
+  75% { translate: 0 -0.6rem; }
+  87.5% { translate: 1.55rem -0.45rem; }
+  100% { translate: 2.2rem 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .brow {
+  .brow,
+  .iris {
     transition: none;
     animation: none !important;
   }
