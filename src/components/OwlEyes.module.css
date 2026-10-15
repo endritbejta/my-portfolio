@@ -7,18 +7,59 @@
   --halo: transparent; /* a hairline outside the outline, so it reads on dark */
   --sclera: #ffffff;
   --brow: var(--ink);
+  --lid: #c9ccd8;
 
   position: relative;
   display: flex;
   align-items: flex-end;
   width: fit-content;
-  margin-bottom: 1.25rem;
   padding-top: 1.2rem; /* room for the brows to lift into */
+}
+
+/* The eyes with their switch beside them. */
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  width: fit-content;
+  margin-bottom: 1.25rem;
+}
+
+/* A small switch for shutting the eyes. Styled like the footer's icon links. */
+.toggle {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  padding: 0.45rem;
+  margin-bottom: 0.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: color var(--speed-fast) ease, border-color var(--speed-fast) ease;
+}
+
+.toggle:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.toggle[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 :global(:root[data-theme="dark"]) .owl {
   --halo: rgba(255, 255, 255, 0.55);
   --sclera: #f6f3ec;
+  --lid: #3b3650;
 }
 
 .side {
@@ -48,6 +89,62 @@
   box-shadow:
     inset 0 -0.3rem 0.45rem rgba(11, 12, 16, 0.12),
     0 0 0 1.5px var(--halo);
+}
+
+/* Shutting the eyes: a lid comes down over each one, slowly, the right a beat
+   behind the left; a lash line fades in once it has closed. Opening reverses
+   it. Together with OwlEyes.jsx (which stops tracking while data-closed is set)
+   it is the "off" switch. */
+.eye::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto -1px;
+  z-index: 1;
+  height: 0;
+  background: var(--lid);
+  border-radius: 0 0 55% 55% / 0 0 38% 38%;
+  transition: height 1500ms cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+.right .eye::before {
+  transition-delay: 140ms;
+}
+
+.eye::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: 14%;
+  right: 14%;
+  top: 56%;
+  height: 0.5rem;
+  border-bottom: 0.2rem solid var(--ink);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.owl[data-closed] .eye::before {
+  height: 104%;
+}
+
+.owl[data-closed] .eye::after {
+  opacity: 1;
+  transition: opacity 400ms ease 1200ms;
+}
+
+.owl[data-closed] .right .eye::after {
+  transition-delay: 1340ms;
+}
+
+/* Sleepy brows while shut. */
+.owl[data-closed] .left .brow {
+  translate: 0 0.16rem;
+  rotate: -2deg;
+}
+.owl[data-closed] .right .brow {
+  translate: 0 0.14rem;
+  rotate: 2deg;
 }
 
 .right .eye {
@@ -273,11 +370,17 @@
 /* ---- Dizzy ---- */
 
 /* Stars and question marks circling above the brows. They are out of the way
-   (and invisible) until the dizzy spell starts. */
+   (and invisible) until the dizzy spell starts.
+
+   The orbit is two sine-eased motions a quarter turn apart, one per element:
+   the <i> swings sideways, the <b> inside it swings up and down while growing
+   and brightening toward the viewer. Plain sines compose into a true ellipse,
+   where a path walked in straight segments would show its corners as flicks. */
 .sparks {
   position: absolute;
   left: 50%;
   top: 0.1rem;
+  z-index: 2; /* the symbols passing in front go over the brows */
   width: 0;
   height: 0;
   opacity: 0;
@@ -290,6 +393,9 @@
 }
 
 .sparks i {
+  --sine: cubic-bezier(0.37, 0, 0.63, 1);
+  --phase: 0ms; /* where this symbol is on the orbit */
+
   position: absolute;
   left: -0.5rem;
   top: -0.6rem;
@@ -297,49 +403,58 @@
   text-align: center;
   font-style: normal;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1.2rem;
   color: #ffc83d;
-  animation: orbit 1500ms linear infinite;
+  animation: orbit-x 750ms var(--sine) infinite alternate;
+  animation-delay: var(--phase);
 }
 
-/* Three stars and three question marks, evenly spaced round the orbit. */
-.sparks i:nth-child(odd) {
-  font-size: 0.9rem;
+.sparks b {
+  display: block;
+  font-weight: inherit;
+  animation: orbit-y 750ms var(--sine) infinite alternate;
+  animation-delay: calc(var(--phase) - 375ms);
 }
+
 .sparks i:nth-child(even) {
   color: var(--accent);
   font-size: 1.05rem;
 }
-.sparks i:nth-child(1) { animation-delay: 0ms; }
-.sparks i:nth-child(2) { animation-delay: -250ms; }
-.sparks i:nth-child(3) { animation-delay: -500ms; }
-.sparks i:nth-child(4) { animation-delay: -750ms; }
-.sparks i:nth-child(5) { animation-delay: -1000ms; }
-.sparks i:nth-child(6) { animation-delay: -1250ms; }
 
-/* A flat ellipse around the top of the head, walked in eight steps. */
-@keyframes orbit {
-  0% { translate: 2.2rem 0; }
-  12.5% { translate: 1.55rem 0.45rem; }
-  25% { translate: 0 0.6rem; }
-  37.5% { translate: -1.55rem 0.45rem; }
-  50% { translate: -2.2rem 0; }
-  62.5% { translate: -1.55rem -0.45rem; }
-  75% { translate: 0 -0.6rem; }
-  87.5% { translate: 1.55rem -0.45rem; }
-  100% { translate: 2.2rem 0; }
+/* Six symbols, evenly spaced round a 1500ms orbit. */
+.sparks i:nth-child(1) { --phase: 0ms; }
+.sparks i:nth-child(2) { --phase: -250ms; }
+.sparks i:nth-child(3) { --phase: -500ms; }
+.sparks i:nth-child(4) { --phase: -750ms; }
+.sparks i:nth-child(5) { --phase: -1000ms; }
+.sparks i:nth-child(6) { --phase: -1250ms; }
+
+@keyframes orbit-x {
+  from { translate: -2.2rem 0; }
+  to { translate: 2.2rem 0; }
+}
+
+/* The far side is smaller and half faded, the near side bigger and opaque. */
+@keyframes orbit-y {
+  from { translate: 0 -0.6rem; scale: 0.6; opacity: 0.5; }
+  to { translate: 0 0.6rem; scale: 1.5; opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .brow,
-  .iris {
+  .iris,
+  .eye::before,
+  .eye::after {
     transition: none;
     animation: none !important;
   }
 }
 
-:global(:root[data-motion="reduced"]) .brow {
+:global(:root[data-motion="reduced"]) .brow,
+:global(:root[data-motion="reduced"]) .iris,
+:global(:root[data-motion="reduced"]) .eye::before,
+:global(:root[data-motion="reduced"]) .eye::after {
   transition: none;
   animation: none !important;
 }
@@ -347,7 +462,7 @@
 /* Not for phones: touch has no cursor to follow or buttons to hover, and the
    footer is tight there. Narrow windows get the same treatment. */
 @media (max-width: 40rem), (hover: none) and (pointer: coarse) {
-  .owl {
+  .row {
     display: none;
   }
 }

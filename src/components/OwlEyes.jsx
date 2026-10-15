@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useReducedMotion } from "../hooks/useMotionPreference";
 import classes from "./OwlEyes.module.css";
 
@@ -150,9 +151,21 @@ const FLIP_REACH_Y = 360; // px above/below the eyes within which swings count
 const FLIPS_NEEDED = 4; // side changes (two there-and-back swings)...
 const FLIP_WINDOW_MS = 3000; // ...within this long
 const DIZZY_MS = 3200;
-// Each iris rolls up and out of the top of its eye and comes back in from the
-// bottom, in a loop, at its own pace so the two are never in step.
-const ROLL_PERIOD_MS = [700, 870]; // one full trip, left and right eye
+// The irises roll in opposite directions: one goes up and out of the top of
+// its eye and comes back in from the bottom while the other goes down and out
+// of the bottom and comes back in from the top, in a loop.
+const ROLL_PERIOD_MS = 380; // one full trip, at full speed
+const ROLL_SLOWDOWN_MS = 1200; // the roll winds down over the end of the spell
+
+const STORAGE_KEY = "owl-eyes";
+
+const readClosed = () => {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === "closed";
+  } catch {
+    return false; // storage blocked: eyes start open
+  }
+};
 
 // A tapered brow: a point at the outer end, a rounded blob at the inner end.
 const BROW_PATH = "M2 21 Q 24 -3 53 6 A 5.2 5.2 0 0 1 51 16.4 Q 27 7.5 2 21 Z";
@@ -177,6 +190,17 @@ const BROW_PATH = "M2 21 Q 24 -3 53 6 A 5.2 5.2 0 0 1 51 16.4 Q 27 7.5 2 21 Z";
 const OwlEyes = () => {
   const rootRef = useRef(null);
   const reduced = useReducedMotion();
+  const [closed, setClosed] = useState(readClosed);
+
+  const toggleClosed = () => {
+    const next = !closed;
+    setClosed(next);
+    try {
+      localStorage.setItem(STORAGE_KEY, next ? "closed" : "open");
+    } catch {
+      // not saved, still works for this visit
+    }
+  };
 
   useEffect(() => {
     const root = rootRef.current;
@@ -213,6 +237,10 @@ const OwlEyes = () => {
     let dizzy = null; // { start, until } while wobbling
     let side = 0; // which side of the eyes the cursor was last on: -1, 1, or 0
     let flips = []; // timestamps of recent side changes
+
+    // Shut eyes (the switch beside them) mean no tracking and no reactions: the
+    // pupils settle to the middle while the lids come down in CSS.
+    const isClosed = () => root.hasAttribute("data-closed");
 
     const setAttr = (name, value) => {
       if (value === null) {
@@ -264,6 +292,18 @@ const OwlEyes = () => {
     // Brings the data attributes in line with what should be happening now,
     // and returns it for the frame loop.
     const sync = (now) => {
+      if (isClosed()) {
+        routine = null;
+        staticPose = null;
+        current = null;
+        twin = null;
+        locked = false;
+        dizzy = null;
+        flips = [];
+        for (const name of ["pose", "pupils", "dizzy"]) setAttr(name, null);
+        return { step: null, dizzyNow: false };
+      }
+
       let step = currentStep(now);
       if (step === undefined) {
         finishRoutine();
@@ -298,7 +338,7 @@ const OwlEyes = () => {
 
       // What the pupils aim at: the cursor, or, for a "twin" step, the same
       // link elsewhere on the page.
-      let aim = pointer;
+      let aim = isClosed() ? null : pointer;
       if (step?.look === "twin") {
         if (twin) {
           const box = twin.getBoundingClientRect();
@@ -311,14 +351,20 @@ const OwlEyes = () => {
         let targetY = 0;
 
         if (dizzyNow) {
-          // Straight up and out of the top, then in from the bottom, with a
-          // little sway side to side. Driven directly, not eased: the wrap
+          // Up and out of the top (left eye) or down and out of the bottom
+          // (right eye), then round again, with a little sway side to side. Driven directly, not eased: the wrap
           // from top to bottom must be a jump, not a streak.
-          const period = ROLL_PERIOD_MS[i] ?? ROLL_PERIOD_MS[0];
-          const rolled = ((now - dizzy.start) / period) * 2 * eye.rollH;
           const span = 2 * eye.rollH;
-          eye.y = ((((eye.rollFrom - rolled + eye.rollH) % span) + span) % span) - eye.rollH;
-          eye.x = Math.sin(((now - dizzy.start) / 380) * (i ? -1 : 1) + i) * eye.travelX * 0.45;
+          const t = Math.min(now - dizzy.start, DIZZY_MS);
+          const slowFrom = DIZZY_MS - ROLL_SLOWDOWN_MS;
+          // Distance rolled, in full-speed milliseconds: constant speed, then
+          // speed falling linearly to nothing at the end, so it coasts to a stop.
+          const u = Math.max(t - slowFrom, 0);
+          const rolledMs = Math.min(t, slowFrom) + u - (u * u) / (2 * ROLL_SLOWDOWN_MS);
+          const calm = 1 - u / ROLL_SLOWDOWN_MS; // 1 -> 0 over the slowdown
+          const rolled = (rolledMs / ROLL_PERIOD_MS) * span * (i === 0 ? -1 : 1);
+          eye.y = ((((eye.rollFrom + rolled + eye.rollH) % span) + span) % span) - eye.rollH;
+          eye.x = Math.sin((t / 380) * (i ? -1 : 1) + i) * eye.travelX * 0.45 * calm;
           busy = true;
           eye.iris.style.translate = `${eye.x.toFixed(2)}px ${eye.y.toFixed(2)}px`;
           return;
@@ -378,7 +424,7 @@ const OwlEyes = () => {
     };
 
     const onOver = (event) => {
-      if (locked) return;
+      if (locked || isClosed()) return;
       const hit = moodFor(event.target);
       const target = hit?.target ?? null;
       if (target && target === spent) return; // already played: quiet until it is left
@@ -388,6 +434,7 @@ const OwlEyes = () => {
     };
 
     const onClick = (event) => {
+      if (isClosed()) return;
       if (!(event.target instanceof Element) || !event.target.closest("[data-cursor='copy']")) return;
       const hit = moodFor(event.target);
       if (!hit) return;
@@ -401,7 +448,7 @@ const OwlEyes = () => {
       pointer = { x: event.clientX, y: event.clientY };
 
       // Dizzy: count the cursor swinging from one side of the eyes to the other.
-      if (visible && !dizzy && Math.abs(pointer.y - centre.y) < FLIP_REACH_Y) {
+      if (visible && !dizzy && !isClosed() && Math.abs(pointer.y - centre.y) < FLIP_REACH_Y) {
         const dx = pointer.x - centre.x;
         const next = dx > FLIP_DEAD ? 1 : dx < -FLIP_DEAD ? -1 : 0;
         if (next !== 0 && next !== side) {
@@ -477,7 +524,13 @@ const OwlEyes = () => {
 
     finePointer.addEventListener("change", syncInteractivity);
 
+    // Closing or opening the eyes wakes the loop so the pupils settle (or
+    // pick the cursor back up) without waiting for a mouse move.
+    const closedObserver = new MutationObserver(wake);
+    closedObserver.observe(root, { attributes: true, attributeFilter: ["data-closed"] });
+
     return () => {
+      closedObserver.disconnect();
       cancelAnimationFrame(frame);
       frame = 0;
       resizeObserver.disconnect();
@@ -494,30 +547,42 @@ const OwlEyes = () => {
   }, [reduced]);
 
   return (
-    <div className={classes.owl} ref={rootRef} aria-hidden="true">
-      {/* Stars and question marks that circle above the brows when dizzy. */}
-      <span className={classes.sparks}>
-        <i>★</i>
-        <i>?</i>
-        <i>★</i>
-        <i>?</i>
-        <i>★</i>
-        <i>?</i>
-      </span>
-      {["left", "right"].map((side) => (
-        <span key={side} className={`${classes.side} ${classes[side]}`}>
-          <svg className={classes.brow} viewBox="0 0 60 24" focusable="false">
-            <path d={BROW_PATH} />
-          </svg>
-          <span className={classes.eye} data-eye>
-            <span className={classes.iris} data-iris>
-              <span className={classes.pupil}>
-                <span className={classes.glint} />
+    <div className={classes.row}>
+      <div className={classes.owl} ref={rootRef} aria-hidden="true" data-closed={closed ? "" : undefined}>
+        {/* Stars and question marks that circle above the brows when dizzy. */}
+        <span className={classes.sparks}>
+          {["★", "?", "★", "?", "★", "?"].map((glyph, index) => (
+            <i key={index}>
+              <b>{glyph}</b>
+            </i>
+          ))}
+        </span>
+        {["left", "right"].map((side) => (
+          <span key={side} className={`${classes.side} ${classes[side]}`}>
+            <svg className={classes.brow} viewBox="0 0 60 24" focusable="false">
+              <path d={BROW_PATH} />
+            </svg>
+            <span className={classes.eye} data-eye>
+              <span className={classes.iris} data-iris>
+                <span className={classes.pupil}>
+                  <span className={classes.glint} />
+                </span>
               </span>
             </span>
           </span>
-        </span>
-      ))}
+        ))}
+      </div>
+
+      <button
+        type="button"
+        className={classes.toggle}
+        aria-pressed={closed}
+        aria-label={closed ? "Open the eyes" : "Close the eyes"}
+        title={closed ? "Open the eyes" : "Close the eyes"}
+        onClick={toggleClosed}
+      >
+        {closed ? <FiEyeOff aria-hidden="true" /> : <FiEye aria-hidden="true" />}
+      </button>
     </div>
   );
 };
