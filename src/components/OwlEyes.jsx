@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useReducedMotion } from "../hooks/useMotionPreference";
 import classes from "./OwlEyes.module.css";
 
@@ -191,6 +190,10 @@ const OwlEyes = () => {
   const rootRef = useRef(null);
   const reduced = useReducedMotion();
   const [closed, setClosed] = useState(readClosed);
+
+  // Reduced motion puts the owl to sleep for good: nothing tracks or reacts, so
+  // there is nothing for the cord to switch back on and it is not shown.
+  const asleep = closed || reduced;
 
   const toggleClosed = () => {
     const next = !closed;
@@ -548,7 +551,7 @@ const OwlEyes = () => {
 
   return (
     <div className={classes.row}>
-      <div className={classes.owl} ref={rootRef} aria-hidden="true" data-closed={closed ? "" : undefined}>
+      <div className={classes.owl} ref={rootRef} aria-hidden="true" data-closed={asleep ? "" : undefined}>
         {/* Stars and question marks that circle above the brows when dizzy. */}
         <span className={classes.sparks}>
           {["★", "?", "★", "?", "★", "?"].map((glyph, index) => (
@@ -556,6 +559,12 @@ const OwlEyes = () => {
               <b>{glyph}</b>
             </i>
           ))}
+        </span>
+        {/* Zs drifting up while the eyes are shut. */}
+        <span className={classes.zzz}>
+          <i>z</i>
+          <i>Z</i>
+          <i>z</i>
         </span>
         {["left", "right"].map((side) => (
           <span key={side} className={`${classes.side} ${classes[side]}`}>
@@ -573,16 +582,24 @@ const OwlEyes = () => {
         ))}
       </div>
 
-      <button
-        type="button"
-        className={classes.toggle}
-        aria-pressed={closed}
-        aria-label={closed ? "Open the eyes" : "Close the eyes"}
-        title={closed ? "Open the eyes" : "Close the eyes"}
-        onClick={toggleClosed}
-      >
-        {closed ? <FiEyeOff aria-hidden="true" /> : <FiEye aria-hidden="true" />}
-      </button>
+      {!reduced && (
+        <>
+          {/* A pull cord, like a ceiling light's: tugging the bead shuts the eyes. */}
+          <button
+            type="button"
+            className={classes.cord}
+            aria-pressed={closed}
+            aria-label={closed ? "Open the eyes" : "Close the eyes"}
+            title={closed ? "Wake the owl" : "Put the owl to sleep"}
+            onClick={toggleClosed}
+          >
+            <span className={classes.pull}>
+              <span className={classes.string} />
+              <span className={classes.bead} />
+            </span>
+          </button>
+        </>
+      )}
     </div>
   );
 };

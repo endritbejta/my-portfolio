@@ -25,35 +25,77 @@
   margin-bottom: 1.25rem;
 }
 
-/* A small switch for shutting the eyes. Styled like the footer's icon links. */
-.toggle {
-  display: inline-grid;
-  place-items: center;
+/* A pull cord hanging beside the eyes, like a ceiling light's. It sways when
+   hovered, stretches while pressed and springs back on release; the bead
+   turns accent-coloured while the eyes are shut. */
+.cord {
+  align-self: flex-start;
   flex: none;
-  padding: 0.45rem;
-  margin-bottom: 0.2rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  width: 1.6rem;
+  height: 4.6rem;
+  margin-left: 0.8rem;
+  padding: 0;
+  border: 0;
   background: none;
-  color: var(--text-muted);
-  font-size: 1.05rem;
   cursor: pointer;
-  transition: color var(--speed-fast) ease, border-color var(--speed-fast) ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.toggle:hover {
-  color: var(--text);
-  border-color: var(--border-strong);
+.pull {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 0;
+  translate: 0 0;
+  transition: translate 520ms cubic-bezier(0.34, 1.7, 0.5, 1);
 }
 
-.toggle[aria-pressed="true"] {
-  color: var(--accent);
-  border-color: var(--accent);
+.cord:hover .pull {
+  animation: sway 1100ms ease-in-out infinite alternate;
 }
 
-.toggle:focus-visible {
+.cord:active .pull {
+  translate: 0 0.7rem;
+  transition-duration: 90ms;
+}
+
+.string {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0.5rem;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--text-faint);
+}
+
+.bead {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-left: -0.425rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 14%, var(--text-muted) 16%);
+  box-shadow: 0 0 0 1.5px var(--text-faint);
+  transition: background 400ms ease;
+}
+
+.cord[aria-pressed="true"] .bead {
+  background: radial-gradient(circle at 35% 30%, #fff 0 14%, var(--accent) 16%);
+}
+
+.cord:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes sway {
+  from { rotate: -4deg; }
+  to { rotate: 4deg; }
 }
 
 :global(:root[data-theme="dark"]) .owl {
@@ -441,18 +483,72 @@
   to { translate: 0 0.6rem; scale: 1.5; opacity: 1; }
 }
 
+/* ---- Sleeping ---- */
+
+/* Zs that drift up and away from the eyes, growing and fading as they go. They
+   start once the lids have come down. */
+.zzz {
+  position: absolute;
+  left: calc(100% - 1.6rem);
+  top: 1.7rem;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.zzz i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--text-muted);
+  opacity: 0;
+}
+
+.zzz i:nth-child(2) {
+  font-size: 1.1rem;
+}
+
+.owl[data-closed] .zzz i {
+  animation: snooze 3200ms ease-in-out infinite;
+}
+.owl[data-closed] .zzz i:nth-child(1) { animation-delay: 1300ms; }
+.owl[data-closed] .zzz i:nth-child(2) { animation-delay: 2367ms; }
+.owl[data-closed] .zzz i:nth-child(3) { animation-delay: 3433ms; }
+
+@keyframes snooze {
+  0% { translate: 0 0; scale: 0.5; opacity: 0; }
+  15% { opacity: 1; }
+  35% { translate: 0.7rem -0.9rem; }
+  65% { translate: 0.2rem -1.7rem; }
+  100% { translate: 1.2rem -2.6rem; scale: 1.8; opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .brow,
   .iris,
+  .pull,
   .eye::before,
   .eye::after {
     transition: none;
     animation: none !important;
   }
+
+  /* Still show that it is asleep: the Zs sit where they would be mid-drift. */
+  .owl[data-closed] .zzz i {
+    opacity: 0.8;
+  }
+  .owl[data-closed] .zzz i:nth-child(1) { translate: 0.2rem -0.5rem; }
+  .owl[data-closed] .zzz i:nth-child(2) { translate: 0.8rem -1.3rem; }
+  .owl[data-closed] .zzz i:nth-child(3) { translate: 1.2rem -2.1rem; }
 }
 
 :global(:root[data-motion="reduced"]) .brow,
 :global(:root[data-motion="reduced"]) .iris,
+:global(:root[data-motion="reduced"]) .pull,
 :global(:root[data-motion="reduced"]) .eye::before,
 :global(:root[data-motion="reduced"]) .eye::after {
   transition: none;
