@@ -150,8 +150,8 @@ const FLIP_REACH_Y = 360; // px above/below the eyes within which swings count
 const FLIPS_NEEDED = 4; // side changes (two there-and-back swings)...
 const FLIP_WINDOW_MS = 3000; // ...within this long
 const DIZZY_MS = 3200;
-const DIZZY_SPIN = 4.2; // rad/s, each pupil circling at its own pace
-const DIZZY_TAU = 90; // ms: tighter than FOLLOW_TAU so the circling reads
+const DIZZY_SPIN = 5.6; // rad/s, each pupil circling at its own pace
+const DIZZY_TAU = 80; // ms: tighter than FOLLOW_TAU so the circling reads
 
 // A tapered brow: a point at the outer end, a rounded blob at the inner end.
 const BROW_PATH = "M2 21 Q 24 -3 53 6 A 5.2 5.2 0 0 1 51 16.4 Q 27 7.5 2 21 Z";
