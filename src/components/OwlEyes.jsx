@@ -152,7 +152,7 @@ const FLIP_WINDOW_MS = 3000; // ...within this long
 const DIZZY_MS = 3200;
 // Each iris rolls up and out of the top of its eye and comes back in from the
 // bottom, in a loop, at its own pace so the two are never in step.
-const ROLL_PERIOD_MS = [1050, 1300]; // one full trip, left and right eye
+const ROLL_PERIOD_MS = [700, 870]; // one full trip, left and right eye
 
 // A tapered brow: a point at the outer end, a rounded blob at the inner end.
 const BROW_PATH = "M2 21 Q 24 -3 53 6 A 5.2 5.2 0 0 1 51 16.4 Q 27 7.5 2 21 Z";
