@@ -165,13 +165,26 @@
   rotate: 8deg;
 }
 
-.owl[data-mood="determined"] .left .brow {
-  translate: 0 0.1rem;
-  rotate: 6.5deg;
+/* Flirty: the left brow arches and wiggles twice, the right sits low and
+   relaxed, as if with a half-smile. The wiggle is a keyframe animation on the
+   one brow; the rest is the usual eased pose. */
+.owl[data-mood="flirty"] .left .brow {
+  translate: 0 -0.17rem;
+  rotate: -6deg;
+  animation: flirt 1300ms ease-in-out 120ms 1 both;
 }
-.owl[data-mood="determined"] .right .brow {
-  translate: 0 0.12rem;
-  rotate: -6.5deg;
+.owl[data-mood="flirty"] .right .brow {
+  translate: 0 0.08rem;
+  rotate: 5deg;
+}
+
+@keyframes flirt {
+  0% { translate: 0 0; rotate: -4deg; }
+  22% { translate: 0 -0.2rem; rotate: -7deg; }
+  40% { translate: 0 -0.05rem; rotate: -4deg; }
+  58% { translate: 0 -0.2rem; rotate: -7deg; }
+  76% { translate: 0 -0.05rem; rotate: -4deg; }
+  100% { translate: 0 -0.17rem; rotate: -6deg; }
 }
 
 .owl[data-mood="skeptic"] .left .brow {
@@ -194,11 +207,13 @@
 @media (prefers-reduced-motion: reduce) {
   .brow {
     transition: none;
+    animation: none !important;
   }
 }
 
 :global(:root[data-motion="reduced"]) .brow {
   transition: none;
+  animation: none !important;
 }
 
 /* Not for phones: touch has no cursor to follow or buttons to hover, and the

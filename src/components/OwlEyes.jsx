@@ -13,12 +13,12 @@ const LOOK_RADIUS = 260; // px
 const FOLLOW_TAU = 160; // ms
 const MAX_FRAME_MS = 50; // a long pause (hidden tab) must not become one huge step
 
-// While the email is being copied the eyes act caught out: a long look at the
-// button (sneaky brows), then a longer one straight out at the visitor
-// ("who, me?" brows), and round again for as long as it is hovered.
-const AWKWARD_LOOK_MS = 2500; // at the button
-const AWKWARD_AWAY_MS = 3500; // at the visitor
-const COPY_HOLD_MS = 3000; // how long a click keeps the routine going
+// The caught-out routine (Copy email, the footer's Contact link): a look at
+// the button (sneaky brows), a look straight out at the visitor ("who, me?"
+// brows), twice over, and then back to normal even if the cursor stays put.
+const AWKWARD_LOOK_MS = 1500; // at the button
+const AWKWARD_AWAY_MS = 1500; // at the visitor
+const AWKWARD_ROUNDS = 2;
 
 // Below this the pupils count as settled and the frame loop is allowed to stop.
 const SETTLE_PX = 0.02;
@@ -32,34 +32,39 @@ const TRAVEL_PAD = 1.5; // px
    stylesheet; this only picks one. */
 const MOODS = {
   mail: "surprised", // Email me: both brows shoot up
-  copy: "sneaky", // Copy email: one brow furrows, the other arches
-  download: "determined", // Resume: both brows knit
+  copy: "sneaky", // Copy email: caught out, see above
+  download: "flirty", // Resume: one brow up, with a wiggle
   external: "skeptic", // GitHub, LinkedIn: one brow cocked
   read: "curious", // a project card: a small lift
 };
 
+// Footer links get their own reactions, matched on where they point.
+const FOOTER_MOODS = {
+  "#contact": "sneaky",
+  "#skills": "flirty",
+};
+
+/** What the pointer is over, as { target, mood }, or null if it is nothing the brows react to. */
 const moodFor = (node) => {
   const target = node instanceof Element ? node.closest("a[href], [data-cursor]") : null;
   if (!target) return null;
 
-  // The footer's own Contact link gets the caught-out routine too.
-  if (
-    target.tagName === "A" &&
-    target.closest("footer") &&
-    /#contact$/.test(target.getAttribute("href") || "")
-  ) {
-    return "sneaky";
+  const href = target.tagName === "A" ? target.getAttribute("href") || "" : "";
+
+  if (href && target.closest("footer")) {
+    const hash = Object.keys(FOOTER_MOODS).find((key) => href.endsWith(key));
+    if (hash) return { target, mood: FOOTER_MOODS[hash] };
   }
 
   let cue = target.dataset.cursor;
-  if (!cue && target.tagName === "A") {
-    const href = target.getAttribute("href") || "";
+  if (!cue && href) {
     if (target.hasAttribute("download")) cue = "download";
     else if (href.startsWith("mailto:")) cue = "mail";
     else if (target.target === "_blank" || /^https?:/i.test(href)) cue = "external";
     else if (href.includes("/projects/")) cue = "read";
   }
-  return MOODS[cue] ?? null;
+  const mood = MOODS[cue];
+  return mood ? { target, mood } : null;
 };
 
 // A tapered brow: a point at the outer end, a rounded blob at the inner end.
@@ -84,7 +89,7 @@ const OwlEyes = () => {
   const rootRef = useRef(null);
   // Shared between the two effects below: whether the eyes are looking away
   // (and the tracking loop's wake-up), without either re-running the other.
-  const gazeRef = useRef({ since: 0, wake: null });
+  const gazeRef = useRef({ since: 0, wake: null, finish: null });
   const [mood, setMood] = useState(null);
   const reduced = useReducedMotion();
 
@@ -96,40 +101,56 @@ const OwlEyes = () => {
     if (reduced || !finePointer.matches) return undefined;
 
     const gaze = gazeRef.current;
-    let hold = 0; // timer: a copy keeps the eyes shifty a moment after the click
+    let current = null; // the element the current mood belongs to
+    let spent = null; // an element whose routine already ran: quiet until the pointer leaves it
+    let locked = false; // a click-started routine plays out whatever the pointer does
 
-    const apply = (next) => {
+    const apply = (hit) => {
+      current = hit?.target ?? null;
+      const next = hit?.mood ?? null;
       setMood(next);
-      // Caught in the act: the eyes alternate between the button and the
-      // visitor (see AWKWARD_LOOK_MS).
       gaze.since = next === "sneaky" ? performance.now() : 0;
       gaze.wake?.();
     };
 
+    // Called by the frame loop when the routine has played its rounds.
+    gaze.finish = () => {
+      locked = false;
+      spent = current;
+      apply(null);
+    };
+
     const onOver = (event) => {
-      if (!hold) apply(moodFor(event.target));
+      if (locked) return;
+      const hit = moodFor(event.target);
+      const target = hit?.target ?? null;
+      if (target && target === spent) return;
+      spent = null;
+      if (target === current) return; // moving about inside the same button
+      apply(hit);
     };
     const onLeave = () => {
-      if (!hold) apply(null);
+      if (locked) return;
+      spent = null;
+      apply(null);
     };
     const onClick = (event) => {
       if (!(event.target instanceof Element) || !event.target.closest("[data-cursor='copy']")) return;
-      apply("sneaky");
-      clearTimeout(hold);
-      hold = setTimeout(() => {
-        hold = 0;
-        apply(null);
-      }, COPY_HOLD_MS);
+      const hit = moodFor(event.target);
+      if (!hit) return;
+      locked = true;
+      spent = null;
+      apply(hit);
     };
 
     document.addEventListener("mouseover", onOver, { passive: true });
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("click", onClick);
     return () => {
-      clearTimeout(hold);
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("click", onClick);
+      gaze.finish = null;
       gaze.since = 0;
       setMood(null);
     };
@@ -172,7 +193,9 @@ const OwlEyes = () => {
       const alpha = 1 - Math.exp(-dt / FOLLOW_TAU);
 
       const cycle = AWKWARD_LOOK_MS + AWKWARD_AWAY_MS;
-      const awayNow = gaze.since !== 0 && Math.max(now - gaze.since, 0) % cycle >= AWKWARD_LOOK_MS;
+      const elapsed = gaze.since !== 0 ? Math.max(now - gaze.since, 0) : 0;
+      if (gaze.since !== 0 && elapsed >= cycle * AWKWARD_ROUNDS) gaze.finish?.();
+      const awayNow = gaze.since !== 0 && elapsed % cycle >= AWKWARD_LOOK_MS;
 
       // The brows pose differently for each half, via a plain attribute so
       // React is not involved.
