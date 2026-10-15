@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FiArrowUpRight, FiCopy, FiDownload, FiLayout, FiMail, FiPlay } from "react-icons/fi";
 import { useReducedMotion } from "../hooks/useMotionPreference";
+import { onPointerLeave, onPointerMove } from "../utils/pointer";
 import classes from "./CursorTrailer.module.css";
 
 const ICONS = {
@@ -169,12 +170,12 @@ const CursorTrailer = () => {
       run();
     };
 
-    window.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseleave", onMouseLeave);
+    const offMove = onPointerMove(onMouseMove);
+    const offLeave = onPointerLeave(onMouseLeave);
 
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseleave", onMouseLeave);
+      offMove();
+      offLeave();
       if (frame) cancelAnimationFrame(frame);
       // Never leave the page without a pointer if this unmounts mid-hover.
       document.documentElement.classList.remove("cursor-none");
