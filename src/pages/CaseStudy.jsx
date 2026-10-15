@@ -5,8 +5,7 @@ import LivePreview from "../components/LivePreview";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import Reveal from "../components/ui/Reveal";
-import { getProjectBySlug } from "../data/projects";
-import { useProjects } from "../hooks/useProjects";
+import { getProjectBySlug, projects } from "../data/projects";
 import classes from "./CaseStudy.module.css";
 
 const Block = ({ title, children }) => (
@@ -43,8 +42,7 @@ const repoLabel = (url) => url.replace(/^https?:\/\/(www\.)?/, "");
 
 const CaseStudy = () => {
   const { slug } = useParams();
-  const { projects } = useProjects();
-  const project = getProjectBySlug(projects, slug);
+  const project = getProjectBySlug(slug);
   const study = project?.caseStudy;
 
   useEffect(() => {
@@ -58,7 +56,7 @@ const CaseStudy = () => {
 
   if (!project || !study) return <Navigate to="/" replace />;
 
-  // Neighbours among the projects that have a case study, in pin order.
+  // Neighbours among the projects that have a case study, in list order.
   const studies = projects.filter((item) => item.caseStudy);
   const index = studies.findIndex((item) => item.slug === project.slug);
   const previous = studies[(index - 1 + studies.length) % studies.length];
@@ -142,12 +140,18 @@ const CaseStudy = () => {
                 </a>
               </Fact>
             )}
-            {project.links.github && (
+            {project.links.github ? (
               <Fact label="Source" wide>
                 <a href={project.links.github} target="_blank" rel="noreferrer">
                   {repoLabel(project.links.github)}
                 </a>
               </Fact>
+            ) : (
+              project.private && (
+                <Fact label="Source" wide>
+                  Private repository
+                </Fact>
+              )
             )}
           </dl>
         </aside>

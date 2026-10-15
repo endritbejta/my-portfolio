@@ -41,7 +41,7 @@ const projects = [
     stack: "React · Node.js · Express · MongoDB · Socket.IO",
     description:
       "Full-stack peer-to-peer marketplace with a server-enforced offer, counteroffer, checkout and order flow, real-time messaging and an AI-assisted listing tool.",
-    link: "github.com/endritbejta/shitblej",
+    link: "shitblej.netlify.app",
   },
   {
     name: "Alfa Rent a Car",

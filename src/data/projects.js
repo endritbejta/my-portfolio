@@ -1,29 +1,37 @@
 /**
- * Featured projects = the repositories pinned on GitHub, in pin order.
+ * The projects on the site: this list is the only source. Nothing is fetched,
+ * so a project shows up (or not) because it is written down here, in this
+ * order, whether or not its repository is public.
  *
- * GitHub supplies the facts that change (which repos, their order, description,
- * homepage URL, topics). This file supplies the editorial layer that GitHub
- * can't: the case study, role and highlights, keyed by
- * repository name. A pinned repo with no entry here still renders as a card,
- * built from its GitHub description and topics.
+ * Each entry holds everything the card and the case-study page need:
  *
- * Cover images live in src/assets/covers/<slug>.webp (and <slug>-mobile.webp
- * for the phone view) — see scripts/capture-covers.mjs. They're the card image
- * on the home page and the poster in the live preview.
+ *   slug        the URL: /projects/<slug>
+ *   title       card and page heading
+ *   problem     the one-paragraph pitch on the card and under the page title
+ *   role, year  the facts on the case-study page and the year badge on the card
+ *   tags        technology chips
+ *   highlights  short bullets (the card shows the first two)
+ *   links       { live, github }. Leave github out (null) for a private repo
+ *               (and set `private: true` so the page says so), live for a
+ *               project with no site
+ *   preview     true to embed the live site on the case-study page. Only for
+ *               a site that allows being framed (no X-Frame-Options, and no
+ *               CSP frame-ancestors that excludes this site) or the frame is
+ *               blank; otherwise leave it off and the cover image is shown
+ *   captions    captions for the app screenshots, keyed by file name
+ *   caseStudy   { overview, problem, architecture, decisions[], challenges[],
+ *               lessons[], future[] }; without one the card has no page
  *
- * App screenshots (for projects with no live site to embed, like a desktop
- * app) live in src/assets/shots/<slug>/, named "NN-what-it-shows.webp". They
- * appear in order in a Screenshots section on the case study, captioned from
- * `captions` in the editorial entry (or from the file name), and the first is
- * the card image when the project has no cover of its own.
+ * Images are picked up by file name, not set here:
  *
- * `preview: true` asks for the live site to be embedded on the case-study
- * page. It is only honoured for a site that allows being framed — one that
- * sends X-Frame-Options or a restrictive CSP frame-ancestors would show a blank
- * frame — and that is decided from the site's own headers (`embeddable` on
- * each pin, probed by the Netlify function and by `npm run sync:pins`). So it
- * is safe to set for every project: a site that blocks framing keeps its cover
- * image, and switches to the live preview by itself once it stops blocking.
+ * - Cover images live in src/assets/covers/<slug>.webp (and <slug>-mobile.webp
+ *   for the phone view) — see scripts/capture-covers.mjs. They're the card
+ *   image on the home page and the poster in the live preview.
+ * - App screenshots (for projects with no live site to embed, like a desktop
+ *   app) live in src/assets/shots/<slug>/, named "NN-what-it-shows.webp". They
+ *   appear in order in a Screenshots section on the case study, captioned from
+ *   `captions` (or from the file name), and the first is the card image when
+ *   the project has no cover of its own.
  */
 
 const coverFiles = import.meta.glob("../assets/covers/*.webp", {
@@ -48,32 +56,34 @@ Object.values(shotsBySlug).forEach((list) => list.sort((a, b) => a.name.localeCo
 const coverFor = (slug, suffix = "") =>
   coverFiles[`../assets/covers/${slug}${suffix}.webp`] ?? null;
 
-/** Keyed by GitHub repository name. */
-const editorial = {
-  shitblej: {
+const entries = [
+  {
     preview: true,
     slug: "shitblej",
     title: "Shitblej",
+    links: { live: "https://shitblej.netlify.app", github: null },
+    private: true,
     problem:
-      "Kosovo has no real peer-to-peer marketplace — second-hand trade happens in Facebook groups, where there is no search, no categories and no way to judge a seller.",
+      "A peer-to-peer marketplace for second-hand goods in Kosovo, replacing Facebook-group trading with searchable listings, graded conditions and a server-enforced offer-to-order flow.",
     role: "Solo developer",
     year: "2026",
-    tags: ["React", "React Router", "Vite", "i18next", "REST API"],
+    tags: ["React", "Node.js", "Express", "MongoDB", "Socket.IO"],
     highlights: [
-      "Listing, browsing and buying flows end-to-end",
-      "Nine categories with per-collection routes",
-      "Buyer/seller inbox and wishlist",
-      "Bilingual UI via i18next",
+      "Offer, counteroffer, checkout and order flow enforced on the server",
+      "Real-time buyer and seller messaging over Socket.IO",
+      "Nine categories, with a graded condition and location on every listing",
+      "Bilingual UI (i18next), wishlist and inbox",
     ],
     caseStudy: {
       overview:
-        "A peer-to-peer marketplace for second-hand goods in Kosovo — list an item in a few minutes, browse nine categories, save what you like and message the seller. Listings carry a graded condition, a price and a location, and the home page is merchandised rather than a raw feed: trending, recently added, curated collections and an editor's luxury edit.",
+        "A peer-to-peer marketplace for second-hand goods in Kosovo. Sellers list an item in a few minutes; buyers browse nine categories, save what they like and negotiate through an offer, counteroffer, checkout and order flow that the server enforces, with real-time messaging between the two. Listings carry a graded condition, a price and a location, and the home page is merchandised rather than a raw feed: trending, recently added, curated collections and an editor's luxury edit. The source repository is private.",
       problem:
         "Second-hand trade here happens in Facebook groups. There is no structured search, no categories, no condition grading and no way to tell a serious seller from a dead post. The goal was the boring infrastructure a marketplace actually needs — findable listings, a real listing flow, and a place for buyer and seller to talk.",
       architecture:
-        "React SPA on Vite with React Router, talking to a REST API of its own at /api/v1 hosted on Render, with Bearer-token auth. Routes and heavy components are code-split — the product grid, product card, wishlist button and image component each load on demand, so the category and product routes do not pay for the home page's merchandising sections. Copy runs through i18next with a fallback language and an in-header switcher.",
+        "A React 19 single-page app on Vite with React Router, talking to the project's own Express 5 REST API at /api/v1 (MongoDB for data, Socket.IO for real-time messaging) hosted on Render, with Bearer-token auth. Routes and heavy components are code-split — the product grid, product card, wishlist button and image component each load on demand, so the category and product routes do not pay for the home page's merchandising sections. Copy runs through i18next with a fallback language and an in-header switcher.",
       decisions: [
-        "A REST API of its own rather than a backend-as-a-service, so listings, users and messages are modelled explicitly and the contract is mine to change.",
+        "A REST API of its own rather than a backend-as-a-service, so listings, users, offers and messages are modelled explicitly and the contract is mine to change.",
+        "The offer flow is enforced on the server rather than the client, so a step can't be skipped or faked from the browser.",
         "No global state library — React state and context carry the app, which keeps the bundle honest for a catalogue that mostly renders server data.",
         "Wishlist kept in localStorage as well as on the account, so saving something does not force a signup first.",
         "A single SmartImage component for every listing photo, because a marketplace is mostly user-uploaded images of unpredictable size.",
@@ -95,20 +105,21 @@ const editorial = {
     },
   },
 
-  "alfa-rent": {
+  {
     preview: true,
     slug: "alfa-rent",
     title: "Alfa Rent a Car",
+    links: { live: "https://alfa-rent.vercel.app", github: "https://github.com/endritbejta/alfa-rent" },
     role: "Solo developer",
     year: "2026",
     tags: ["Next.js", "TypeScript", "PostgreSQL", "Prisma"],
     problem:
-      "A car rental business needs a public booking site and an internal dashboard on one codebase — with a database that can't double-book a car.",
+      "A car-rental platform with a public booking site and an admin dashboard on one codebase, where the database itself rejects overlapping reservations so a car can never be double-booked.",
     highlights: [
-      "Public site: fleet browsing, car details, booking",
-      "Admin dashboard for vehicles, reservations, customers",
-      "Overlapping reservations rejected by the database itself",
-      "Role-based auth, Albanian-first with a language switch",
+      "Public site: fleet browsing, car details and online booking",
+      "Admin dashboard for vehicles, reservations and customers",
+      "Overlapping reservations rejected by a PostgreSQL exclusion constraint",
+      "Role-based auth; Albanian-first with a language switch",
     ],
     caseStudy: {
       overview:
@@ -136,23 +147,25 @@ const editorial = {
     },
   },
 
-  WindowSwitcher: {
+  {
     slug: "window-switcher",
     title: "WindowSwitcher",
+    links: { live: null, github: "https://github.com/endritbejta/WindowSwitcher" },
     role: "Solo developer",
     year: "2026",
     tags: ["Swift", "SwiftUI", "macOS", "ScreenCaptureKit"],
     // Keyed by file name in src/assets/shots/window-switcher/.
     captions: {
-      "01-switcher": "The switcher: every window is its own tile, with a live thumbnail and the app icon.",
-      "02-settings": "Settings: the shortcut, window order and which display to use.",
+      "01-switcher": "The switcher: every window is its own tile, with a live thumbnail, the app icon and a badge for the display it is on. (Thumbnail contents are blurred here for privacy.)",
+      "02-settings": "Settings: the shortcut, the window order and which display to use.",
+      "03-launch": "Open it like any Mac app; it then settles into the menu bar.",
     },
     problem:
-      "macOS's Command+Tab switches between apps, not windows. WindowSwitcher gives it Windows-style per-window Alt+Tab, with live thumbnails.",
+      "A native macOS menu-bar app that gives Command+Tab Windows-style behaviour: every window is its own entry, in most-recently-used order, with a live thumbnail.",
     highlights: [
-      "Each window is its own entry, with a live thumbnail",
-      "Quick tap flips between your two most recent windows",
-      "Rebindable shortcut, multi-display aware",
+      "Every window is its own entry, with a live thumbnail and the app icon",
+      "A quick tap flips between your two most recent windows",
+      "Rebindable shortcut, and display-aware with a badge per screen",
       "Menu-bar agent that does nothing while idle",
     ],
     caseStudy: {
@@ -180,18 +193,19 @@ const editorial = {
     },
   },
 
-  "minimalist-e-commerce": {
+  {
     preview: true,
     slug: "minimalist-e-commerce",
     title: "Minimalist E-commerce",
+    links: { live: "https://endrits-e-commerce.netlify.app", github: "https://github.com/endritbejta/minimalist-e-commerce" },
     role: "Solo developer",
     year: "2026",
     tags: ["React", "Tailwind CSS", "Vite", "Vitest"],
     problem:
-      "A storefront with the business logic kept out of the components — so pricing, cart and checkout rules are testable on their own.",
+      "A storefront whose pricing, cart and checkout rules live in plain, unit-tested modules instead of components, so the logic can be tested without rendering anything.",
     highlights: [
-      "Collections, product pages, cart drawer and one-page checkout",
-      "Business logic in framework-free, unit-tested modules",
+      "Collections, product pages, cart drawer and a one-page checkout",
+      "Business logic in framework-free modules covered by Vitest",
       "React 19 with the React Compiler",
       "Fly-to-cart animation on the Web Animations API",
     ],
@@ -222,20 +236,21 @@ const editorial = {
     },
   },
 
-  alfa_globe: {
+  {
     preview: true,
     slug: "alfa-trade",
     title: "Alfa Trade",
+    links: { live: "https://alfa-trade.netlify.app", github: "https://github.com/endritbejta/alfa_globe" },
     role: "Solo developer (client project)",
     year: "2023 — 2026",
     tags: ["React", "Tailwind CSS", "Framer Motion", "Vite"],
     problem:
-      "A petroleum distributor needed a corporate site that reads as an established international brand — products, fleet programme, stations and company info in one place.",
+      "A corporate website for a petroleum distributor in Kosovo (a client project): products, fleet programme, stations and company information, in Albanian and English.",
     highlights: [
-      "Ten routes: home, about, services, products, fleet, careers, contact…",
+      "Ten routes, from the home page to careers and contact",
       "Product catalog with specifications and detail pages",
       "Albanian / English switch",
-      "Redesigned in 2026 (Vite + Tailwind v4)",
+      "Redesigned in 2026 on Vite and Tailwind v4",
     ],
     caseStudy: {
       overview:
@@ -263,45 +278,48 @@ const editorial = {
     },
   },
 
-  "my-portfolio": {
+  {
     preview: true,
     slug: "portfolio",
     title: "This Portfolio",
+    links: { live: "https://endritsportfolio.netlify.app", github: "https://github.com/endritbejta/my-portfolio" },
     role: "Solo developer",
     year: "2026",
     tags: ["React", "Vite", "CSS Modules"],
     problem:
-      "A portfolio that stays current by itself: it reads my GitHub pins instead of a hand-edited list.",
+      "This site: a hand-built React portfolio whose project pages embed the live sites, with a command palette, light and dark themes and a few interactions written without an animation library.",
     highlights: [
-      "Featured projects driven by GitHub pins",
-      "Case studies with a live site preview",
-      "Command palette, scroll-spy, dark / light theme",
-      "No animation library, respects reduced motion",
+      "Case studies with a live, interactive preview of each site",
+      "Command palette, scroll-spy and a dark / light theme",
+      "Dot background painted on one canvas, with a Reduce motion switch",
+      "No animation library; motion respects reduced-motion settings",
     ],
     caseStudy: {
       overview:
-        "A single-page React app with dedicated case-study pages, a dark / light theme and a command palette. Nearly everything on it is data, and the project list is not hand-maintained: it follows the repositories pinned on my GitHub profile.",
+        "A single-page React app with dedicated case-study pages, a dark / light theme and a command palette. All of its content lives in a few plain data files, and each project page can embed the deployed site so a visitor can use it without leaving.",
       problem:
-        "Portfolios go stale because the project list lives in code. I wanted re-pinning a repository on GitHub to be the only step needed to change what a visitor sees.",
+        "A portfolio has to let someone judge the work quickly. Screenshots go stale and say little, so the aim was for each project page to show the real, running site, and for the whole thing to stay light enough to feel smooth on an ordinary laptop.",
       architecture:
-        "React 18 and Vite with React Router (lazy-loaded case-study routes) and CSS Modules over a design-token layer, with no CSS framework. A Netlify function reads the GitHub profile's pinned repositories through the GraphQL API, and a shared hook renders a committed JSON snapshot immediately and swaps in the live response, so the site works offline and in local dev. An editorial layer keyed by repository name adds case studies on top.",
+        "React 18 and Vite with React Router (lazy-loaded case-study routes) and CSS Modules over a design-token layer, with no CSS framework. Content is data: projects, experience and skills are plain modules, and images are picked up from the file system by name. A case-study page embeds the live site in an iframe, with a cover image in its place when a site doesn't allow framing. The background dots are painted on a single canvas, and the dots, the cursor dot and the footer eyes share one mouse listener.",
       decisions: [
-        "Snapshot-first data: the UI never shows a loading state for content that is already in the bundle.",
-        "Editorial content is separate from live data, so a newly pinned repo appears as a basic card until a case study is written for it.",
+        "One list of projects in a single file, in display order: adding, reordering or hiding a project is a one-file change, and a project can be shown without its repository being public.",
+        "The live preview is opt-in per project, because a site that forbids framing renders a blank frame the page can't detect; those projects keep their cover image instead.",
         "Motion is built from small hooks — scroll-spy, scroll progress, intersection reveals — with no animation library, and is disabled under prefers-reduced-motion — including the dot background, which is not drawn at all — or with the site's own Reduce motion switch.",
         "Theme is set before first paint by an inline script, so there's no flash.",
       ],
       challenges: [
-        "Keeping live data and hand-written content consistent when either can change independently.",
+        "Keeping the dot background cheap. As roughly a thousand styled elements it cost about 9 ms of every frame on a fast laptop and fell to a few frames per second on a slowed CPU, so it is now painted on one canvas.",
+        "Embedding other sites: each one has to allow framing, and a refusal is silent, so the preview is checked per project rather than assumed.",
         "Making the command palette fully keyboard-driven and accessible.",
       ],
       lessons: [
-        "Let the source of truth live where I already maintain it (GitHub) rather than copying it into code.",
+        "Measure animation on a slowed CPU, not only on a fast machine: the dot field looked fine at 60 fps on a new laptop and was the heaviest thing on the page.",
+        "Plain data files beat a clever pipeline for a list this size.",
       ],
       future: ["Writing section", "Per-project analytics of which case studies get read"],
     },
   },
-};
+];
 
 const prettify = (name) =>
   name
@@ -309,48 +327,25 @@ const prettify = (name) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-const slugify = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+/** The projects, in the order they appear on the site. */
+export const projects = entries.map((entry) => {
+  const shots = (shotsBySlug[entry.slug] ?? []).map(({ name, src }) => ({
+    src,
+    caption: entry.captions?.[name] ?? prettify(name.replace(/^\d+-/, "")),
+  }));
 
-/**
- * Whether the browser will let this page frame the pin's live site. The live
- * function answers for the origin it is served from; the snapshot also records
- * how `npm run dev` fares, because a site that allows only the production
- * origin would show a blank frame on localhost.
- */
-const canEmbed = (pin) =>
-  import.meta.env.DEV && pin.embeddableDev !== undefined
-    ? pin.embeddableDev === true
-    : pin.embeddable === true;
+  return {
+    role: null,
+    highlights: [],
+    caseStudy: null,
+    private: false,
+    ...entry,
+    cover: coverFor(entry.slug) ?? shots[0]?.src ?? null,
+    coverMobile: coverFor(entry.slug, "-mobile"),
+    shots,
+    links: { live: null, github: null, ...entry.links },
+    preview: Boolean(entry.preview && entry.links?.live),
+  };
+});
 
-/** Turns the GitHub pins into the project list, in pin order. */
-export const buildProjects = (pins) =>
-  pins.map((pin) => {
-    const extra = editorial[pin.name] ?? {};
-    const slug = extra.slug ?? slugify(pin.name);
-
-    const shots = (shotsBySlug[slug] ?? []).map(({ name, src }) => ({
-      src,
-      caption: extra.captions?.[name] ?? prettify(name.replace(/^\d+-/, "")),
-    }));
-
-    return {
-      repo: pin.name,
-      slug,
-      title: extra.title ?? prettify(pin.name),
-      problem: extra.problem ?? pin.description ?? "",
-      role: extra.role ?? null,
-      year: extra.year ?? new Date(pin.pushedAt).getFullYear().toString(),
-      tags: extra.tags ?? [pin.language, ...pin.topics].filter(Boolean).slice(0, 4),
-      highlights: extra.highlights ?? [],
-      caseStudy: extra.caseStudy ?? null,
-      cover: coverFor(slug) ?? shots[0]?.src ?? null,
-      coverMobile: coverFor(slug, "-mobile"),
-      shots,
-      preview: Boolean(extra.preview && pin.homepage && canEmbed(pin)),
-      links: { live: pin.homepage, github: pin.url },
-      updated: pin.pushedAt,
-    };
-  });
-
-export const getProjectBySlug = (projects, slug) =>
-  projects.find((project) => project.slug === slug);
+export const getProjectBySlug = (slug) => projects.find((project) => project.slug === slug);
