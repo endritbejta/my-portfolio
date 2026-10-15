@@ -248,14 +248,14 @@
   rotate: -1deg;
 }
 
-/* Dizzy: brows slide out of step. */
-.owl[data-pose="dizzy"] .left .brow {
-  translate: 0 0.12rem;
-  rotate: 9deg;
+/* Pointing something out: both brows up a little. */
+.owl[data-pose="point"] .left .brow {
+  translate: 0 -0.2rem;
+  rotate: -3deg;
 }
-.owl[data-pose="dizzy"] .right .brow {
+.owl[data-pose="point"] .right .brow {
   translate: 0 -0.22rem;
-  rotate: -9deg;
+  rotate: 3deg;
 }
 
 /* ---- Pupils ---- */
@@ -270,24 +270,6 @@
 }
 
 /* ---- Dizzy ---- */
-
-/* The eyes themselves are knocked out of place, each a different way, and
-   wobble there. */
-.owl[data-dizzy] .left .eye {
-  animation: wobble-left 520ms ease-in-out infinite alternate;
-}
-.owl[data-dizzy] .right .eye {
-  animation: wobble-right 430ms ease-in-out infinite alternate;
-}
-
-@keyframes wobble-left {
-  from { translate: -0.14rem 0.2rem; rotate: -8deg; }
-  to { translate: 0.06rem -0.1rem; rotate: 5deg; }
-}
-@keyframes wobble-right {
-  from { translate: 0.14rem -0.22rem; rotate: 9deg; }
-  to { translate: -0.06rem 0.16rem; rotate: -6deg; }
-}
 
 /* Stars and question marks circling above the brows. They are out of the way
    (and invisible) until the dizzy spell starts. */
@@ -320,18 +302,20 @@
   animation: orbit 1500ms linear infinite;
 }
 
-.sparks i:nth-child(1) {
-  animation-delay: 0ms;
+/* Three stars and three question marks, evenly spaced round the orbit. */
+.sparks i:nth-child(odd) {
+  font-size: 0.9rem;
 }
-.sparks i:nth-child(2) {
-  animation-delay: -500ms;
+.sparks i:nth-child(even) {
   color: var(--accent);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
 }
-.sparks i:nth-child(3) {
-  animation-delay: -1000ms;
-  font-size: 0.8rem;
-}
+.sparks i:nth-child(1) { animation-delay: 0ms; }
+.sparks i:nth-child(2) { animation-delay: -250ms; }
+.sparks i:nth-child(3) { animation-delay: -500ms; }
+.sparks i:nth-child(4) { animation-delay: -750ms; }
+.sparks i:nth-child(5) { animation-delay: -1000ms; }
+.sparks i:nth-child(6) { animation-delay: -1250ms; }
 
 /* A flat ellipse around the top of the head, walked in eight steps. */
 @keyframes orbit {

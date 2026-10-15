@@ -24,8 +24,10 @@ const TRAVEL_PAD = 1.5; // px
    go back to normal even if the cursor stays put.
 
      ms     how long the step lasts
-     look   "cursor" (follow it), "user" (straight out at the visitor), or
-            [x, y], each -1..1, a fixed glance as a fraction of the pupil's travel
+     look   "cursor" (follow it), "user" (straight out at the visitor), "twin"
+            (the same link elsewhere on the page: the footer icon for a contact
+            button and vice versa; the cursor if there is none), or [x, y],
+            each -1..1, a fixed glance as a fraction of the pupil's travel
      pose   the brows' pose, a data-pose value that the stylesheet defines
      pupils optional: "wide" dilates the irises
 
@@ -59,17 +61,14 @@ const ROUTINES = {
       { ms: 1200, look: "cursor", pose: "flirty" },
     ],
   },
-  // GitHub, LinkedIn: sizing the code up. The eyes read across and down,
-  // line by line, with the brows narrowed.
+  // GitHub, LinkedIn: "and I have those down here too". The eyes go from the
+  // hovered button to its twin (the same link in the footer, or in the contact
+  // card above it) and back, pointing out that they are there as well.
   skeptic: {
-    rounds: 1,
+    rounds: 2,
     steps: [
-      { ms: 700, look: "cursor", pose: "skeptic" },
-      { ms: 420, look: [-1, 0.05], pose: "focus" },
-      { ms: 420, look: [1, 0.35], pose: "focus" },
-      { ms: 420, look: [-1, 0.65], pose: "focus" },
-      { ms: 420, look: [1, 0.95], pose: "focus" },
-      { ms: 700, look: "cursor", pose: "skeptic" },
+      { ms: 900, look: "cursor", pose: "skeptic" },
+      { ms: 1300, look: "twin", pose: "point" },
     ],
   },
 };
@@ -117,8 +116,35 @@ const moodFor = (node) => {
   return mood ? { target, mood } : null;
 };
 
+// The other copy of a link: GitHub and LinkedIn each appear in the hero, the
+// contact card and the footer, so hovering one has the eyes point at the
+// nearest of the others (the card above the footer, or the footer below it).
+const twinOf = (target) => {
+  const href = target?.getAttribute?.("href");
+  if (!href) return null;
+
+  const mid = (element) => {
+    const box = element.getBoundingClientRect();
+    return box.top + box.height / 2;
+  };
+  const here = mid(target);
+
+  let nearest = null;
+  let best = Infinity;
+  for (const link of document.querySelectorAll("a[href]")) {
+    if (link === target || link.getAttribute("href") !== href) continue;
+    const distance = Math.abs(mid(link) - here);
+    if (distance < best) {
+      best = distance;
+      nearest = link;
+    }
+  }
+  return nearest;
+};
+
 /* The dizzy easter egg: swing the cursor from one side of the eyes to the
-   other a couple of times in quick succession and they go cartoon-wobbly. */
+   other a couple of times in quick succession and the pupils spin while stars
+   and question marks orbit above. */
 const FLIP_DEAD = 60; // px either side of the eyes' centre that counts as "a side"
 const FLIP_REACH_Y = 360; // px above/below the eyes within which swings count
 const FLIPS_NEEDED = 4; // side changes (two there-and-back swings)...
@@ -176,6 +202,7 @@ const OwlEyes = () => {
     let current = null; // the hovered element a routine/pose belongs to
     let spent = null; // an element whose routine already ran: quiet until the pointer leaves it
     let locked = false; // a click-started routine plays out whatever the pointer does
+    let twin = null; // the hovered link's other copy, for "twin" steps
     let routine = null; // { def, start } while one is playing
     let staticPose = null;
 
@@ -239,7 +266,7 @@ const OwlEyes = () => {
       }
       const dizzyNow = dizzy !== null && now < dizzy.until;
 
-      setAttr("pose", dizzyNow ? "dizzy" : step ? step.pose : staticPose);
+      setAttr("pose", step ? step.pose : staticPose);
       setAttr("pupils", !dizzyNow && step?.pupils ? step.pupils : null);
       setAttr("dizzy", dizzyNow ? "" : null);
       return { step, dizzyNow };
@@ -264,6 +291,16 @@ const OwlEyes = () => {
       };
       let busy = false;
 
+      // What the pupils aim at: the cursor, or, for a "twin" step, the same
+      // link elsewhere on the page.
+      let aim = pointer;
+      if (step?.look === "twin") {
+        if (twin) {
+          const box = twin.getBoundingClientRect();
+          aim = { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+        }
+      }
+
       eyes.forEach((eye, i) => {
         let targetX = 0;
         let targetY = 0;
@@ -274,15 +311,15 @@ const OwlEyes = () => {
           const angle = ((i === 0 ? 1 : -0.8) * (now - dizzy.start) * DIZZY_SPIN) / 1000 + i * 1.9;
           targetX = Math.cos(angle) * eye.travelX;
           targetY = Math.sin(angle) * eye.travelY;
-        } else if (step && step.look !== "cursor") {
+        } else if (step && step.look !== "cursor" && step.look !== "twin") {
           if (step.look !== "user") {
             targetX = step.look[0] * eye.travelX;
             targetY = step.look[1] * eye.travelY;
           } // "user": pupils centred, looking straight out of the screen
-        } else if (pointer) {
+        } else if (aim) {
           const rect = rects[i];
-          const dx = pointer.x - (rect.left + rect.width / 2);
-          const dy = pointer.y - (rect.top + rect.height / 2);
+          const dx = aim.x - (rect.left + rect.width / 2);
+          const dy = aim.y - (rect.top + rect.height / 2);
           const dist = Math.hypot(dx, dy);
 
           if (dist > 0.5) {
@@ -321,6 +358,7 @@ const OwlEyes = () => {
     const apply = (hit) => {
       const now = performance.now();
       current = hit?.target ?? null;
+      twin = twinOf(current);
       const def = hit ? ROUTINES[hit.mood] : null;
       routine = def ? { def, start: now } : null;
       staticPose = hit && !def && STATIC_POSES.has(hit.mood) ? hit.mood : null;
@@ -450,6 +488,9 @@ const OwlEyes = () => {
         <i>★</i>
         <i>?</i>
         <i>★</i>
+        <i>?</i>
+        <i>★</i>
+        <i>?</i>
       </span>
       {["left", "right"].map((side) => (
         <span key={side} className={`${classes.side} ${classes[side]}`}>
