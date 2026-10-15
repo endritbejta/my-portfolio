@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "../hooks/useMotionPreference";
+import { onPointerLeave, onPointerMove } from "../utils/pointer";
 import classes from "./OwlEyes.module.css";
 
 // How far from an eye's centre the cursor has to be before its pupil reaches
@@ -192,7 +193,7 @@ const OwlEyes = () => {
   const [closed, setClosed] = useState(readClosed);
 
   // Reduced motion puts the owl to sleep for good: nothing tracks or reacts, so
-  // there is nothing for the cord to switch back on and it is not shown.
+  // there is nothing to wake it for and the switch is disabled.
   const asleep = closed || reduced;
 
   const toggleClosed = () => {
@@ -491,16 +492,21 @@ const OwlEyes = () => {
 
     // Re-evaluated whenever the pointer query flips (the window moved to a
     // touch screen), not just on mount.
+    let offPointer = () => {};
+
     const syncInteractivity = () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseleave", onMouseLeave);
+      offPointer();
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("click", onClick);
       window.removeEventListener("scroll", onScroll);
 
       if (finePointer.matches) {
-        window.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseleave", onMouseLeave);
+        const offMove = onPointerMove(onMouseMove);
+        const offLeave = onPointerLeave(onMouseLeave);
+        offPointer = () => {
+          offMove();
+          offLeave();
+        };
         document.addEventListener("mouseover", onOver, { passive: true });
         document.addEventListener("click", onClick);
         window.addEventListener("scroll", onScroll, { passive: true });
@@ -538,8 +544,7 @@ const OwlEyes = () => {
       frame = 0;
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
-      window.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseleave", onMouseLeave);
+      offPointer();
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("click", onClick);
       window.removeEventListener("scroll", onScroll);
@@ -550,57 +555,51 @@ const OwlEyes = () => {
   }, [reduced]);
 
   return (
-    <div className={classes.row}>
-      <div className={classes.owl} ref={rootRef} aria-hidden="true" data-closed={asleep ? "" : undefined}>
-        {/* Stars and question marks that circle above the brows when dizzy. */}
-        <span className={classes.sparks}>
-          {["★", "?", "★", "?", "★", "?"].map((glyph, index) => (
-            <i key={index}>
-              <b>{glyph}</b>
-            </i>
-          ))}
-        </span>
-        {/* Zs drifting up while the eyes are shut. */}
-        <span className={classes.zzz}>
-          <i>z</i>
-          <i>Z</i>
-          <i>z</i>
-        </span>
-        {["left", "right"].map((side) => (
-          <span key={side} className={`${classes.side} ${classes[side]}`}>
-            <svg className={classes.brow} viewBox="0 0 60 24" focusable="false">
-              <path d={BROW_PATH} />
-            </svg>
-            <span className={classes.eye} data-eye>
-              <span className={classes.iris} data-iris>
-                <span className={classes.pupil}>
-                  <span className={classes.glint} />
-                </span>
+    // The eyes are the switch: clicking them closes or opens them. It is a real
+    // button (so it takes focus and Enter/Space), its label says what it does,
+    // and with reduced motion it is disabled because the eyes stay asleep.
+    <button
+      type="button"
+      className={classes.owl}
+      ref={rootRef}
+      data-closed={asleep ? "" : undefined}
+      aria-pressed={asleep}
+      aria-label={reduced ? "Eyes asleep (reduced motion is on)" : closed ? "Open the eyes" : "Close the eyes"}
+      title={reduced ? undefined : closed ? "Wake the owl" : "Put the owl to sleep"}
+      disabled={reduced}
+      onClick={toggleClosed}
+    >
+      {/* Stars and question marks that circle above the brows when dizzy. */}
+      <span className={classes.sparks} aria-hidden="true">
+        {["★", "?", "★", "?", "★", "?"].map((glyph, index) => (
+          <i key={index}>
+            <b>{glyph}</b>
+          </i>
+        ))}
+      </span>
+      {/* Zs drifting up while the eyes are shut. */}
+      <span className={classes.zzz} aria-hidden="true">
+        <i>z</i>
+        <i>Z</i>
+        <i>z</i>
+        <i>Z</i>
+        <i>z</i>
+      </span>
+      {["left", "right"].map((side) => (
+        <span key={side} className={`${classes.side} ${classes[side]}`} aria-hidden="true">
+          <svg className={classes.brow} viewBox="0 0 60 24" focusable="false">
+            <path d={BROW_PATH} />
+          </svg>
+          <span className={classes.eye} data-eye>
+            <span className={classes.iris} data-iris>
+              <span className={classes.pupil}>
+                <span className={classes.glint} />
               </span>
             </span>
           </span>
-        ))}
-      </div>
-
-      {!reduced && (
-        <>
-          {/* A pull cord, like a ceiling light's: tugging the bead shuts the eyes. */}
-          <button
-            type="button"
-            className={classes.cord}
-            aria-pressed={closed}
-            aria-label={closed ? "Open the eyes" : "Close the eyes"}
-            title={closed ? "Wake the owl" : "Put the owl to sleep"}
-            onClick={toggleClosed}
-          >
-            <span className={classes.pull}>
-              <span className={classes.string} />
-              <span className={classes.bead} />
-            </span>
-          </button>
-        </>
-      )}
-    </div>
+        </span>
+      ))}
+    </button>
   );
 };
 
