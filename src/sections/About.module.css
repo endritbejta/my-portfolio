@@ -3,8 +3,7 @@
   grid-template-columns: repeat(4, 1fr);
   grid-template-areas:
     "story story photo keds"
-    "story story photo grenion"
-    "years stores clock edu";
+    "story story photo grenion";
   gap: 0.75rem;
 }
 
@@ -45,35 +44,6 @@
   color: var(--text-faint);
 }
 
-.stat {
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: var(--text);
-}
-
-.mono {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-
-.live {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 50%;
-  background: var(--success);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.degree {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--text);
-}
-
 /* Story */
 .story {
   grid-area: story;
@@ -86,6 +56,11 @@
 
 .story p {
   margin: 0;
+}
+
+.story .education {
+  font-size: var(--text-sm);
+  color: var(--text-faint);
 }
 
 .story p:first-of-type {
@@ -150,6 +125,9 @@
 /* GRENION */
 .grenion {
   grid-area: grenion;
+  min-height: 15rem;
+  /* room above the label for the data-flow diagram */
+  padding-top: 3.75rem;
   background: var(--text);
   border-color: transparent;
   color: var(--bg);
@@ -182,26 +160,13 @@
   line-height: 1;
 }
 
-.years { grid-area: years; }
-.stores { grid-area: stores; }
-.clock { grid-area: clock; }
-.edu { grid-area: edu; }
-
-@keyframes pulse {
-  50% {
-    opacity: 0.35;
-  }
-}
-
 @media (max-width: 860px) {
   .bento {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
       "photo keds"
       "photo grenion"
-      "story story"
-      "years stores"
-      "clock edu";
+      "story story";
   }
 
   .photo {
@@ -212,17 +177,17 @@
     padding: 1rem;
   }
 
-  /* The photo is too narrow for the pill; the clock tile names the place anyway */
+  .grenion {
+    padding-top: 3.25rem;
+  }
+
+  /* The photo is too narrow for the pill; the location is in the hero */
   .caption {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .live {
-    animation: none;
-  }
-
   .photo img {
     transition: none;
   }

@@ -1,16 +1,9 @@
-import { useEffect, useState } from "react";
 import PowerLines from "../components/PowerLines";
-import StorefrontArt from "../components/StorefrontArt";
+import DataFlowArt from "../components/DataFlowArt";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
 import { profile } from "../data/profile";
 import classes from "./About.module.css";
-
-const clockFormat = new Intl.DateTimeFormat("en-GB", {
-  hour: "2-digit",
-  minute: "2-digit",
-  timeZone: "Europe/Belgrade",
-});
 
 const Tile = ({ area, delay, className = "", children }) => (
   <Reveal
@@ -21,93 +14,54 @@ const Tile = ({ area, delay, className = "", children }) => (
   </Reveal>
 );
 
-const useLocalTime = () => {
-  const [time, setTime] = useState(() => clockFormat.format(new Date()));
+const About = () => (
+  <Section
+    id="about"
+    eyebrow="About"
+    title="From power grids to production software"
+  >
+    <div className={classes.bento}>
+      <Tile area="story">
+        <span className={classes.label}>The short version</span>
+        {profile.about.map((paragraph) => (
+          <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+        ))}
+        <p className={classes.education}>
+          {profile.education.degree} — {profile.education.school}
+        </p>
+      </Tile>
 
-  useEffect(() => {
-    const id = setInterval(() => setTime(clockFormat.format(new Date())), 15000);
-    return () => clearInterval(id);
-  }, []);
+      <Tile area="photo" delay={80}>
+        <img
+          src={profile.portrait}
+          alt={`Portrait of ${profile.name}`}
+          width="320"
+          height="320"
+          loading="lazy"
+          decoding="async"
+        />
+        <span className={classes.caption}>{profile.location}</span>
+      </Tile>
 
-  return time;
-};
+      <Tile area="keds" delay={160}>
+        <PowerLines />
+        <span className={classes.label}>KEDS · before</span>
+        <span className={classes.word}>Grids</span>
+        <span className={classes.note}>Infrastructure projects</span>
+      </Tile>
 
-const About = () => {
-  const time = useLocalTime();
-
-  return (
-    <Section
-      id="about"
-      eyebrow="About"
-      title="From power grids to production software"
-    >
-      <div className={classes.bento}>
-        <Tile area="story">
-          <span className={classes.label}>The short version</span>
-          {profile.about.map((paragraph) => (
-            <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+      <Tile area="grenion" delay={240}>
+        <DataFlowArt />
+        <span className={classes.label}>GRENION · since 2022</span>
+        <span className={classes.word}>Shops</span>
+        <ul className={classes.shops}>
+          {profile.storefronts.map((name) => (
+            <li key={name}>{name}</li>
           ))}
-        </Tile>
-
-        <Tile area="photo" delay={80}>
-          <img
-            src={profile.portrait}
-            alt={`Portrait of ${profile.name}`}
-            width="320"
-            height="320"
-            loading="lazy"
-            decoding="async"
-          />
-          <span className={classes.caption}>{profile.location}</span>
-        </Tile>
-
-        <Tile area="keds" delay={160}>
-          <PowerLines />
-          <span className={classes.label}>KEDS · before</span>
-          <span className={classes.word}>Grids</span>
-          <span className={classes.note}>Infrastructure projects</span>
-        </Tile>
-
-        <Tile area="grenion" delay={240}>
-          <StorefrontArt />
-          <span className={classes.label}>GRENION · since 2022</span>
-          <span className={classes.word}>Shops</span>
-          <ul className={classes.shops}>
-            {profile.storefronts.map((name) => (
-              <li key={name}>{name}</li>
-            ))}
-          </ul>
-        </Tile>
-
-        <Tile area="years" delay={320}>
-          <span className={classes.label}>In production</span>
-          <span className={classes.stat}>{profile.yearsOfExperience}</span>
-          <span className={classes.note}>years</span>
-        </Tile>
-
-        <Tile area="stores" delay={380}>
-          <span className={classes.label}>Owned end to end</span>
-          <span className={classes.stat}>{profile.storefronts.length}</span>
-          <span className={classes.note}>storefronts</span>
-        </Tile>
-
-        <Tile area="clock" delay={440}>
-          <span className={classes.label}>
-            <span className={classes.live} aria-hidden="true" />
-            Local time
-          </span>
-          <span className={`${classes.stat} ${classes.mono}`}>{time}</span>
-          <span className={classes.note}>Fushë Kosovë</span>
-        </Tile>
-
-        <Tile area="edu" delay={500}>
-          <span className={classes.label}>Education</span>
-          <span className={classes.degree}>{profile.education.degree}</span>
-          <span className={classes.note}>{profile.education.school}</span>
-        </Tile>
-      </div>
-    </Section>
-  );
-};
+        </ul>
+      </Tile>
+    </div>
+  </Section>
+);
 
 export default About;
