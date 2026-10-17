@@ -1,5 +1,4 @@
 import PowerLines from "../components/PowerLines";
-import DataFlowArt from "../components/DataFlowArt";
 import GitGraphArt from "../components/GitGraphArt";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
@@ -56,14 +55,9 @@ const About = () => (
 
       <Tile area="grenion" delay={240} cursor="code">
         <GitGraphArt />
-        <DataFlowArt />
         <span className={classes.label}>GRENION · since 2022</span>
         <span className={classes.word}>Shops</span>
-        <ul className={classes.shops}>
-          {profile.storefronts.map((name) => (
-            <li key={name}>{name}</li>
-          ))}
-        </ul>
+        <p className={classes.shops}>{profile.storefronts.join(" · ")}</p>
       </Tile>
     </div>
   </Section>

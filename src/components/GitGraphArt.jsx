@@ -1,124 +1,86 @@
 import classes from "./GitGraphArt.module.css";
 
 const WIDTH = 300;
-const HEIGHT = 320;
-const LANES = 11;
-const LANE_GAP = WIDTH / (LANES + 1);
-const ROW = 12;
-const GROUPS = 3;
+const HEIGHT = 240;
+const ROWS = 5;
+const ROW_H = 30;
+const MAIN_X = 24;
+const CORNER = 8;
 
-// Small seeded PRNG so the graph is the same on every render and every build.
-const mulberry32 = (seed) => () => {
-  seed |= 0;
-  seed = (seed + 0x6d2b79f5) | 0;
-  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-};
+// Branch colours, top to bottom, cycling like an editor's git graph.
+const COLORS = ["teal", "purple", "yellow", "pink", "brown"];
 
-const laneX = (lane) => Math.round((lane + 1) * LANE_GAP * 10) / 10;
+// Long-lived lanes that run the full height behind the merges.
+const THROUGH = [
+  { x: 34, color: "brown" },
+  { x: 54, color: "pink" },
+  { x: 74, color: "yellow" },
+  { x: 94, color: "teal" },
+];
 
-/**
- * Builds a `git log --graph` style history: lanes run down the page, branches
- * peel off and merge back, commits sit on whichever lanes are alive.
- */
-const buildGraph = () => {
-  const rand = mulberry32(2022);
-  const active = new Set([5]);
-  const straights = Array.from({ length: GROUPS }, () => "");
-  let curves = "";
-  const commits = [];
-
-  for (let y = 0; y < HEIGHT; y += ROW) {
-    const next = y + ROW;
-    const lanes = [...active];
-
-    // Branch: a live lane forks into a free neighbour.
-    if (rand() < 0.7 && active.size < LANES - 2) {
-      const from = lanes[Math.floor(rand() * lanes.length)];
-      const free = [from - 2, from - 1, from + 1, from + 2].filter(
-        (l) => l >= 0 && l < LANES && !active.has(l),
-      );
-      if (free.length) {
-        const to = free[Math.floor(rand() * free.length)];
-        curves += `M${laneX(from)} ${y} C${laneX(from)} ${y + 8} ${laneX(to)} ${y + 4} ${laneX(to)} ${next} `;
-        active.add(to);
-      }
-    }
-
-    // Merge: a live lane folds back into the nearest other lane.
-    if (rand() < 0.45 && active.size > 3) {
-      const live = [...active];
-      const from = live[Math.floor(rand() * live.length)];
-      const others = live.filter((l) => l !== from);
-      const to = others.reduce((a, b) =>
-        Math.abs(b - from) < Math.abs(a - from) ? b : a,
-      );
-      curves += `M${laneX(from)} ${y} C${laneX(from)} ${y + 8} ${laneX(to)} ${y + 4} ${laneX(to)} ${next} `;
-      active.delete(from);
-      lanes.splice(lanes.indexOf(from), 1);
-      lanes.push(to);
-    }
-
-    // Lanes that were alive at the top of this row carry straight through.
-    [...active].forEach((lane) => {
-      straights[lane % GROUPS] += `M${laneX(lane)} ${y} V${next} `;
-    });
-
-    // One or two commits on live lanes.
-    const picks = rand() < 0.5 ? 2 : 1;
-    for (let i = 0; i < picks; i += 1) {
-      const live = [...active];
-      commits.push({
-        x: laneX(live[Math.floor(rand() * live.length)]),
-        y: y + ROW / 2,
-        merge: rand() < 0.2,
-      });
-    }
-
-    // Keep the graph from dying out or filling every lane.
-    if (active.size === 0) active.add(5);
-  }
-
-  return { straights, curves, commits };
-};
-
-const GRAPH = buildGraph();
+const rows = Array.from({ length: ROWS }, (_, k) => {
+  const mergeY = 20 + k * ROW_H; // the merge commit on the main lane
+  const lane = 44 + k * 10; // where this branch peels away from the bundle
+  const dotX = 120 + k * 28; // its tip, stepping right row by row
+  const dotY = mergeY + ROW_H / 2;
+  return {
+    mergeY,
+    lane,
+    dotX,
+    dotY,
+    color: COLORS[k],
+    // Down the lane, round the corner, along the merge row, round the next
+    // corner and down into the tip.
+    path:
+      `M${lane} 0 V${mergeY - CORNER} Q${lane} ${mergeY} ${lane + CORNER} ${mergeY}` +
+      ` H${dotX - CORNER} Q${dotX} ${mergeY} ${dotX} ${mergeY + CORNER} V${dotY}`,
+    // Short link from the merge commit across to the lane.
+    link: `M${MAIN_X + 7} ${mergeY} H${lane}`,
+  };
+});
 
 /**
- * Decorative commit graph, drawn in currentColor. A faint dashed pulse rides
- * the lines so the history looks alive.
+ * Decorative commit graph in the style of an editor's git history: an orange
+ * main line of merge commits down the right edge, with coloured branches
+ * stepping away to the left. Drawn left-to-right in a mirrored group. The
+ * fade-out at the bottom is in the stylesheet.
  */
 const GitGraphArt = ({ className = "" }) => (
   <svg
     className={[classes.graph, className].filter(Boolean).join(" ")}
     viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-    preserveAspectRatio="xMidYMid slice"
+    preserveAspectRatio="xMaxYMin slice"
     aria-hidden="true"
   >
-    <g className={classes.lines}>
-      {GRAPH.straights.map((d, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <path key={i} d={d} className={classes[`lane${i}`]} />
+    <g transform={`translate(${WIDTH} 0) scale(-1 1)`}>
+      <path className={classes.orange} d={`M${MAIN_X} 0 V${HEIGHT}`} />
+
+      {THROUGH.map(({ x, color }) => (
+        <path key={x} className={classes[color]} d={`M${x} 0 V${HEIGHT}`} />
       ))}
-      <path d={GRAPH.curves} />
-    </g>
-    <g className={classes.pulse}>
-      {GRAPH.straights.map((d, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <path key={i} d={d} />
+
+      {rows.map(({ mergeY, path, link, color }) => (
+        <g key={mergeY} className={classes[color]}>
+          <path d={path} />
+          <path d={link} />
+        </g>
       ))}
-      <path d={GRAPH.curves} />
-    </g>
-    <g className={classes.commits}>
-      {GRAPH.commits.map((c) => (
+
+      {rows.map(({ dotX, dotY, color }) => (
         <circle
-          key={`${c.x}-${c.y}`}
-          cx={c.x}
-          cy={c.y}
-          r={c.merge ? 3.4 : 2.4}
-          className={c.merge ? classes.merge : undefined}
+          key={dotX}
+          className={`${classes.tip} ${classes[color]}`}
+          cx={dotX}
+          cy={dotY}
+          r="5"
         />
+      ))}
+
+      {rows.map(({ mergeY }) => (
+        <g key={mergeY} className={classes.merge}>
+          <circle cx={MAIN_X} cy={mergeY} r="7" />
+          <circle className={classes.core} cx={MAIN_X} cy={mergeY} r="2.4" />
+        </g>
       ))}
     </g>
   </svg>

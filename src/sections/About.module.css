@@ -114,10 +114,10 @@
   color: inherit;
 }
 
-/* Keep the text above the absolutely positioned pylon artwork */
+/* Keep the text above the absolutely positioned artwork */
 .keds > span,
 .grenion > span,
-.grenion > ul {
+.grenion > p {
   position: relative;
   z-index: 1;
 }
@@ -126,8 +126,6 @@
 .grenion {
   grid-area: grenion;
   min-height: 15rem;
-  /* room above the label for the data-flow diagram */
-  padding-top: 3.75rem;
   background: var(--text);
   border-color: transparent;
   color: var(--bg);
@@ -138,19 +136,10 @@
 }
 
 .shops {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
   margin: 0.4rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.shops li {
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--bg) 30%, transparent);
   font-size: var(--text-xs);
+  line-height: 1.5;
+  opacity: 0.75;
 }
 
 .word {
@@ -175,10 +164,6 @@
 
   .tile {
     padding: 1rem;
-  }
-
-  .grenion {
-    padding-top: 3.25rem;
   }
 
   /* The photo is too narrow for the pill; the location is in the hero */
