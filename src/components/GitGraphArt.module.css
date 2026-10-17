@@ -14,32 +14,33 @@
   mask-image: linear-gradient(to bottom, #000 55%, transparent 88%);
 }
 
-/* Git-graph palette: fixed hues that read on both the light and dark tile */
-.orange { stroke: #e8703a; }
-.teal { stroke: #4fb3a5; }
-.purple { stroke: #a96bf5; }
-.yellow { stroke: #f2b01e; }
-.pink { stroke: #d6447f; }
-.brown { stroke: #8a5a2b; }
+/* One ink colour, taken from the tile's text colour so it flips with the
+   theme; the per-branch classes only vary how strongly each line shows. */
+.graph {
+  color: var(--bg);
+  stroke: currentColor;
+}
+
+.main { stroke-opacity: 1; }
+.l1 { stroke-opacity: 0.7; }
+.l2 { stroke-opacity: 0.5; }
+.l3 { stroke-opacity: 0.8; }
+.l4 { stroke-opacity: 0.6; }
+.l5 { stroke-opacity: 0.4; }
 
 .tip {
   stroke: none;
+  fill: currentColor;
 }
-
-.tip.teal { fill: #4fb3a5; }
-.tip.purple { fill: #a96bf5; }
-.tip.yellow { fill: #f2b01e; }
-.tip.pink { fill: #d6447f; }
-.tip.brown { fill: #8a5a2b; }
 
 .merge circle {
   fill: var(--text);
-  stroke: #e8703a;
+  stroke: currentColor;
   stroke-width: 2;
 }
 
 .merge .core {
-  fill: #e8703a;
+  fill: currentColor;
   stroke: none;
 }
 

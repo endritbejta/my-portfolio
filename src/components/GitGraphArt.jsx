@@ -7,15 +7,15 @@ const ROW_H = 30;
 const MAIN_X = 24;
 const CORNER = 8;
 
-// Branch colours, top to bottom, cycling like an editor's git graph.
-const COLORS = ["teal", "purple", "yellow", "pink", "brown"];
+// Branch weights, top to bottom: each class only sets how strongly a line shows.
+const WEIGHTS = ["l1", "l2", "l3", "l4", "l5"];
 
 // Long-lived lanes that run the full height behind the merges.
 const THROUGH = [
-  { x: 34, color: "brown" },
-  { x: 54, color: "pink" },
-  { x: 74, color: "yellow" },
-  { x: 94, color: "teal" },
+  { x: 34, color: "l5" },
+  { x: 54, color: "l4" },
+  { x: 74, color: "l3" },
+  { x: 94, color: "l1" },
 ];
 
 const rows = Array.from({ length: ROWS }, (_, k) => {
@@ -28,7 +28,7 @@ const rows = Array.from({ length: ROWS }, (_, k) => {
     lane,
     dotX,
     dotY,
-    color: COLORS[k],
+    color: WEIGHTS[k],
     // Down the lane, round the corner, along the merge row, round the next
     // corner and down into the tip.
     path:
@@ -40,10 +40,10 @@ const rows = Array.from({ length: ROWS }, (_, k) => {
 });
 
 /**
- * Decorative commit graph in the style of an editor's git history: an orange
- * main line of merge commits down the right edge, with coloured branches
- * stepping away to the left. Drawn left-to-right in a mirrored group. The
- * fade-out at the bottom is in the stylesheet.
+ * Decorative commit graph in the style of an editor's git history: a main
+ * line of merge commits down the right edge, with branches stepping away to
+ * the left. Single ink colour (set in the stylesheet, where the fade-out also
+ * lives); drawn left-to-right inside a mirrored group.
  */
 const GitGraphArt = ({ className = "" }) => (
   <svg
@@ -53,7 +53,7 @@ const GitGraphArt = ({ className = "" }) => (
     aria-hidden="true"
   >
     <g transform={`translate(${WIDTH} 0) scale(-1 1)`}>
-      <path className={classes.orange} d={`M${MAIN_X} 0 V${HEIGHT}`} />
+      <path className={classes.main} d={`M${MAIN_X} 0 V${HEIGHT}`} />
 
       {THROUGH.map(({ x, color }) => (
         <path key={x} className={classes[color]} d={`M${x} 0 V${HEIGHT}`} />
