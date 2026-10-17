@@ -18,17 +18,9 @@
   color: var(--text-faint);
 }
 
-.portraitWrap {
+.visual {
   justify-self: end;
-}
-
-.portrait {
-  width: clamp(10rem, 22vw, 15rem);
-  height: auto;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  width: 26rem;
 }
 
 @media (max-width: 860px) {
@@ -36,8 +28,9 @@
     grid-template-columns: 1fr;
   }
 
-  .portraitWrap {
+  .visual {
     justify-self: start;
+    width: min(100%, 26rem);
     order: -1;
   }
 }

@@ -1,0 +1,96 @@
+.wrap {
+  /* Rubik's cube stickers */
+  --cube-0: #c41e3a;
+  --cube-0-fg: #ffffff;
+  --cube-1: #ff5800;
+  --cube-1-fg: #1a1a1a;
+  --cube-2: #ffd500;
+  --cube-2-fg: #1a1a1a;
+  --cube-3: #009b48;
+  --cube-3-fg: #ffffff;
+  --cube-4: #0051ba;
+  --cube-4-fg: #ffffff;
+  --cube-5: #f5f5f5;
+  --cube-5-fg: #1a1a1a;
+  /* Resting cube: opaque grey that sits just off the page in either theme */
+  --cube-rest: color-mix(in srgb, var(--text) 14%, var(--bg-elevated));
+
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+  width: min(100%, 26rem);
+}
+
+.grid {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 3px;
+  width: 100%;
+}
+
+.cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 5.2cqw;
+  user-select: none;
+  cursor: pointer;
+  transition:
+    background var(--speed-base) var(--ease-out),
+    color var(--speed-base) var(--ease-out),
+    opacity var(--speed-base) var(--ease-out),
+    transform var(--speed-base) var(--ease-out);
+}
+
+.letter {
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 0 var(--border);
+}
+
+/* Slow fade back to grey; the snap onto a colour is set on [data-c] below */
+.cube {
+  background: var(--cube-rest);
+  transition-duration: 900ms;
+}
+
+.cube[data-c] {
+  transition-duration: 90ms;
+}
+
+.cell[data-c="0"] { background: var(--cube-0); color: var(--cube-0-fg); border-color: transparent; }
+.cell[data-c="1"] { background: var(--cube-1); color: var(--cube-1-fg); border-color: transparent; }
+.cell[data-c="2"] { background: var(--cube-2); color: var(--cube-2-fg); border-color: transparent; }
+.cell[data-c="3"] { background: var(--cube-3); color: var(--cube-3-fg); border-color: transparent; }
+.cell[data-c="4"] { background: var(--cube-4); color: var(--cube-4-fg); border-color: transparent; }
+.cell[data-c="5"] { background: var(--cube-5); color: var(--cube-5-fg); border-color: transparent; }
+
+.portrait {
+  position: relative;
+  z-index: 1;
+  transform: rotate(-4deg) scale(1.04);
+  border-radius: var(--radius-sm);
+  border: 3px solid var(--bg-elevated);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell {
+    transition: none;
+  }
+}
