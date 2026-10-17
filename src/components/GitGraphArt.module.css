@@ -86,11 +86,6 @@
 /* Mobile tiles are narrower, so the graph scales up and reaches the text:
    keep it to the bottom of the tile and a little softer */
 @media (max-width: 860px) {
-  /* Too narrow for the labels: they would run off the left edge */
-  .labels {
-    display: none;
-  }
-
   .graph {
     opacity: 0.7;
     -webkit-mask-image: linear-gradient(to top, #000 25%, transparent 62%);
