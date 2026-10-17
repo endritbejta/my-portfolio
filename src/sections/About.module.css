@@ -8,7 +8,7 @@
   gap: 0.75rem;
 }
 
-/* Glass panel like Card, plus a spotlight that follows the cursor. */
+/* Glass panel, same recipe as Card. */
 .tile {
   position: relative;
   overflow: hidden;
@@ -26,26 +26,8 @@
   transition: border-color var(--speed-base) ease;
 }
 
-.tile::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(
-    16rem circle at var(--mx, 50%) var(--my, 50%),
-    rgba(var(--accent-rgb), 0.16),
-    transparent 70%
-  );
-  transition: opacity var(--speed-base) ease;
-}
-
 .tile:hover {
   border-color: var(--border-strong);
-}
-
-.tile:hover::after {
-  opacity: 1;
 }
 
 .label {
@@ -131,10 +113,6 @@
   transform: scale(1.04);
 }
 
-.photo::after {
-  display: none;
-}
-
 .caption {
   position: absolute;
   left: 0.75rem;
@@ -161,16 +139,10 @@
   color: inherit;
 }
 
-.keds::after {
-  background: radial-gradient(
-    16rem circle at var(--mx, 50%) var(--my, 50%),
-    rgba(255, 255, 255, 0.22),
-    transparent 70%
-  );
-}
-
 /* Keep the text above the absolutely positioned pylon artwork */
-.keds > span {
+.keds > span,
+.grenion > span,
+.grenion > ul {
   position: relative;
   z-index: 1;
 }

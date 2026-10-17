@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import PowerLines from "../components/PowerLines";
+import StorefrontArt from "../components/StorefrontArt";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
 import { profile } from "../data/profile";
@@ -11,18 +12,10 @@ const clockFormat = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Europe/Belgrade",
 });
 
-// Keeps the cursor position in CSS vars so a tile can paint a spotlight under it.
-const trackPointer = (event) => {
-  const rect = event.currentTarget.getBoundingClientRect();
-  event.currentTarget.style.setProperty("--mx", `${event.clientX - rect.left}px`);
-  event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
-};
-
 const Tile = ({ area, delay, className = "", children }) => (
   <Reveal
     delay={delay}
     className={[classes.tile, classes[area], className].join(" ")}
-    onPointerMove={trackPointer}
   >
     {children}
   </Reveal>
@@ -76,6 +69,7 @@ const About = () => {
         </Tile>
 
         <Tile area="grenion" delay={240}>
+          <StorefrontArt />
           <span className={classes.label}>GRENION · since 2022</span>
           <span className={classes.word}>Shops</span>
           <ul className={classes.shops}>
