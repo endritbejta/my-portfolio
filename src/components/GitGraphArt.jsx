@@ -42,17 +42,17 @@ const rows = Array.from({ length: ROWS }, (_, k) => {
 /**
  * Decorative commit graph in the style of an editor's git history: a main
  * line of merge commits down the right edge, with branches stepping away to
- * the left. Single ink colour (set in the stylesheet, where the fade-out also
- * lives); drawn left-to-right inside a mirrored group.
+ * the left, sitting at the bottom of the tile. Single ink colour (set in the
+ * stylesheet, where the fade-out also lives); drawn inside a rotated group.
  */
 const GitGraphArt = ({ className = "" }) => (
   <svg
     className={[classes.graph, className].filter(Boolean).join(" ")}
     viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-    preserveAspectRatio="xMaxYMin slice"
+    preserveAspectRatio="xMaxYMax slice"
     aria-hidden="true"
   >
-    <g transform={`translate(${WIDTH} 0) scale(-1 1)`}>
+    <g transform={`translate(${WIDTH} ${HEIGHT}) scale(-1 -1)`}>
       <path className={classes.main} d={`M${MAIN_X} 0 V${HEIGHT}`} />
 
       {THROUGH.map(({ x, color }) => (

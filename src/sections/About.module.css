@@ -126,6 +126,7 @@
 .grenion {
   grid-area: grenion;
   min-height: 15rem;
+  align-content: start;
   background: var(--text);
   border-color: transparent;
   color: var(--bg);
