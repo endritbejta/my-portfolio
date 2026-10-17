@@ -148,7 +148,7 @@
   font-size: var(--text-xs);
 }
 
-/* KEDS: a power-line wave behind the word */
+/* KEDS: pylons and power lines behind the word */
 .keds {
   grid-area: keds;
   background: var(--accent);
@@ -169,22 +169,10 @@
   );
 }
 
-.wave {
-  position: absolute;
-  top: 0.9rem;
-  left: 0;
-  width: 200%;
-  height: 2.5rem;
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.55);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
-  animation: flow 6s linear infinite;
-  pointer-events: none;
-}
-
-.wave path {
-  vector-effect: non-scaling-stroke;
+/* Keep the text above the absolutely positioned pylon artwork */
+.keds > span {
+  position: relative;
+  z-index: 1;
 }
 
 /* GRENION */
@@ -227,12 +215,6 @@
 .clock { grid-area: clock; }
 .edu { grid-area: edu; }
 
-@keyframes flow {
-  to {
-    transform: translateX(-25%);
-  }
-}
-
 @keyframes pulse {
   50% {
     opacity: 0.35;
@@ -265,7 +247,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wave,
   .live {
     animation: none;
   }

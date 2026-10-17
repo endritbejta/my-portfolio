@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PowerLines from "../components/PowerLines";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
 import { profile } from "../data/profile";
@@ -68,14 +69,7 @@ const About = () => {
         </Tile>
 
         <Tile area="keds" delay={160}>
-          <svg
-            className={classes.wave}
-            viewBox="0 0 400 40"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <path d="M0 20 q25 -22 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0" />
-          </svg>
+          <PowerLines />
           <span className={classes.label}>KEDS · before</span>
           <span className={classes.word}>Grids</span>
           <span className={classes.note}>Infrastructure projects</span>
