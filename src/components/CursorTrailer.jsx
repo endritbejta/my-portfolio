@@ -1,5 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { FiArrowUpRight, FiCopy, FiDownload, FiLayout, FiMail, FiPlay } from "react-icons/fi";
+import {
+  FiArrowUpRight,
+  FiCamera,
+  FiCode,
+  FiCopy,
+  FiDownload,
+  FiLayout,
+  FiMail,
+  FiPlay,
+  FiZap,
+} from "react-icons/fi";
 import { useReducedMotion } from "../hooks/useMotionPreference";
 import classes from "./CursorTrailer.module.css";
 
@@ -11,6 +21,10 @@ const ICONS = {
   mail: FiMail,
   copy: FiCopy,
   video: FiPlay,
+  // About tiles: a cue for what the tile is about rather than where it goes
+  bolt: FiZap,
+  code: FiCode,
+  photo: FiCamera,
 };
 
 /* Trailing is an exponential ease toward the pointer, run every frame: the
