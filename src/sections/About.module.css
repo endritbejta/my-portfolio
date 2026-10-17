@@ -1,43 +1,129 @@
-.grid {
+.bento {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 3rem;
-  align-items: start;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  grid-template-areas:
+    "story photo keds"
+    "story photo grenion"
+    "chips chips chips";
+  gap: 0.75rem;
 }
 
-.text {
-  display: grid;
-  gap: 1rem;
-  max-width: 42rem;
-  color: var(--text-muted);
-  font-size: var(--text-lg);
-}
-
-.education {
-  font-size: var(--text-sm);
-  color: var(--text-faint);
-}
-
-.portraitWrap {
-  justify-self: end;
-}
-
-.portrait {
-  width: clamp(10rem, 22vw, 15rem);
-  height: auto;
-  aspect-ratio: 1;
-  object-fit: cover;
+.tile {
+  position: relative;
+  overflow: hidden;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  padding: 1.25rem;
+}
+
+.label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+}
+
+.story {
+  grid-area: story;
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+.story p {
+  margin: 0;
+}
+
+.photo {
+  grid-area: photo;
+  padding: 0;
+  min-height: 16rem;
+}
+
+.photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.keds,
+.grenion {
+  display: grid;
+  align-content: end;
+  gap: 0.25rem;
+  min-height: 9rem;
+}
+
+.keds {
+  grid-area: keds;
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-contrast);
+}
+
+.grenion {
+  grid-area: grenion;
+  background: var(--text);
+  border-color: transparent;
+  color: var(--bg);
+}
+
+.grenion .word {
+  color: var(--accent);
+}
+
+.word {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.note {
+  font-size: var(--text-sm);
+  opacity: 0.85;
+}
+
+.chips {
+  grid-area: chips;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
 }
 
 @media (max-width: 860px) {
-  .grid {
-    grid-template-columns: 1fr;
+  .bento {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "photo keds"
+      "photo grenion"
+      "story story"
+      "chips chips";
   }
 
-  .portraitWrap {
-    justify-self: start;
-    order: -1;
+  .photo {
+    min-height: 0;
+  }
+
+  .keds,
+  .grenion {
+    min-height: 7rem;
+    padding: 1rem;
   }
 }
