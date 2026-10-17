@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "../hooks/useMotionPreference";
+import { onPointerLeave, onPointerMove } from "../utils/pointer";
 import classes from "./DotField.module.css";
 
 // Grid geometry. --dot-gap and --dot-size are read from the stylesheet (they
@@ -355,13 +356,21 @@ const DotField = () => {
 
     // Re-evaluated whenever the pointer query flips (the window moved to a
     // touch screen), not just on mount.
+    let unsubscribe = () => {};
+    const joinPointer = () => {
+      const offMove = onPointerMove(onMouseMove);
+      const offLeave = onPointerLeave(onMouseLeave);
+      return () => {
+        offMove();
+        offLeave();
+      };
+    };
+
     const syncInteractivity = () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseleave", onMouseLeave);
+      unsubscribe();
 
       if (finePointer.matches) {
-        window.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseleave", onMouseLeave);
+        unsubscribe = joinPointer();
       } else {
         onMouseLeave(); // drop every dot back to rest
       }
@@ -399,8 +408,7 @@ const DotField = () => {
       clearTimeout(resizeTimer);
       resizeObserver.disconnect();
       themeObserver.disconnect();
-      window.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseleave", onMouseLeave);
+      unsubscribe();
       finePointer.removeEventListener("change", syncInteractivity);
     };
   }, [reduced]);

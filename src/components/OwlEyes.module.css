@@ -7,17 +7,39 @@
   --halo: transparent; /* a hairline outside the outline, so it reads on dark */
   --sclera: #ffffff;
   --brow: var(--ink);
+  --lid: #c9ccd8;
 
+  position: relative;
   display: flex;
   align-items: flex-end;
   width: fit-content;
-  margin-bottom: 1.25rem;
-  padding-top: 1.2rem; /* room for the brows to lift into */
+  margin: 0 0 1.25rem;
+  padding: 1.2rem 0 0; /* room for the brows to lift into */
+
+  /* It is a <button> (clicking the eyes shuts them), so drop the button look. */
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.owl:disabled {
+  cursor: default;
+}
+
+.owl:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
 }
 
 :global(:root[data-theme="dark"]) .owl {
   --halo: rgba(255, 255, 255, 0.55);
   --sclera: #f6f3ec;
+  --lid: #3b3650;
 }
 
 .side {
@@ -41,11 +63,68 @@
   width: var(--eye-w);
   height: var(--eye-h);
   border-radius: 50%;
+  overflow: hidden; /* an iris rolling out of the eye is clipped by it */
   background: var(--sclera);
   border: 0.2rem solid var(--ink);
   box-shadow:
     inset 0 -0.3rem 0.45rem rgba(11, 12, 16, 0.12),
     0 0 0 1.5px var(--halo);
+}
+
+/* Shutting the eyes: a lid comes down over each one, slowly, the right a beat
+   behind the left; a lash line fades in once it has closed. Opening reverses
+   it. Together with OwlEyes.jsx (which stops tracking while data-closed is set)
+   it is the "off" switch. */
+.eye::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto -1px;
+  z-index: 1;
+  height: 0;
+  background: var(--lid);
+  border-radius: 0 0 55% 55% / 0 0 38% 38%;
+  transition: height 1500ms cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+.right .eye::before {
+  transition-delay: 140ms;
+}
+
+.eye::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: 14%;
+  right: 14%;
+  top: 56%;
+  height: 0.5rem;
+  border-bottom: 0.2rem solid var(--ink);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.owl[data-closed] .eye::before {
+  height: 104%;
+}
+
+.owl[data-closed] .eye::after {
+  opacity: 1;
+  transition: opacity 400ms ease 1200ms;
+}
+
+.owl[data-closed] .right .eye::after {
+  transition-delay: 1340ms;
+}
+
+/* Sleepy brows while shut. */
+.owl[data-closed] .left .brow {
+  translate: 0 0.16rem;
+  rotate: -2deg;
+}
+.owl[data-closed] .right .brow {
+  translate: 0 0.14rem;
+  rotate: 2deg;
 }
 
 .right .eye {
@@ -66,7 +145,7 @@
   height: var(--iris-h);
   border-radius: 50%;
   translate: 0 0;
-  will-change: translate;
+  will-change: translate, scale;
   background: radial-gradient(
     ellipse at 50% 30%,
     color-mix(in srgb, var(--accent), #fff 38%),
@@ -134,71 +213,286 @@
   rotate: 4deg;
 }
 
-/* Moods. translate lifts (negative = up); rotate tips a brow, positive being
-   clockwise on screen, so the left brow's inner end drops with +, the
-   right's with -. */
-.owl[data-mood="surprised"] .left .brow {
+/* Poses, set as data-pose on the root by OwlEyes.jsx. translate lifts
+   (negative = up); rotate tips a brow, positive being clockwise on screen, so
+   the left brow's inner end drops with + and the right's with -. */
+.owl[data-pose="surprised"] .left .brow {
   translate: 0 -0.25rem;
   rotate: -4.5deg;
 }
-.owl[data-mood="surprised"] .right .brow {
+.owl[data-pose="surprised"] .right .brow {
   translate: 0 -0.25rem;
   rotate: 4.5deg;
 }
 
-.owl[data-mood="sneaky"] .left .brow {
+/* Both brows bounce while the eyes gaze up. */
+.owl[data-pose="bounce"] .brow {
+  animation: bounce 1000ms ease-in-out 1 both;
+}
+.owl[data-pose="bounce"] .left .brow {
+  translate: 0 -0.3rem;
+  rotate: -5deg;
+}
+.owl[data-pose="bounce"] .right .brow {
+  translate: 0 -0.3rem;
+  rotate: 5deg;
+}
+
+@keyframes bounce {
+  0% { translate: 0 -0.25rem; }
+  20% { translate: 0 0.02rem; }
+  40% { translate: 0 -0.38rem; }
+  60% { translate: 0 0.02rem; }
+  80% { translate: 0 -0.38rem; }
+  100% { translate: 0 -0.3rem; }
+}
+
+/* Caught out: one brow furrows, the other arches... */
+.owl[data-pose="sneaky"] .left .brow {
   translate: 0 0.07rem;
   rotate: 7deg;
 }
-.owl[data-mood="sneaky"] .right .brow {
+.owl[data-pose="sneaky"] .right .brow {
   translate: 0 -0.28rem;
   rotate: 0deg;
 }
 
-/* Looking straight at the visitor mid-copy: innocent, inner ends up. */
-.owl[data-mood="sneaky"][data-gaze="user"] .left .brow {
+/* ...then, looking straight at the visitor: innocent, inner ends up. */
+.owl[data-pose="sneaky-user"] .left .brow {
   translate: 0 -0.2rem;
   rotate: -8deg;
 }
-.owl[data-mood="sneaky"][data-gaze="user"] .right .brow {
+.owl[data-pose="sneaky-user"] .right .brow {
   translate: 0 -0.2rem;
   rotate: 8deg;
 }
 
-.owl[data-mood="determined"] .left .brow {
-  translate: 0 0.1rem;
-  rotate: 6.5deg;
+/* Flirty: one brow arches and wiggles twice while the other sits low and
+   relaxed, as if with a half-smile; the next step swaps them. The wiggle is a
+   keyframe animation on the one brow; the rest is the usual eased pose. */
+.owl[data-pose="flirty"] .left .brow {
+  translate: 0 -0.17rem;
+  rotate: -6deg;
+  animation: flirt 1100ms ease-in-out 80ms 1 both;
 }
-.owl[data-mood="determined"] .right .brow {
-  translate: 0 0.12rem;
-  rotate: -6.5deg;
+.owl[data-pose="flirty"] .right .brow {
+  translate: 0 0.08rem;
+  rotate: 5deg;
 }
 
-.owl[data-mood="skeptic"] .left .brow {
+.owl[data-pose="flirty-b"] .right .brow {
+  translate: 0 -0.17rem;
+  rotate: 6deg;
+  animation: flirt 1100ms ease-in-out 80ms 1 both;
+}
+.owl[data-pose="flirty-b"] .left .brow {
+  translate: 0 0.08rem;
+  rotate: -5deg;
+}
+
+@keyframes flirt {
+  0% { translate: 0 0; }
+  22% { translate: 0 -0.2rem; }
+  40% { translate: 0 -0.04rem; }
+  58% { translate: 0 -0.2rem; }
+  76% { translate: 0 -0.04rem; }
+  100% { translate: 0 -0.17rem; }
+}
+
+.owl[data-pose="skeptic"] .left .brow {
   translate: 0 -0.3rem;
   rotate: -5deg;
 }
-.owl[data-mood="skeptic"] .right .brow {
+.owl[data-pose="skeptic"] .right .brow {
   translate: 0 0.07rem;
   rotate: 4deg;
 }
 
-.owl[data-mood="curious"] .left .brow {
+/* Narrowed, reading closely. */
+.owl[data-pose="focus"] .left .brow {
+  translate: 0 0.08rem;
+  rotate: 6deg;
+}
+.owl[data-pose="focus"] .right .brow {
+  translate: 0 0.08rem;
+  rotate: -6deg;
+}
+
+.owl[data-pose="curious"] .left .brow {
   translate: 0 -0.12rem;
 }
-.owl[data-mood="curious"] .right .brow {
+.owl[data-pose="curious"] .right .brow {
   translate: 0 -0.17rem;
   rotate: -1deg;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .brow {
-    transition: none;
-  }
+/* Pointing something out: both brows up a little. */
+.owl[data-pose="point"] .left .brow {
+  translate: 0 -0.2rem;
+  rotate: -3deg;
+}
+.owl[data-pose="point"] .right .brow {
+  translate: 0 -0.22rem;
+  rotate: 3deg;
 }
 
-:global(:root[data-motion="reduced"]) .brow {
+/* ---- Pupils ---- */
+
+/* Wide-eyed: the irises dilate. */
+.iris {
+  transition: scale 280ms ease;
+}
+
+.owl[data-pupils="wide"] .iris {
+  scale: 1.2;
+}
+
+/* ---- Dizzy ---- */
+
+/* Stars and question marks circling above the brows. They are out of the way
+   (and invisible) until the dizzy spell starts.
+
+   The orbit is two sine-eased motions a quarter turn apart, one per element:
+   the <i> swings sideways, the <b> inside it swings up and down while growing
+   and brightening toward the viewer. Plain sines compose into a true ellipse,
+   where a path walked in straight segments would show its corners as flicks. */
+.sparks {
+  position: absolute;
+  left: 50%;
+  top: 0.1rem;
+  z-index: 2; /* the symbols passing in front go over the brows */
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.owl[data-dizzy] .sparks {
+  opacity: 1;
+}
+
+.sparks i {
+  --sine: cubic-bezier(0.37, 0, 0.63, 1);
+  --phase: 0ms; /* where this symbol is on the orbit */
+
+  position: absolute;
+  left: -0.5rem;
+  top: -0.6rem;
+  width: 1rem;
+  text-align: center;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 0.9rem;
+  line-height: 1.2rem;
+  color: #ffc83d;
+  animation: orbit-x 750ms var(--sine) infinite alternate;
+  animation-delay: var(--phase);
+}
+
+.sparks b {
+  display: block;
+  font-weight: inherit;
+  animation: orbit-y 750ms var(--sine) infinite alternate;
+  animation-delay: calc(var(--phase) - 375ms);
+}
+
+.sparks i:nth-child(even) {
+  color: var(--accent);
+  font-size: 1.05rem;
+}
+
+/* Six symbols, evenly spaced round a 1500ms orbit. */
+.sparks i:nth-child(1) { --phase: 0ms; }
+.sparks i:nth-child(2) { --phase: -250ms; }
+.sparks i:nth-child(3) { --phase: -500ms; }
+.sparks i:nth-child(4) { --phase: -750ms; }
+.sparks i:nth-child(5) { --phase: -1000ms; }
+.sparks i:nth-child(6) { --phase: -1250ms; }
+
+@keyframes orbit-x {
+  from { translate: -2.2rem 0; }
+  to { translate: 2.2rem 0; }
+}
+
+/* The far side is smaller and half faded, the near side bigger and opaque. */
+@keyframes orbit-y {
+  from { translate: 0 -0.6rem; scale: 0.6; opacity: 0.5; }
+  to { translate: 0 0.6rem; scale: 1.5; opacity: 1; }
+}
+
+/* ---- Sleeping ---- */
+
+/* Zs that drift up and away from the eyes, growing and fading as they go. They
+   start once the lids have come down, one after another at an even interval,
+   each at the same pace, so there is a steady stream of them. */
+.zzz {
+  position: absolute;
+  left: calc(100% - 1.6rem);
+  top: 1.7rem;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.zzz i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--text-muted);
+  opacity: 0;
+}
+
+.zzz i:nth-child(even) {
+  font-size: 1.1rem;
+}
+
+.owl[data-closed] .zzz i {
+  animation: snooze 4800ms linear infinite;
+}
+/* Five Zs, evenly spaced along the rise: one every 960ms. */
+.owl[data-closed] .zzz i:nth-child(1) { animation-delay: 1300ms; }
+.owl[data-closed] .zzz i:nth-child(2) { animation-delay: 2260ms; }
+.owl[data-closed] .zzz i:nth-child(3) { animation-delay: 3220ms; }
+.owl[data-closed] .zzz i:nth-child(4) { animation-delay: 4180ms; }
+.owl[data-closed] .zzz i:nth-child(5) { animation-delay: 5140ms; }
+
+@keyframes snooze {
+  0% { translate: 0 0; scale: 0.5; opacity: 0; }
+  12% { opacity: 1; }
+  100% { translate: 0 -4.8rem; scale: 1.9; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brow,
+  .iris,
+  .eye::before,
+  .eye::after {
+    transition: none;
+    animation: none !important;
+  }
+
+  /* Still show that it is asleep: the Zs sit where they would be mid-drift. */
+  .owl[data-closed] .zzz i {
+    opacity: 0.8;
+  }
+  .owl[data-closed] .zzz i:nth-child(1) { translate: 0 -0.5rem; }
+  .owl[data-closed] .zzz i:nth-child(2) { translate: 0 -1.4rem; opacity: 0.65; }
+  .owl[data-closed] .zzz i:nth-child(3) { translate: 0 -2.4rem; opacity: 0.5; }
+  .owl[data-closed] .zzz i:nth-child(4) { translate: 0 -3.4rem; opacity: 0.35; }
+  .owl[data-closed] .zzz i:nth-child(5) { translate: 0 -4.4rem; opacity: 0.2; }
+}
+
+:global(:root[data-motion="reduced"]) .brow,
+:global(:root[data-motion="reduced"]) .iris,
+:global(:root[data-motion="reduced"]) .eye::before,
+:global(:root[data-motion="reduced"]) .eye::after {
   transition: none;
+  animation: none !important;
 }
 
 /* Not for phones: touch has no cursor to follow or buttons to hover, and the
