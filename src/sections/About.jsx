@@ -57,11 +57,6 @@ const About = () => (
         <GitGraphArt />
         <span className={classes.label}>GRENION · since 2022</span>
         <span className={classes.word}>Shops</span>
-        <ul className={classes.shops}>
-          {profile.storefronts.map((name) => (
-            <li key={name}>{name}</li>
-          ))}
-        </ul>
       </Tile>
     </div>
   </Section>
