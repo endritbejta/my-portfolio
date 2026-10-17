@@ -14,7 +14,7 @@ import {
 import { NAV_LINKS } from "../constants";
 import { profile, socials } from "../data/profile";
 import { useMotionPreference } from "../hooks/useMotionPreference";
-import { useProjects } from "../hooks/useProjects";
+import { projects } from "../data/projects";
 import { useTheme } from "../hooks/useTheme";
 import classes from "./CommandPalette.module.css";
 
@@ -25,7 +25,6 @@ import classes from "./CommandPalette.module.css";
 const CommandPalette = ({ open, onClose }) => {
   const navigate = useNavigate();
   const { toggleTheme } = useTheme();
-  const { projects } = useProjects();
   const { reduced, systemReduced, toggle: toggleMotion } = useMotionPreference();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -99,7 +98,7 @@ const CommandPalette = ({ open, onClose }) => {
             },
           ]),
     ],
-    [navigate, projects, toggleTheme, reduced, systemReduced, toggleMotion]
+    [navigate, toggleTheme, reduced, systemReduced, toggleMotion]
   );
 
   const results = useMemo(() => {
