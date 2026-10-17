@@ -1,43 +1,176 @@
-.grid {
+.bento {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 3rem;
-  align-items: start;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas:
+    "story story photo keds"
+    "story story photo grenion";
+  gap: 0.75rem;
 }
 
-.text {
+/* Glass panel, same recipe as Card. */
+.tile {
+  position: relative;
+  overflow: hidden;
   display: grid;
-  gap: 1rem;
-  max-width: 42rem;
-  color: var(--text-muted);
-  font-size: var(--text-lg);
+  align-content: end;
+  gap: 0.25rem;
+  min-height: 8.5rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(120%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(120%);
+  transition: border-color var(--speed-base) ease;
 }
 
-.education {
+.tile:hover {
+  border-color: var(--border-strong);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+}
+
+.note {
   font-size: var(--text-sm);
   color: var(--text-faint);
 }
 
-.portraitWrap {
-  justify-self: end;
+/* Story */
+.story {
+  grid-area: story;
+  align-content: start;
+  gap: 1rem;
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  line-height: 1.65;
 }
 
-.portrait {
-  width: clamp(10rem, 22vw, 15rem);
-  height: auto;
-  aspect-ratio: 1;
+.story p {
+  margin: 0;
+}
+
+.story .education {
+  font-size: var(--text-sm);
+  color: var(--text-faint);
+}
+
+.story p:first-of-type {
+  color: var(--text);
+  font-size: var(--text-lg);
+}
+
+/* Portrait */
+.photo {
+  grid-area: photo;
+  padding: 0;
+  min-height: 16rem;
+}
+
+.photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  transition: transform 900ms var(--ease-out);
+}
+
+.photo:hover img {
+  transform: scale(1.04);
+}
+
+.caption {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: var(--overlay-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+/* KEDS: pylons and power lines behind the word */
+.keds {
+  grid-area: keds;
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-contrast);
+}
+
+.keds .note,
+.keds .word {
+  color: inherit;
+}
+
+/* Keep the text above the absolutely positioned artwork */
+.keds > span,
+.grenion > span {
+  position: relative;
+  z-index: 1;
+}
+
+/* GRENION */
+.grenion {
+  grid-area: grenion;
+  min-height: 15rem;
+  align-content: start;
+  background: var(--text);
+  border-color: transparent;
+  color: var(--bg);
+}
+
+.grenion .word {
+  color: var(--accent);
+}
+
+.word {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 @media (max-width: 860px) {
-  .grid {
-    grid-template-columns: 1fr;
+  .bento {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "photo keds"
+      "photo grenion"
+      "story story";
   }
 
-  .portraitWrap {
-    justify-self: start;
-    order: -1;
+  .photo {
+    min-height: 0;
+  }
+
+  .tile {
+    padding: 1rem;
+  }
+
+  /* The photo is too narrow for the pill; the location is in the hero */
+  .caption {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo img {
+    transition: none;
+  }
+
+  .photo:hover img {
+    transform: none;
   }
 }

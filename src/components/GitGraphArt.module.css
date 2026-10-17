@@ -1,0 +1,94 @@
+.graph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  /* Fade out towards the top so it never fights the text sitting there */
+  -webkit-mask-image: linear-gradient(to top, #000 45%, transparent 78%);
+  mask-image: linear-gradient(to top, #000 45%, transparent 78%);
+}
+
+/* One ink colour, taken from the tile's text colour so it flips with the
+   theme; the per-branch classes only vary how strongly each line shows. */
+.graph {
+  color: var(--bg);
+  stroke: currentColor;
+}
+
+.main { stroke-opacity: 1; }
+.l1 { stroke-opacity: 0.7; }
+.l2 { stroke-opacity: 0.5; }
+.l3 { stroke-opacity: 0.8; }
+.l4 { stroke-opacity: 0.6; }
+.l5 { stroke-opacity: 0.4; }
+
+.tip {
+  stroke: none;
+  fill: currentColor;
+}
+
+.merge circle {
+  fill: var(--text);
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.merge .core {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Commit messages beside the merge nodes. The stroke is painted first in the
+   tile colour, so it works as a halo that hides the lanes behind the letters. */
+.msg {
+  fill: currentColor;
+  stroke: var(--text);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  text-anchor: end;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0;
+  animation: message ease-in-out infinite;
+}
+
+@keyframes message {
+  0% {
+    opacity: 0;
+  }
+  6%,
+  28% {
+    opacity: 0.85;
+  }
+  34%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .msg {
+    animation: none;
+  }
+
+  .msg:first-child {
+    opacity: 0.85;
+  }
+}
+
+/* Mobile tiles are narrower, so the graph scales up and reaches the text:
+   keep it to the bottom of the tile and a little softer */
+@media (max-width: 860px) {
+  .graph {
+    opacity: 0.7;
+    -webkit-mask-image: linear-gradient(to top, #000 25%, transparent 62%);
+    mask-image: linear-gradient(to top, #000 25%, transparent 62%);
+  }
+}
