@@ -18,6 +18,17 @@ const THROUGH = [
   { x: 94, color: "l1" },
 ];
 
+// Commit messages that fade in and out beside each merge node, bottom row first.
+const MESSAGES = [
+  ["feat: bundles", "feat: quiz", "feat: gift sets"],
+  ["fix: empty cart", "fix: 0 stock", "fix: bad promo"],
+  ["perf: LCP", "perf: preload", "perf: less JS"],
+  ["chore: deps", "chore: lint", "chore: types"],
+  ["feat: checkout", "feat: search", "feat: reviews"],
+];
+const CYCLE_S = 9;
+const LABEL_GAP = 15;
+
 const rows = Array.from({ length: ROWS }, (_, k) => {
   const mergeY = 20 + k * ROW_H; // the merge commit on the main lane
   const lane = 44 + k * 10; // where this branch peels away from the bundle
@@ -80,6 +91,28 @@ const GitGraphArt = ({ className = "" }) => (
         <g key={mergeY} className={classes.merge}>
           <circle cx={MAIN_X} cy={mergeY} r="7" />
           <circle className={classes.core} cx={MAIN_X} cy={mergeY} r="2.4" />
+        </g>
+      ))}
+    </g>
+
+    {/* Labels sit outside the rotated group so the text stays upright. */}
+    <g className={classes.labels}>
+      {rows.map(({ mergeY }, k) => (
+        <g key={mergeY}>
+          {MESSAGES[k].map((text, i) => (
+            <text
+              key={text}
+              className={classes.msg}
+              x={WIDTH - MAIN_X - LABEL_GAP}
+              y={HEIGHT - mergeY + 4}
+              style={{
+                animationDuration: `${CYCLE_S}s`,
+                animationDelay: `${(i * CYCLE_S) / MESSAGES[k].length + k * 0.7}s`,
+              }}
+            >
+              {text}
+            </text>
+          ))}
         </g>
       ))}
     </g>
