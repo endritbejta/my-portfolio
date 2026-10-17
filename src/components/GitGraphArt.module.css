@@ -10,8 +10,8 @@
   stroke-linejoin: round;
 
   /* Fade out towards the top so it never fights the text sitting there */
-  -webkit-mask-image: linear-gradient(to top, #000 32%, transparent 60%);
-  mask-image: linear-gradient(to top, #000 32%, transparent 60%);
+  -webkit-mask-image: linear-gradient(to top, #000 22%, transparent 42%);
+  mask-image: linear-gradient(to top, #000 22%, transparent 42%);
 }
 
 /* One ink colour, taken from the tile's text colour so it flips with the

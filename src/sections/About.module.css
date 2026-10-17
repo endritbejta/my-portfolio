@@ -117,7 +117,7 @@
 /* Keep the text above the absolutely positioned artwork */
 .keds > span,
 .grenion > span,
-.grenion > p {
+.grenion > ul {
   position: relative;
   z-index: 1;
 }
@@ -125,7 +125,7 @@
 /* GRENION */
 .grenion {
   grid-area: grenion;
-  min-height: 15rem;
+  min-height: 18rem;
   align-content: start;
   background: var(--text);
   border-color: transparent;
@@ -138,9 +138,11 @@
 
 .shops {
   margin: 0.4rem 0 0;
-  font-size: var(--text-xs);
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm);
   line-height: 1.5;
-  opacity: 0.75;
+  opacity: 0.8;
 }
 
 .word {
