@@ -37,6 +37,7 @@ const DataFlowArt = ({ className = "" }) => (
     </g>
 
     <g className={classes.db}>
+      <rect className={classes.body} x="26" y="34" width="44" height="44" stroke="none" />
       <ellipse cx="48" cy="34" rx="22" ry="7" />
       <path d="M26 34 V78 M70 34 V78" />
       <path d="M26 50 a22 7 0 0 0 44 0" />

@@ -1,5 +1,6 @@
 import PowerLines from "../components/PowerLines";
 import DataFlowArt from "../components/DataFlowArt";
+import GitGraphArt from "../components/GitGraphArt";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
 import { profile } from "../data/profile";
@@ -51,6 +52,7 @@ const About = () => (
       </Tile>
 
       <Tile area="grenion" delay={240}>
+        <GitGraphArt />
         <DataFlowArt />
         <span className={classes.label}>GRENION · since 2022</span>
         <span className={classes.word}>Shops</span>

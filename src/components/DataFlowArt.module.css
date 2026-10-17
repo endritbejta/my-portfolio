@@ -10,15 +10,23 @@
   stroke-width: 1.4;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.4;
+  stroke-opacity: 0.45;
 }
 
 .wires path {
   stroke-width: 1;
 }
 
+.api rect,
+.client > rect:first-child,
+.db ellipse,
+.db .body {
+  fill: var(--text);
+}
+
 .api text {
   fill: currentColor;
+  fill-opacity: 0.45;
   stroke: none;
   font-family: var(--font-mono);
   font-size: 18px;
@@ -26,6 +34,7 @@
 
 .client circle {
   fill: currentColor;
+  fill-opacity: 0.45;
   stroke: none;
 }
 
