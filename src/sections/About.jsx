@@ -1,3 +1,4 @@
+import Crossword from "../components/Crossword";
 import Reveal from "../components/ui/Reveal";
 import Section from "../components/ui/Section";
 import { profile } from "../data/profile";
@@ -19,15 +20,10 @@ const About = () => (
         </p>
       </Reveal>
 
-      <Reveal delay={120} className={classes.portraitWrap}>
-        <img
-          src={profile.portrait}
-          alt={`Portrait of ${profile.name}`}
-          className={classes.portrait}
-          width="320"
-          height="320"
-          loading="lazy"
-          decoding="async"
+      <Reveal delay={120} className={classes.visual}>
+        <Crossword
+          portrait={profile.portrait}
+          portraitAlt={`Portrait of ${profile.name}`}
         />
       </Reveal>
     </div>
