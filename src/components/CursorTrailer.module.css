@@ -6,43 +6,41 @@
   top: 0;
   z-index: 300;
 
-  /* Laid out at the largest size it ever reaches and scaled *down* to rest
-     size. Safari rasterises a will-change layer at its layout size, so the
-     other way round (small, scaled up) shows as pixelated edges. */
+  /* The largest size the dot ever reaches; the inner .dot scales down from
+     it. Rasterised large and scaled down, Safari keeps the edges and icon
+     crisp — the other way round (small, scaled up) comes out pixelated. */
   width: calc(var(--cursor-size) * var(--cursor-hover-scale));
   height: calc(var(--cursor-size) * var(--cursor-hover-scale));
-  border-radius: 50%;
-  background: var(--cursor-bg);
 
   /* Never intercept anything: the trailer follows the pointer, so without
      this it would sit under the cursor and swallow every hover and click. */
   pointer-events: none;
 
-  display: grid;
-  place-items: center;
-
-  /* Position and scale are deliberately separate properties rather than one
-     `transform`. The JS writes `translate` every frame for the follow, which
-     would otherwise clobber any transition on the scale; split like this the
-     browser owns the swell and it gets an exact duration. Order is fixed by
-     spec — translate, then rotate, then scale — so the dot scales about its
-     own centre, which is already sitting on the pointer. */
-  translate: 0 0;
-  scale: calc(1 / var(--cursor-hover-scale));
-
   opacity: 0;
-  transition: opacity var(--speed-base) ease,
-    scale var(--cursor-swell) var(--ease-out);
+  transition: opacity var(--speed-base) ease;
 
-  /* One element, animated on every frame — the promotion is worth it here in
-     a way it would not be on the dot field's several hundred nodes. */
-  will-change: translate;
-  /* Not `scale`: hinting it makes Safari freeze the raster at the resting
-     (1/4) scale, so the swollen dot and its icon are upscaled and blurry. */
+  /* The JS writes `transform: translate3d(...)` every frame. Safari moves a
+     composited layer by `transform` smoothly but handles the standalone
+     `translate` property poorly, which showed up as stutter. The swell lives
+     on the child so the two never fight over one property. */
+  will-change: transform;
 }
 
 .visible {
   opacity: 1;
+}
+
+.dot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--cursor-bg);
+
+  display: grid;
+  place-items: center;
+
+  scale: calc(1 / var(--cursor-hover-scale));
+  transition: scale var(--cursor-swell) var(--ease-out);
 }
 
 /* Small is the default for links and buttons; only a card opts up to the

@@ -136,8 +136,9 @@ const CursorTrailer = () => {
       x += (pointerX - x) * posAlpha;
       y += (pointerY - y) * posAlpha;
 
-      // Only `translate` — the scale lives in CSS so its transition survives.
-      dot.style.translate = `${(x - half).toFixed(2)}px ${(y - half).toFixed(2)}px`;
+      // Only the position — the scale lives on the inner element in CSS so
+      // its transition survives.
+      dot.style.transform = `translate3d(${(x - half).toFixed(2)}px, ${(y - half).toFixed(2)}px, 0)`;
 
       const arrived =
         Math.abs(pointerX - x) < SETTLE_PX && Math.abs(pointerY - y) < SETTLE_PX;
@@ -203,16 +204,18 @@ const CursorTrailer = () => {
   return (
     <div
       ref={dotRef}
-      className={[classes.trailer, visible && classes.visible, target && classes.hovering]
-        .filter(Boolean)
-        .join(" ")}
-      data-size={target?.size}
+      className={[classes.trailer, visible && classes.visible].filter(Boolean).join(" ")}
       aria-hidden="true"
     >
-      <span className={`${classes.icon} ${Icon ? classes.iconVisible : ""}`}>
-        {/* Heavier than Feather's default 2, to read at the swollen size */}
-        {Icon && <Icon strokeWidth={2.5} />}
-      </span>
+      <div
+        className={[classes.dot, target && classes.hovering].filter(Boolean).join(" ")}
+        data-size={target?.size}
+      >
+        <span className={`${classes.icon} ${Icon ? classes.iconVisible : ""}`}>
+          {/* Heavier than Feather's default 2, to read at the swollen size */}
+          {Icon && <Icon strokeWidth={2.5} />}
+        </span>
+      </div>
     </div>
   );
 };
