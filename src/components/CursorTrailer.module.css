@@ -6,57 +6,60 @@
   top: 0;
   z-index: 300;
 
-  width: var(--cursor-size);
-  height: var(--cursor-size);
-  border-radius: 50%;
-  background: var(--cursor-bg);
+  /* The largest size the dot ever reaches; the inner .dot scales down from
+     it. Rasterised large and scaled down, Safari keeps the edges and icon
+     crisp — the other way round (small, scaled up) comes out pixelated. */
+  width: calc(var(--cursor-size) * var(--cursor-hover-scale));
+  height: calc(var(--cursor-size) * var(--cursor-hover-scale));
 
   /* Never intercept anything: the trailer follows the pointer, so without
      this it would sit under the cursor and swallow every hover and click. */
   pointer-events: none;
 
-  display: grid;
-  place-items: center;
-
-  /* Position and scale are deliberately separate properties rather than one
-     `transform`. The JS writes `translate` every frame for the follow, which
-     would otherwise clobber any transition on the scale; split like this the
-     browser owns the swell and it gets an exact duration. Order is fixed by
-     spec — translate, then rotate, then scale — so the dot scales about its
-     own centre, which is already sitting on the pointer. */
-  translate: 0 0;
-  scale: 1;
-
   opacity: 0;
-  transition: opacity var(--speed-base) ease,
-    scale var(--cursor-swell) var(--ease-out);
+  transition: opacity var(--speed-base) ease;
 
-  /* One element, animated on every frame — the promotion is worth it here in
-     a way it would not be on the dot field's several hundred nodes. */
-  will-change: translate, scale;
+  /* The JS writes `transform: translate3d(...)` every frame. Safari moves a
+     composited layer by `transform` smoothly but handles the standalone
+     `translate` property poorly, which showed up as stutter. The swell lives
+     on the child so the two never fight over one property. */
+  will-change: transform;
 }
 
 .visible {
   opacity: 1;
 }
 
+.dot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--cursor-bg);
+
+  display: grid;
+  place-items: center;
+
+  scale: calc(1 / var(--cursor-hover-scale));
+  transition: scale var(--cursor-swell) var(--ease-out);
+}
+
 /* Small is the default for links and buttons; only a card opts up to the
    large scale. */
 .hovering {
-  scale: var(--cursor-hover-scale-sm);
+  scale: calc(var(--cursor-hover-scale-sm) / var(--cursor-hover-scale));
 }
 
 .hovering[data-size="lg"] {
-  scale: var(--cursor-hover-scale);
+  scale: 1;
 }
 
-/* Laid out tiny and scaled up with the dot, so this is ~1/4 of the swollen
+/* Laid out at full size with the dot, so this is ~1/3 of the swollen
    dot's width. Sized off --cursor-size to hold that ratio if the dot
    changes. */
 .icon {
   display: grid;
   place-items: center;
-  font-size: calc(var(--cursor-size) / 3.2);
+  font-size: calc(var(--cursor-size) * var(--cursor-hover-scale) / 3.2);
   line-height: 1;
   color: var(--cursor-fg);
 

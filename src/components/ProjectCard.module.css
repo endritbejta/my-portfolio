@@ -171,3 +171,10 @@
     line-clamp: 2;
   }
 }
+
+/* Safari only: see the note in ui/Card.module.css. */
+@supports (font: -apple-system-body) {
+  .year {
+    backdrop-filter: none;
+  }
+}

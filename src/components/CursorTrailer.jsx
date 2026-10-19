@@ -123,6 +123,7 @@ const CursorTrailer = () => {
     let placed = false; // first move drops the dot in rather than flying it in
 
     let lastKey = null;
+    let lastNode = null;
     let frame = 0;
     let lastTime = 0;
 
@@ -136,8 +137,9 @@ const CursorTrailer = () => {
       x += (pointerX - x) * posAlpha;
       y += (pointerY - y) * posAlpha;
 
-      // Only `translate` — the scale lives in CSS so its transition survives.
-      dot.style.translate = `${(x - half).toFixed(2)}px ${(y - half).toFixed(2)}px`;
+      // Only the position — the scale lives on the inner element in CSS so
+      // its transition survives.
+      dot.style.transform = `translate3d(${(x - half).toFixed(2)}px, ${(y - half).toFixed(2)}px, 0)`;
 
       const arrived =
         Math.abs(pointerX - x) < SETTLE_PX && Math.abs(pointerY - y) < SETTLE_PX;
@@ -162,10 +164,13 @@ const CursorTrailer = () => {
         placed = true;
       }
 
-      // Only touch React when the cue actually changes, not on every event.
-      const next = resolveTarget(event.target);
-      const key = next ? `${next.type}:${next.size}` : null;
-      if (key !== lastKey) {
+      // Only touch React when the cue actually changes, not on every event,
+      // and skip the lookup entirely while the pointer stays on one element.
+      const node = event.target;
+      const next = node === lastNode ? undefined : resolveTarget(node);
+      lastNode = node;
+      const key = next === undefined ? lastKey : next ? `${next.type}:${next.size}` : null;
+      if (next !== undefined && key !== lastKey) {
         lastKey = key;
         setTarget(next);
         // Over something clickable the swollen dot stands in for the pointer.
@@ -178,6 +183,7 @@ const CursorTrailer = () => {
 
     const onMouseLeave = () => {
       lastKey = null;
+      lastNode = null;
       setTarget(null);
       document.documentElement.classList.remove("cursor-none");
       setVisible(false);
@@ -203,16 +209,18 @@ const CursorTrailer = () => {
   return (
     <div
       ref={dotRef}
-      className={[classes.trailer, visible && classes.visible, target && classes.hovering]
-        .filter(Boolean)
-        .join(" ")}
-      data-size={target?.size}
+      className={[classes.trailer, visible && classes.visible].filter(Boolean).join(" ")}
       aria-hidden="true"
     >
-      <span className={`${classes.icon} ${Icon ? classes.iconVisible : ""}`}>
-        {/* Heavier than Feather's default 2, to read at the swollen size */}
-        {Icon && <Icon strokeWidth={2.5} />}
-      </span>
+      <div
+        className={[classes.dot, target && classes.hovering].filter(Boolean).join(" ")}
+        data-size={target?.size}
+      >
+        <span className={`${classes.icon} ${Icon ? classes.iconVisible : ""}`}>
+          {/* Heavier than Feather's default 2, to read at the swollen size */}
+          {Icon && <Icon strokeWidth={2.5} />}
+        </span>
+      </div>
     </div>
   );
 };

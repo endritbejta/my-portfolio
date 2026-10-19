@@ -31,3 +31,15 @@
   border-color: var(--border-strong);
   box-shadow: var(--glass-shadow), var(--shadow-card);
 }
+
+/* Safari re-blurs everything behind a backdrop-filter whenever it changes, and
+   the dot field behind it redraws on every mouse move — that cost the cursor
+   its 60fps there. Blink handles it fine, so only Safari (desktop and iOS,
+   the only engines that know -apple-system-body) drops the blur; the fill
+   stays, which at a 4px dot size reads almost the same. */
+@supports (font: -apple-system-body) {
+  .card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
