@@ -123,6 +123,7 @@ const CursorTrailer = () => {
     let placed = false; // first move drops the dot in rather than flying it in
 
     let lastKey = null;
+    let lastNode = null;
     let frame = 0;
     let lastTime = 0;
 
@@ -163,10 +164,13 @@ const CursorTrailer = () => {
         placed = true;
       }
 
-      // Only touch React when the cue actually changes, not on every event.
-      const next = resolveTarget(event.target);
-      const key = next ? `${next.type}:${next.size}` : null;
-      if (key !== lastKey) {
+      // Only touch React when the cue actually changes, not on every event,
+      // and skip the lookup entirely while the pointer stays on one element.
+      const node = event.target;
+      const next = node === lastNode ? undefined : resolveTarget(node);
+      lastNode = node;
+      const key = next === undefined ? lastKey : next ? `${next.type}:${next.size}` : null;
+      if (next !== undefined && key !== lastKey) {
         lastKey = key;
         setTarget(next);
         // Over something clickable the swollen dot stands in for the pointer.
@@ -179,6 +183,7 @@ const CursorTrailer = () => {
 
     const onMouseLeave = () => {
       lastKey = null;
+      lastNode = null;
       setTarget(null);
       document.documentElement.classList.remove("cursor-none");
       setVisible(false);

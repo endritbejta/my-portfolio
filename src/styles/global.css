@@ -343,9 +343,11 @@ h4 {
 /* Toggled by CursorTrailer while the dot is over something clickable: the
    swollen dot stands in for the pointer there. !important and the descendant
    selector are both needed — links and buttons set cursor: pointer
-   themselves, and the rule has to beat every one of them. */
+   themselves, and the rule has to beat every one of them. Scoped to the
+   clickable elements rather than `*`: a universal selector made Safari
+   restyle the whole page on every toggle, which showed up as a hitch. */
 html.cursor-none,
-html.cursor-none * {
+html.cursor-none :is(a[href], [data-cursor], [data-cursor] *, a[href] *) {
   cursor: none !important;
 }
 
