@@ -6,8 +6,11 @@
   top: 0;
   z-index: 300;
 
-  width: var(--cursor-size);
-  height: var(--cursor-size);
+  /* Laid out at the largest size it ever reaches and scaled *down* to rest
+     size. Safari rasterises a will-change layer at its layout size, so the
+     other way round (small, scaled up) shows as pixelated edges. */
+  width: calc(var(--cursor-size) * var(--cursor-hover-scale));
+  height: calc(var(--cursor-size) * var(--cursor-hover-scale));
   border-radius: 50%;
   background: var(--cursor-bg);
 
@@ -25,7 +28,7 @@
      spec — translate, then rotate, then scale — so the dot scales about its
      own centre, which is already sitting on the pointer. */
   translate: 0 0;
-  scale: 1;
+  scale: calc(1 / var(--cursor-hover-scale));
 
   opacity: 0;
   transition: opacity var(--speed-base) ease,
@@ -33,7 +36,9 @@
 
   /* One element, animated on every frame — the promotion is worth it here in
      a way it would not be on the dot field's several hundred nodes. */
-  will-change: translate, scale;
+  will-change: translate;
+  /* Not `scale`: hinting it makes Safari freeze the raster at the resting
+     (1/4) scale, so the swollen dot and its icon are upscaled and blurry. */
 }
 
 .visible {
@@ -43,20 +48,20 @@
 /* Small is the default for links and buttons; only a card opts up to the
    large scale. */
 .hovering {
-  scale: var(--cursor-hover-scale-sm);
+  scale: calc(var(--cursor-hover-scale-sm) / var(--cursor-hover-scale));
 }
 
 .hovering[data-size="lg"] {
-  scale: var(--cursor-hover-scale);
+  scale: 1;
 }
 
-/* Laid out tiny and scaled up with the dot, so this is ~1/4 of the swollen
+/* Laid out at full size with the dot, so this is ~1/3 of the swollen
    dot's width. Sized off --cursor-size to hold that ratio if the dot
    changes. */
 .icon {
   display: grid;
   place-items: center;
-  font-size: calc(var(--cursor-size) / 3.2);
+  font-size: calc(var(--cursor-size) * var(--cursor-hover-scale) / 3.2);
   line-height: 1;
   color: var(--cursor-fg);
 
